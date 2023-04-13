@@ -1,0 +1,43 @@
+.login-box{
+    background: #044491;
+    box-shadow: 0 0 10px 2px #333;
+    height: 50vh;
+}
+
+.title-box{
+    background: #fff;
+    height: 50vh;
+}
+
+.title-box h1{
+    color: #044491;
+}
+
+.login-form{
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
+
+@media (min-width: 576px) {
+
+}
+
+@media (min-width: 768px) {
+
+    .title-box{
+        height: 100vh;
+    }
+
+    .login-box{
+        height: 100vh;
+    }
+}
+
+@media (min-width: 992px) {
+    
+}
+
+@media (min-width: 1200px) {
+    
+}
