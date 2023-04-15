@@ -12,6 +12,7 @@ public class Router {
         //No creo que tengamos que cargar valores a la DB
         //Defino Rutas
         get("/usuarios", UserController::obtenerUsuarios);
+        get("/usuario/:id", UserController::obtenerUsuario);
         post("/usuarios",UserController::nuevoUsuario);
 
     }
