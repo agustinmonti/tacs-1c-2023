@@ -1,0 +1,33 @@
+@startuml
+class Event{
+	-changeStatus(EventStatus)
+	+addOption(EventOption)
+	+removeOption(EventOption)
+	+pickOption():EventOption
+	+invite(User)
+	}
+class EventOption{
+	-canVote(User):Boolean
+	+getVotes():Integer
+}
+class Vote{}
+class Date{}
+enum EventStatus{
+	DRAFT,
+	OPEN,
+	CLOSED
+}
+class User{
+	
+}
+Event -up-> "Created" Date
+Event -left-> EventStatus
+Event --> "Coordinator" User
+Event --> "Invitees *" User
+EventOption --> "Votes *" Vote
+EventOption --> "Start" Date
+EventOption --> "End" Date
+EventOption -left-> Event
+Vote -left-> User
+Vote --> Date
+@enduml
