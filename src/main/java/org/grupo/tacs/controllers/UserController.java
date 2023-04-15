@@ -26,7 +26,11 @@ public class UserController {
         //Algo estilo parametros.put("Usuarios",RepositorioUsuarios.instancia.todos())
         String[] usuarios = {"Anabel","Bernardo","Conrado","Dora"};
         parametros.put("Usuarios",usuarios);
-        return new ModelAndView(parametros, "usuarios/usuarios.html");
+        response.header("Access-Control-Allow-Origin", "http://localhost:5173");
+        response.status(200);
+        return "{\"response\":\"obtener usuarios\"}";
+        //return parametros;
+        //return new ModelAndView(parametros, "usuarios/usuarios.html");
     }
     public static Object obtenerUsuario(Request request, Response response) {
         Map<String,Object> parametros = new HashMap<>();
@@ -34,7 +38,10 @@ public class UserController {
         //ej User usuario = RepositorioUsuarios.instancia.buscar(Long.parseLong(request.params(":idUser")));
         User usuario = new User();
         parametros.put("usuario",usuario);
-        return new ModelAndView(parametros, "usuarios/usuario.html");
+        response.header("Access-Control-Allow-Origin", "http://localhost:5173");
+        response.status(200);
+        return "{\"response\":\"obtener usuario\"}";
+        //return new ModelAndView(parametros, "usuarios/usuario.html");
     }
     public ModelAndView formRegistrarUsuario(Request request, Response response) {
         Map<String, Object> parametros = new HashMap<>();
@@ -60,7 +67,10 @@ public class UserController {
         Comienzo a crear el usuario
         User nuevo = new User(nombre,password,email)
          */
-        response.redirect("/users");
-        return response;
+        response.header("Access-Control-Allow-Origin", "http://localhost:5173");
+        response.status(201);
+
+        return "{\"response\":\"nuevo usuario " +  request.body() + "\"}";
+        //return response;
     }
 }
