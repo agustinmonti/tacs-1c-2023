@@ -35,9 +35,9 @@ public class Router {
         post("/usuarios",UserController::nuevoUsuario);
         delete("/usuarios",UserController::borrarTodos);
 
-        options("/usuario/:id",UserController::obtenerOptionsUsuario);
-        get("/usuario/:id", UserController::obtenerUsuario);
-        put("/usuario/:id",UserController::actualizarUsuario);
-        delete("/usuario/:id",UserController::borrar);
+        options("/usuarios/:id",UserController::obtenerOptionsUsuario);
+        get("/usuarios/:id", UserController::obtenerUsuario);
+        put("/usuarios/:id",UserController::actualizarUsuario);
+        delete("/usuarios/:id",UserController::borrar);
     }
 }

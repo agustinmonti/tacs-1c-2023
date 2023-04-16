@@ -22,7 +22,7 @@ export const AppRouter = () => {
                         <Route path="/" element={ <EventsPage /> } />
 
                         <Route path="/usuarios" element={<UsuariosPage />} />
-                        <Route path="/usuario/:id" element={<UsuarioPage />} />
+                        <Route path="/usuarios/:id" element={<UsuarioPage />} />
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>
                 )

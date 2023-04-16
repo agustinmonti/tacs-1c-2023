@@ -11,7 +11,7 @@ export const UsuarioPage = () => {
     const navigate = useNavigate();
 
     const getUser =() => {
-      const response = fetch(`http://localhost:8080/usuario/${id}`,{})
+      const response = fetch(`http://localhost:8080/usuarios/${id}`,{})
         .then(response => {
           if (response.ok){
             return response.json();
@@ -38,7 +38,7 @@ export const UsuarioPage = () => {
     }, [user]);
 
     const handleDelete = () => {
-        fetch(`http://localhost:8080/usuario/${id}`, {
+        fetch(`http://localhost:8080/usuarios/${id}`, {
             method: 'DELETE'
         })
         .then(response => {
@@ -74,7 +74,7 @@ export const UsuarioPage = () => {
         if (confirmPassword !== '') {
             updatedFields.confirmPassword = confirmPassword;
         }
-        fetch(`http://localhost:8080/usuario/${id}`, {
+        fetch(`http://localhost:8080/usuarios/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
