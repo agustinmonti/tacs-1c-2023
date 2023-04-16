@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 
 export const UsuariosPage = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   const getUsers = async () => {
     const response = await fetch('http://localhost:8080/usuarios');
@@ -12,6 +14,28 @@ export const UsuariosPage = () => {
   useEffect(() => {
     getUsers();
   }, []);
+
+  const handleDelete = () => {
+          fetch('http://localhost:8080/usuarios', {
+              method: 'DELETE'
+          })
+          .then(response => {
+              if (response.ok) {
+                  navigate('/usuarios');
+          } else if(response.status == 404) {
+              navigate('/usuarios');
+          } else {
+              navigate('/usuarios');
+              throw new Error('Error sending request');
+          }
+          })
+          .then(data => {
+              console.log('Response data:', data);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+  }
 
   return (
     <div>
@@ -33,6 +57,7 @@ export const UsuariosPage = () => {
             ))}
         </tbody>
       </table>
+      <button onClick={() => handleDelete()}>Delete All</button>
     </div>
   );
 };
