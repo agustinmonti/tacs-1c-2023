@@ -1,6 +1,7 @@
 package org.grupo.tacs.model;
 
 public class User {
+    Long id;
     String nombre;
     String email;
     String passwordHash;
@@ -27,5 +28,13 @@ public class User {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

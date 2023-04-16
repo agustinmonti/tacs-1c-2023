@@ -31,6 +31,7 @@ public class Router {
         UserController userController = new UserController();
         //Defino Rutas
         get("/usuarios", UserController::obtenerUsuarios);
+        options("/usuarios",UserController::malditoCORS);
         post("/usuarios",UserController::nuevoUsuario);
         get("/usuarios/:id", UserController::obtenerUsuario);
     }

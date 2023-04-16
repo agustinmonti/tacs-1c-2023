@@ -86,7 +86,21 @@ public class UserController {
          */
         response.status(201);
         System.out.println(request.body().toString());
-        return "{\"response\":\"nuevo usuario " +  request.body() + "\"}";
-        //return response;
+        Gson gson = new Gson();
+        User nuevo = gson.fromJson(request.body().toString(),User.class);
+        RepositorioUsuario.instancia.save(nuevo);
+        return gson.toJson(nuevo);
+    }
+
+    /**
+     * El método {@code malditoCORS} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
+     * puede usar POST con un OPTIONS antes de hacer el fetch POST.
+     * @param request
+     * @param response
+     * @return 200
+     */
+    public static Object malditoCORS(Request request, Response response) {
+        response.status(200);
+        return response;
     }
 }

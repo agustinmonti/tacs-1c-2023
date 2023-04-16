@@ -21,13 +21,14 @@ public class RepositorioUsuario implements Repository<User>{
 
     @Override
     public void save(User entidad) {
+        entidad.setId(usuarios.stream().count());
         usuarios.add(entidad);
     }
 
     @Override
     public void update(User entidad) {
         //deberia buscar por id y no por nombre, de todas formas esto es un mock.
-        usuarios.stream().filter(user -> user.getNombre().equals(entidad.getNombre()));
+        usuarios.stream().filter(user -> user.getId().equals(entidad.getId()));
     }
 
     @Override

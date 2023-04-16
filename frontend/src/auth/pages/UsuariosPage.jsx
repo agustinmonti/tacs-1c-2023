@@ -19,12 +19,14 @@ export const UsuariosPage = () => {
       <table>
         <tbody>
           <tr>
+            <th>Id</th>
             <th>Nombre</th>
             <th>Email</th>
           </tr>
           {Array.isArray(users) &&
             users.map((user) => (
               <tr key={user.id}>
+                <td>{user.id}</td>
                 <td>{user.nombre}</td>
                 <td>{user.email}</td>
               </tr>
