@@ -1,10 +1,13 @@
 package org.grupo.tacs.controllers;
 
+import com.google.gson.Gson;
 import org.grupo.tacs.model.User;
+import org.grupo.tacs.repos.RepositorioUsuario;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,35 +23,49 @@ public class UserController {
         return RepositorioUsuarios.instancia.buscar(request.session().attribute("id"));
     }
     */
+
+    /**
+     * El método {@code obtenerUsuarios} obtiene todos los usuarios
+     * Es usado en Router para GET /usuarios
+     * @param request nada importante.
+     * @param response nada importante.
+     */
     public static Object obtenerUsuarios(Request request, Response response) {
         Map<String,Object> parametros = new HashMap<>();
-        //aca le pegaria a un RepositorioUsuarios y retornaria todos los usuarios
-        //Algo estilo parametros.put("Usuarios",RepositorioUsuarios.instancia.todos())
-        String[] usuarios = {"Anabel","Bernardo","Conrado","Dora"};
-        parametros.put("Usuarios",usuarios);
-        response.header("Access-Control-Allow-Origin", "http://localhost:5173");
         response.status(200);
-        return "{\"response\":\"obtener usuarios\"}";
-        //return parametros;
-        //return new ModelAndView(parametros, "usuarios/usuarios.html");
+        Gson gson = new Gson();
+        String respuesta = gson.toJson( RepositorioUsuario.instancia.findAll());
+        return respuesta;
     }
+
+    /**
+     * El método {@code obtenerUsuario} obtiene un id especifico
+     * Es usado en Router para GET /usuario/{id}
+     * @param request contiene el parametro id.
+     * @param response nada importante.
+     */
     public static Object obtenerUsuario(Request request, Response response) {
         Map<String,Object> parametros = new HashMap<>();
         //aca le pegaria a un RepositorioUsuarios y un usuario en particular
         //ej User usuario = RepositorioUsuarios.instancia.buscar(Long.parseLong(request.params(":idUser")));
-        User usuario = new User();
+        System.out.println("entro en obtenerUsuario");
+        User usuario = new User("Bob","abcd1234","bob@yahoo.com.ar");
         parametros.put("usuario",usuario);
-        response.header("Access-Control-Allow-Origin", "http://localhost:5173");
         response.status(200);
-        return "{\"response\":\"obtener usuario\"}";
+        Gson gson = new Gson();
+        return gson.toJson(usuario);
         //return new ModelAndView(parametros, "usuarios/usuario.html");
     }
-    public ModelAndView formRegistrarUsuario(Request request, Response response) {
-        Map<String, Object> parametros = new HashMap<>();
-        //Aca me fijaria que no este logeado, osea que no exista una session
-        return new ModelAndView(parametros,"usuarios/signup.html");
-    }
+
+    /**
+     * El método {@code nuevoUsuario} crea un User apartir del Body en request.
+     * Es usado en Router para POST /usuarios
+     * @param request contiene los datos del usuario a crear en el Body.
+     * @param response no se usa.
+     */
     public static Object nuevoUsuario(Request request, Response response){
+
+        System.out.println("nuevo Usuario!!");
         // deberia usar un try catch()
         //obtengo los datos del request
         /* Ejemplo
@@ -67,9 +84,8 @@ public class UserController {
         Comienzo a crear el usuario
         User nuevo = new User(nombre,password,email)
          */
-        response.header("Access-Control-Allow-Origin", "http://localhost:5173");
         response.status(201);
-
+        System.out.println(request.body().toString());
         return "{\"response\":\"nuevo usuario " +  request.body() + "\"}";
         //return response;
     }

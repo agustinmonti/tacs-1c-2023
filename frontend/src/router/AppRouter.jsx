@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { LoginPage, RegisterPage } from "../auth";
+import { LoginPage, RegisterPage, UsuariosPage } from "../auth";
 import { EventsPage } from "../events";
 
 export const AppRouter = () => {
@@ -19,6 +19,7 @@ export const AppRouter = () => {
                     <>
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/usuarios" element={<UsuariosPage />} />
                         <Route path="/*" element={<Navigate to={"/login"} />} />
                     </>
                 )
