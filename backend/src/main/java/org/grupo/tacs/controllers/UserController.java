@@ -48,11 +48,12 @@ public class UserController {
         Map<String,Object> parametros = new HashMap<>();
         //aca le pegaria a un RepositorioUsuarios y un usuario en particular
         //ej User usuario = RepositorioUsuarios.instancia.buscar(Long.parseLong(request.params(":idUser")));
-        System.out.println("entro en obtenerUsuario");
-        User usuario = new User("Bob","abcd1234","bob@yahoo.com.ar");
+        User usuario = RepositorioUsuario.instancia.findById(Long.parseLong(request.params(":id")));
         parametros.put("usuario",usuario);
         response.status(200);
         Gson gson = new Gson();
+        String respuesta = gson.toJson(usuario);
+        System.out.println(respuesta);
         return gson.toJson(usuario);
         //return new ModelAndView(parametros, "usuarios/usuario.html");
     }

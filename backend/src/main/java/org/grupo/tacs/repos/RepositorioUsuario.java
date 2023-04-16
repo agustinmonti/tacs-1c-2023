@@ -10,8 +10,8 @@ public class RepositorioUsuario implements Repository<User>{
 
     List<User> usuarios = new ArrayList<>();
     @Override
-    public User findById(String id) {
-        return null;
+    public User findById(Long id) {
+        return usuarios.stream().filter(user -> user.getId() == id).findFirst().get();
     }
 
     @Override
@@ -27,8 +27,10 @@ public class RepositorioUsuario implements Repository<User>{
 
     @Override
     public void update(User entidad) {
-        //deberia buscar por id y no por nombre, de todas formas esto es un mock.
-        usuarios.stream().filter(user -> user.getId().equals(entidad.getId()));
+        User unUser = usuarios.stream().filter(user -> user.getId() == entidad.getId()).findFirst().get();
+        unUser.setEmail(entidad.getEmail());
+        unUser.setNombre(entidad.getNombre());
+        unUser.setPasswordHash(entidad.getPasswordHash());
     }
 
     @Override

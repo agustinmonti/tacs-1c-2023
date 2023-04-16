@@ -33,6 +33,6 @@ public class Router {
         get("/usuarios", UserController::obtenerUsuarios);
         options("/usuarios",UserController::malditoCORS);
         post("/usuarios",UserController::nuevoUsuario);
-        get("/usuarios/:id", UserController::obtenerUsuario);
+        get("/usuario/:id", UserController::obtenerUsuario);
     }
 }
