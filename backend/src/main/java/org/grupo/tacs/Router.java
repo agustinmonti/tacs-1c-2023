@@ -30,9 +30,14 @@ public class Router {
 
         UserController userController = new UserController();
         //Defino Rutas
+        options("/usuarios",UserController::obtenerOptionsUsuarios);
         get("/usuarios", UserController::obtenerUsuarios);
-        options("/usuarios",UserController::malditoCORS);
         post("/usuarios",UserController::nuevoUsuario);
+        delete("/usuarios",UserController::borrarTodos);
+
+        options("/usuario/:id",UserController::obtenerOptionsUsuario);
         get("/usuario/:id", UserController::obtenerUsuario);
+        put("/usuario/:id",UserController::actualizarUsuario);
+        delete("/usuario/:id",UserController::borrar);
     }
 }

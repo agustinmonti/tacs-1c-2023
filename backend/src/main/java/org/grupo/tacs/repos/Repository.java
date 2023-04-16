@@ -8,5 +8,9 @@ public interface Repository<T> {
     void save(T entidad);
     void update(T entidad);
     void delete(T entidad);
+
+    void deleteAll();
+
+    void deleteById(long l);
 }
 
