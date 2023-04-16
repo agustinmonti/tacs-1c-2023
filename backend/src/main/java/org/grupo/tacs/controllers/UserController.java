@@ -10,6 +10,7 @@ import spark.Response;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class UserController {
     /* Como obtener el User a partir de una session creada con login
@@ -45,16 +46,18 @@ public class UserController {
      * @param response nada importante.
      */
     public static Object obtenerUsuario(Request request, Response response) {
-        Map<String,Object> parametros = new HashMap<>();
         //aca le pegaria a un RepositorioUsuarios y un usuario en particular
-        //ej User usuario = RepositorioUsuarios.instancia.buscar(Long.parseLong(request.params(":idUser")));
-        User usuario = RepositorioUsuario.instancia.findById(Long.parseLong(request.params(":id")));
-        parametros.put("usuario",usuario);
-        response.status(200);
         Gson gson = new Gson();
-        String respuesta = gson.toJson(usuario);
-        System.out.println(respuesta);
-        return gson.toJson(usuario);
+        String respuesta = "";
+        try {
+            User usuario = RepositorioUsuario.instancia.findById(Long.parseLong(request.params(":id")));
+            response.status(200);
+            respuesta = gson.toJson(usuario);
+        }catch (NoSuchElementException e){
+            response.status(404);
+            respuesta = gson.toJson("No lo encontre!");
+        }
+        return respuesta;
         //return new ModelAndView(parametros, "usuarios/usuario.html");
     }
 
@@ -100,8 +103,53 @@ public class UserController {
      * @param response
      * @return 200
      */
-    public static Object malditoCORS(Request request, Response response) {
+    public static Object obtenerOptionsUsuarios(Request request, Response response) {
+        String allowedMethods = "OPTIONS, GET, POST, DELETE";
+        return armarResponse(response, allowedMethods);
+    }
+
+    private static Response armarResponse(Response response, String allowedMethods) {
         response.status(200);
+        response.header("Allow", allowedMethods);
+        return response;
+    }
+
+    public static Object obtenerOptionsUsuario(Request request, Response response) {
+        String allowedMethods = "OPTIONS, GET, POST, PUT, DELETE";
+        return armarResponse(response, allowedMethods);
+    }
+    public static Object actualizarUsuario(Request request, Response response) {
+        User viejo = RepositorioUsuario.instancia.findById(Long.parseLong(request.params(":id")));
+        response.status(200);
+        Gson gson = new Gson();
+        User user = new User("","","");
+        user = gson.fromJson(request.body(),User.class);
+        if (!user.getNombre().equals("")) {
+            viejo.setNombre(user.getNombre());
+        }
+        if (!user.getEmail().equals("")){
+            viejo.setEmail(user.getEmail());
+        }
+        if (!user.getPasswordHash().equals("")){
+            viejo.setPasswordHash(user.getPasswordHash());
+        }
+        String respuesta = gson.toJson(viejo);
+        return gson.toJson(respuesta);
+    }
+
+    public static Object borrarTodos(Request request, Response response) {
+        RepositorioUsuario.instancia.deleteAll();
+        response.status(200);
+        return response;
+    }
+
+    public static Object borrar(Request request, Response response) {
+        try {
+            RepositorioUsuario.instancia.deleteById(Long.parseLong(request.params(":id")));
+            response.status(200);
+        }catch(NoSuchElementException e){
+            response.status(404);
+        }
         return response;
     }
 }
