@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import org.grupo.tacs.excepciones.PasswordIncorrectaException;
 import org.grupo.tacs.excepciones.UsuarioInexistenteException;
 import org.grupo.tacs.model.User;
-import org.grupo.tacs.repos.RepositorioUsuario;
+import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
 import spark.Response;
 
@@ -13,15 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static javax.swing.UIManager.put;
-
 public class LoginController {
 
-    public static User obtenerUsuarioSession(Request request, Response response){
-        existeAtributoEnSession(request,response,"id");
-        return RepositorioUsuario.instancia.findById(request.session().attribute("id"));
+    public static User getUserSession(Request request, Response response){
+        existingSession(request,response,"id");
+        return UserRepository.instancia.findById(request.session().attribute("id"));
     }
-    public static void existeAtributoEnSession(Request request, Response response,String atributo) {
+    public static void existingSession(Request request, Response response, String atributo) {
         if(Objects.isNull(request.session().attribute(atributo))){
             response.status(500);
             response.redirect("/");
@@ -35,7 +33,7 @@ public class LoginController {
      * @return
      */
     public static Object login(Request request, Response response) {
-        List<User> usuarios = RepositorioUsuario.instancia.findAll();
+        List<User> usuarios = UserRepository.instancia.findAll();
         Map<String, Long> myMap = new HashMap<String, Long>();
         Gson gson = new Gson();
         try{
@@ -56,7 +54,7 @@ public class LoginController {
             response.body(gson.toJson(myMap));
 
         }catch(PasswordIncorrectaException | UsuarioInexistenteException e){
-            response.cookie("error", "Credenciales incorrectas", 1);
+            response.cookie("error", "Wrong Credentials", 1);
             response.redirect("/");
         }catch (Exception e) {
             response.status(500);
@@ -70,7 +68,7 @@ public class LoginController {
         return response;
     }
 
-    public static Object obtenerOptions(Request request, Response response) {
+    public static Object getOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST";
         response.status(200);
         return response;
