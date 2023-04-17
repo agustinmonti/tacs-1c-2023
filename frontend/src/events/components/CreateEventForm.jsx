@@ -14,7 +14,7 @@ export const CreateEventForm = () => {
     const { name, description, isPublic, options } = formValues;
 
     const onChange = ( e ) => {
-        console.log(e.target)
+
         setFormValues( state => {
             return {
                 ...state,
