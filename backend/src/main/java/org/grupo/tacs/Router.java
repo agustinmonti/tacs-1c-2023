@@ -40,5 +40,15 @@ public class Router {
         get("/usuarios/:id", UserController::obtenerUsuario);
         put("/usuarios/:id",UserController::actualizarUsuario);
         delete("/usuarios/:id",UserController::borrar);
+
+        options("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::opcionesVotos);
+        get("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::obtenerVotos);
+        post("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::crearVoto);
+        delete("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::eliminarVotos);
+
+        options("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::opcionesVoto);
+        get("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::obtenerVoto);
+        post("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::editarVoto);
+        delete("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::eliminarVoto);
     }
 }
