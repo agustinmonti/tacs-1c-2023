@@ -3,21 +3,6 @@ import { LoginForm } from '../components/LoginForm'
 import './loginPage.css'
 
 export const LoginPage = () => {
-
-
-    const test = async() => {
-        const res = await fetch('http://localhost:8080/usuarios',{
-            method: "GET"
-        });
-        const data = await res.json();
-        console.log(data)
-    }
-
-    useEffect(() => {
-        test();
-    }, [])
-    
-
     return (
         <div className='container-fluid'>
             <div className="row align-items-center">

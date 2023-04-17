@@ -27,8 +27,9 @@ public class Router {
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             response.type("application/json");
         });
+        options("/login",LoginController::obtenerOptions);
+        post("/login",LoginController::login);
 
-        UserController userController = new UserController();
         //Defino Rutas
         options("/usuarios",UserController::obtenerOptionsUsuarios);
         get("/usuarios", UserController::obtenerUsuarios);
