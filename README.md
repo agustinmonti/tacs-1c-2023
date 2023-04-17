@@ -1,6 +1,25 @@
 # tacs-1c-2023
 ### Trabajo Practico de Técnicas Avanzadas de Construcción de Software. ###
 
+## Build Backend ##
+Abren un cmd o powershell en el directorio `tacs-1c-2023\tacs-1c-2023\backend` y ejecutan estos comandos:
+
+```
+maven package
+```
+
+Eso les crea los jar que va a necesitar Docker para construir la imagen
+
+```
+docker build -t tacs-1c-2023:entrega1 .
+```
+
+Eso crea la imagen que podes correr con:
+
+```
+docker run -p 8080:8080 --name app tacs-1c-2023:entrega1
+```
+
 ## Links ##
 * [Discord](https://discord.gg/ChK8N2h5 "Discord")
 * [Trello](https://trello.com/w/tacs1c2023)
