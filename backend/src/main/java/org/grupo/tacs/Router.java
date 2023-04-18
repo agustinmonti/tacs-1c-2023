@@ -48,5 +48,7 @@ public class Router {
         options("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVoteOptions);
         get("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVote);
         delete("/events/:idEvent/options/:idOption/votes/:id",VoteController::deleteVote);
+
+        get("/monitoring", MonitorController::obtenerContadorEventosYHorarios);
     }
 }

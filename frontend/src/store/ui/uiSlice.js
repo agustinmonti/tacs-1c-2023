@@ -3,15 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 export const uiSlice = createSlice({
 	name: "ui",
 	initialState: {
-		isModalOpen: false,
+		isCreateEventModalOpen: false,
 	},
 	reducers: {
-		onOpenModal: (state) => {
-			state.isDateOpen = true;
+		onOpenCreateEventModal: (state) => {
+			state.isCreateEventModalOpen = true;
+		},
+		onCloseCreateEventModal: (state) => {
+			state.isCreateEventModalOpen = false;
 		},
 
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const { onOpenModal } = uiSlice.actions;
+export const { onOpenCreateEventModal, onCloseCreateEventModal } = uiSlice.actions;
