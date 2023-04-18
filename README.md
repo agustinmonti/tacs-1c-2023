@@ -9,9 +9,14 @@ docker compose up
 ```
 ## RUTAS y Metodos ##
 
+/login
+POST, crea una session para el usuario
+OPTION, porque CORS manda un option para ver si puede mandar POST
+
+
 /users 
 Acepta los metodos OPTIONS, GET, POST, DELETE
-
+  
 /users/:id 
 Acepta los metodos OPTIONS, GET, PUT, DELETE
 
