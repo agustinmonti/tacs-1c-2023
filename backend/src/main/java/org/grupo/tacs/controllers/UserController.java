@@ -108,7 +108,7 @@ public class UserController {
         return armarResponse(response, allowedMethods);
     }
 
-    private static Response armarResponse(Response response, String allowedMethods) {
+    public static Response armarResponse(Response response, String allowedMethods) {
         response.status(200);
         response.header("Allow", allowedMethods);
         return response;

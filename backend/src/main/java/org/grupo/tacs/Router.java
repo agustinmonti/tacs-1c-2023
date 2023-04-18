@@ -50,5 +50,7 @@ public class Router {
         get("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::obtenerVoto);
         post("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::editarVoto);
         delete("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::eliminarVoto);
+
+        get("/monitoring", MonitorController::obtenerContadorEventosYHorarios);
     }
 }

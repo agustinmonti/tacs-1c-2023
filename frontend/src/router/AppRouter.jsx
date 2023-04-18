@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { LoginPage, RegisterPage, UsuariosPage, UsuarioPage, VotosPage } from "../auth";
+import { LoginPage, RegisterPage, UsuariosPage, UsuarioPage, VotosPage, MarketingPage } from "../auth";
 import { EventsPage } from "../events";
 
 export const AppRouter = () => {
@@ -24,6 +24,7 @@ export const AppRouter = () => {
                         <Route path="/usuarios" element={<UsuariosPage />} />
                         <Route path="/usuarios/:id" element={<UsuarioPage />} />
                         <Route path="/eventos/:idEvento/opciones/:idOpcion/votos" element={<VotosPage />}/>
+                        <Route path="/monitoring" element={<MarketingPage />}/>
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>
                 )
