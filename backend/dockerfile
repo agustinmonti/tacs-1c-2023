@@ -12,5 +12,4 @@ WORKDIR /app/target
 
 EXPOSE 8080
 USER 1000
-ADD ./target/tacs-1c-2023-1.0-SNAPSHOT-jar-with-dependencies.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "tacs-1c-2023-1.0-SNAPSHOT-jar-with-dependencies.jar"]
