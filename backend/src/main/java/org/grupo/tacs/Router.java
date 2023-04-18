@@ -22,7 +22,7 @@ public class Router {
     public static void config(){
         before((request, response) -> {
             response.status(200);
-            response.header("Access-Control-Allow-Origin", "http://localhost:5173");
+            response.header("Access-Control-Allow-Origin", "http://localhost:5174");
             response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             response.type("application/json");
@@ -39,5 +39,15 @@ public class Router {
         get("/usuarios/:id", UserController::obtenerUsuario);
         put("/usuarios/:id",UserController::actualizarUsuario);
         delete("/usuarios/:id",UserController::borrar);
+
+        options("/events",EventController::getEventsOptions);
+        get("/events", EventController::getEvents);
+        post("/events",EventController::newEvent);
+        delete("/events",EventController::deleteEvents);
+
+        options("/events/:id",EventController::getEventOptions);
+        get("/events/:id", EventController::getEvent);
+        put("/events/:id",EventController::updateEvent);
+        delete("/events/:id",EventController::deleteEvent);
     }
 }
