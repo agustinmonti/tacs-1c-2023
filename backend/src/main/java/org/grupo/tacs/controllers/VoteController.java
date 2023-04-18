@@ -21,7 +21,7 @@ public class VoteController {
     public static Map<String, Object> HashVoto(User user) {
         Map<String, Object> data = new HashMap<>();
         data.put("user", user);
-        data.put("votingDate", Helper.getReadableDate(LocalDateTime.now()));
+        data.put("readAbleVotingDate", Helper.getReadableDate(LocalDateTime.now()));
         return data;
     }
 
@@ -55,10 +55,11 @@ public class VoteController {
     }
 
     public static Object getVote(Request request, Response response) {
+        String date = Helper.getReadableDate(LocalDateTime.now());
         List<User> users = UserRepository.instance.findAll();
         Map<String, Object> data = new HashMap<>();
         data.put("user", users.get(0));
-        data.put("votingDate", Helper.getReadableDate(LocalDateTime.now()));
+        data.put("readAbleVotingDate", date);
         Gson gson = new Gson();
         return gson.toJson(data);
     }

@@ -1,8 +1,8 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
-import org.grupo.tacs.excepciones.PasswordIncorrectaException;
-import org.grupo.tacs.excepciones.UsuarioInexistenteException;
+import org.grupo.tacs.excepciones.WrongPasswordException;
+import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
@@ -43,9 +43,9 @@ public class LoginController {
             Map<String, Object> jsonMap = gson.fromJson(requestBody, Map.class);
             String email = (String) jsonMap.get("email");
             String password = (String) jsonMap.get("password");
-            User usuario = usuarios.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UsuarioInexistenteException::new);
+            User usuario = usuarios.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
             if(!usuario.getPasswordHash().equals(password)){
-                throw new PasswordIncorrectaException();
+                throw new WrongPasswordException();
             }
             request.session(true);
             request.session().attribute("id", usuario.getId());
@@ -53,7 +53,7 @@ public class LoginController {
             myMap.put("id", usuario.getId());
             response.body(gson.toJson(myMap));
 
-        }catch(PasswordIncorrectaException | UsuarioInexistenteException e){
+        }catch(WrongPasswordException | UserDoesNotExistException e){
             response.cookie("error", "Wrong Credentials", 1);
             response.redirect("/");
         }catch (Exception e) {

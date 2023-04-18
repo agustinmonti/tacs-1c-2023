@@ -1,6 +1,7 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventOptionRepository;
@@ -18,8 +19,8 @@ public class EventOptionController {
         HashMap<String, Object> data = new HashMap<>();
         data.put("id",optionId);
         data.put("idEvent", eventId);
-        data.put("start", LocalDateTime.now());
-        data.put("end",LocalDateTime.of(2023,4,18,19,0,0));
+        data.put("readAbleStart", Helper.getReadableDate(LocalDateTime.now()));
+        data.put("readAbleEnd",Helper.getReadableDate(LocalDateTime.of(2023,4,18,19,0,0)));
         return data;
     }
 

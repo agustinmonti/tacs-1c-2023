@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage, RegisterPage, UsersPage, UserPage, VotesPage, MarketingPage } from "../auth";
-import { EventsPage } from "../events";
+import { EventsPage, EventOptionsPage } from "../events";
 
 export const AppRouter = () => {
 	const authStatus = "not-authenticated";
@@ -24,6 +24,7 @@ export const AppRouter = () => {
                         <Route path="/users" element={<UsersPage />} />
                         <Route path="/users/:id" element={<UserPage />} />
                         <Route path="/events/:idEvent/options/:idOption/votes" element={<VotesPage />}/>
+                        <Route path="/events/:idEvent/options" element={<EventOptionsPage />}/>
                         <Route path="/monitoring" element={<MarketingPage />}/>
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>
