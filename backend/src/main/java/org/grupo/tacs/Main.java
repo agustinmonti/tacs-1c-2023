@@ -9,8 +9,8 @@ public class Main {
     }
 
     public void run() {
-        UserRepository.instancia.save(new User("Ana","1","a@gmail.com"));
-        UserRepository.instancia.save(new User("Bob","2","b@hotmail.com"));
-        UserRepository.instancia.save(new User("Celeste","3","c@yahoo.com"));
+        UserRepository.instance.save(new User("Ana","1","a@gmail.com"));
+        UserRepository.instance.save(new User("Bob","2","b@hotmail.com"));
+        UserRepository.instance.save(new User("Celeste","3","c@yahoo.com"));
     }
 }

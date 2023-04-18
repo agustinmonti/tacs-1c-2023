@@ -1,6 +1,7 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
@@ -20,23 +21,22 @@ public class VoteController {
     public static Map<String, Object> HashVoto(User user) {
         Map<String, Object> data = new HashMap<>();
         data.put("user", user);
-        data.put("votingDate", LocalDateTime.now());
+        data.put("votingDate", Helper.getReadableDate(LocalDateTime.now()));
         return data;
     }
 
     public static Object getVotes(Request request, Response response) {
-        List<User> users = UserRepository.instancia.findAll();
+        List<User> users = UserRepository.instance.findAll();
         List<Map<String,Object>> data = new ArrayList<>();
         users.forEach(u->{
             data.add(HashVoto(u));
         });
         Gson gson = new Gson();
-        System.out.println(gson.toJson(data));
         return gson.toJson(data);
     }
 
     public static Object createVote(Request request, Response response) {
-        List<User> users = UserRepository.instancia.findAll();
+        List<User> users = UserRepository.instance.findAll();
         Gson gson = new Gson();
         response.status(201);
         HashMap<String,Object> data = (HashMap<String,Object>)HashVoto(users.get(0));
@@ -55,12 +55,11 @@ public class VoteController {
     }
 
     public static Object getVote(Request request, Response response) {
-        List<User> users = UserRepository.instancia.findAll();
+        List<User> users = UserRepository.instance.findAll();
         Map<String, Object> data = new HashMap<>();
         data.put("user", users.get(0));
-        data.put("votingDate", LocalDateTime.now());
+        data.put("votingDate", Helper.getReadableDate(LocalDateTime.now()));
         Gson gson = new Gson();
-        String json = gson.toJson(data);
         return gson.toJson(data);
     }
 

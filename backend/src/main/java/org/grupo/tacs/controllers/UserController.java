@@ -24,8 +24,8 @@ public class UserController {
     */
 
     /**
-     * El método {@code obtenerUsuarios} obtiene todos los usuarios
-     * Es usado en Router para GET /usuarios
+     * El método {@code getUsers} obtiene todos los usuarios
+     * Es usado en Router para GET /users
      * @param request nada importante.
      * @param response nada importante.
      */
@@ -33,35 +33,35 @@ public class UserController {
         Map<String,Object> parametros = new HashMap<>();
         response.status(200);
         Gson gson = new Gson();
-        String respuesta = gson.toJson( UserRepository.instancia.findAll());
+        String respuesta = gson.toJson( UserRepository.instance.findAll());
         return respuesta;
     }
 
     /**
-     * El método {@code obtenerUsuario} obtiene un id especifico
-     * Es usado en Router para GET /usuario/{id}
+     * El método {@code getUser} obtiene un user con un id especifico
+     * Es usado en Router para GET /users/{id}
      * @param request contiene el parametro id.
      * @param response nada importante.
      */
     public static Object getUser(Request request, Response response) {
         //aca le pegaria a un RepositorioUsuarios y un usuario en particular
         Gson gson = new Gson();
-        String respuesta = "";
+        String resp = "";
         try {
-            User usuario = UserRepository.instancia.findById(Long.parseLong(request.params(":id")));
+            User user = UserRepository.instance.findById(Long.parseLong(request.params(":id")));
             response.status(200);
-            respuesta = gson.toJson(usuario);
+            resp = gson.toJson(user);
         }catch (NoSuchElementException e){
             response.status(404);
-            respuesta = gson.toJson("Not Found!");
+            resp = gson.toJson("Not Found!");
         }
-        return respuesta;
+        return resp;
         //return new ModelAndView(parametros, "usuarios/usuario.html");
     }
 
     /**
-     * El método {@code nuevoUsuario} crea un User apartir del Body en request.
-     * Es usado en Router para POST /usuarios
+     * El método {@code newUser} crea un User apartir del Body en request.
+     * Es usado en Router para POST /users
      * @param request contiene los datos del usuario a crear en el Body.
      * @param response no se usa.
      */
@@ -85,15 +85,14 @@ public class UserController {
         User nuevo = new User(nombre,password,email)
          */
         response.status(201);
-        System.out.println(request.body().toString());
         Gson gson = new Gson();
         User nuevo = gson.fromJson(request.body().toString(),User.class);
-        UserRepository.instancia.save(nuevo);
+        UserRepository.instance.save(nuevo);
         return gson.toJson(nuevo);
     }
 
     /**
-     * El método {@code malditoCORS} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
+     * El método {@code getUsersOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
      * puede usar POST con un OPTIONS antes de hacer el fetch POST.
      * @param request
      * @param response
@@ -115,33 +114,35 @@ public class UserController {
         return buildResponse(response, allowedMethods);
     }
     public static Object updateUser(Request request, Response response) {
-        User viejo = UserRepository.instancia.findById(Long.parseLong(request.params(":id")));
-        response.status(200);
         Gson gson = new Gson();
-        User user = new User("","","");
-        user = gson.fromJson(request.body(),User.class);
-        if (!user.getName().equals("")) {
-            viejo.setName(user.getName());
+        Object requestBody = gson.fromJson(response.body(),Object.class);
+        User old = UserRepository.instance.findById(Long.parseLong(request.params(":id")));
+        response.status(200);
+        if (requestBody instanceof Map) {
+            Map<String, Object> requestMap = (Map<String, Object>) requestBody;
+            if (requestMap.containsKey("name")) {
+                old.setName((String)requestMap.get("name"));
+            }
+            if (requestMap.containsKey("email")) {
+                old.setEmail((String)requestMap.get("email"));
+            }if (requestMap.containsKey("passwordHash")) {
+                old.setPasswordHash((String)requestMap.get("passwordHash"));
+            }
         }
-        if (!user.getEmail().equals("")){
-            viejo.setEmail(user.getEmail());
-        }
-        if (!user.getPasswordHash().equals("")){
-            viejo.setPasswordHash(user.getPasswordHash());
-        }
-        String respuesta = gson.toJson(viejo);
+        UserRepository.instance.save(old);
+        String respuesta = gson.toJson(old);
         return gson.toJson(respuesta);
     }
 
     public static Object deleteAll(Request request, Response response) {
-        UserRepository.instancia.deleteAll();
+        UserRepository.instance.deleteAll();
         response.status(200);
         return response;
     }
 
     public static Object delete(Request request, Response response) {
         try {
-            UserRepository.instancia.deleteById(Long.parseLong(request.params(":id")));
+            UserRepository.instance.deleteById(Long.parseLong(request.params(":id")));
             response.status(200);
         }catch(NoSuchElementException e){
             response.status(404);

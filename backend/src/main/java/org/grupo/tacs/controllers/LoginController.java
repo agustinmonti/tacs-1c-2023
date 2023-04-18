@@ -17,7 +17,7 @@ public class LoginController {
 
     public static User getUserSession(Request request, Response response){
         existingSession(request,response,"id");
-        return UserRepository.instancia.findById(request.session().attribute("id"));
+        return UserRepository.instance.findById(request.session().attribute("id"));
     }
     public static void existingSession(Request request, Response response, String atributo) {
         if(Objects.isNull(request.session().attribute(atributo))){
@@ -33,7 +33,7 @@ public class LoginController {
      * @return
      */
     public static Object login(Request request, Response response) {
-        List<User> usuarios = UserRepository.instancia.findAll();
+        List<User> usuarios = UserRepository.instance.findAll();
         Map<String, Long> myMap = new HashMap<String, Long>();
         Gson gson = new Gson();
         try{

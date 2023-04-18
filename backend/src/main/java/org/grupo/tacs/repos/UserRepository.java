@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class UserRepository implements Repository<User>{
-    public static UserRepository instancia = new UserRepository();
+    public static UserRepository instance = new UserRepository();
 
     List<User> users = new ArrayList<>();
     @Override
@@ -23,8 +23,10 @@ public class UserRepository implements Repository<User>{
 
     @Override
     public void save(User entidad) {
-        entidad.setId(users.stream().count());
-        users.add(entidad);
+        if(entidad.getId()==null){
+            entidad.setId(users.stream().count());
+            users.add(entidad);
+        }
     }
 
     @Override

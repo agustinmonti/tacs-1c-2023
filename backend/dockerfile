@@ -1,14 +1,15 @@
 # Build stage
-FROM maven:3.6.3-jdk-8 AS build
+FROM maven:3.9.1-eclipse-temurin-8-focal AS build
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:resolve
 COPY src/ /app/src/
-RUN mvn package
+RUN mvn clean package
 
 # Production stage
 FROM openjdk:8-jre-slim
-WORKDIR /app/target
+WORKDIR /app
+COPY --from=build /app/target/tacs-1c-2023-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
 EXPOSE 8080
 USER 1000
