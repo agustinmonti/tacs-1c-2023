@@ -2,7 +2,7 @@
 ### Trabajo Practico de Técnicas Avanzadas de Construcción de Software. ###
 
 ## Build ##
-Abren un cmd o powershell en el directorio `tacs-1c-2023` y ejecutan este comandos:
+Abren un cmd o powershell en el directorio `tacs-1c-2023` y ejecutan este comando:
 
 ```
 docker compose up
