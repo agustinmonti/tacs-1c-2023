@@ -9,14 +9,14 @@ docker compose up
 ```
 ## RUTAS y Metodos ##
 
-# /login #
-
+### /login ###
+```
 POST, crea una session para el usuario
 
 OPTION, porque CORS manda un option para ver si puede mandar POST
+```
 
-
-# /users # 
+### /users ###
 ```
 GET trae los recursos de esa URI
 
@@ -26,7 +26,7 @@ POST crea un nuevo recurso para esa URI
 
 DELETE borra los recursos de esa URI
 ```
-# /users/:id # 
+### /users/:id ###
 ```
 GET trae un recurso con esa id
 
@@ -36,7 +36,7 @@ PUT modifica un recurso con ese id
 
 DELETE elimina el recurso
 ```
-# /events #
+### /events ###
 ```
 GET trae los eventos
 
@@ -46,7 +46,7 @@ POST crea un nuevo recurso para esa URI
 
 DELETE borra los recursos de esa URI
 ```
-# /events/:id #
+### /events/:id ###
 ```
 GET trae un recurso con esa id
 
@@ -56,7 +56,7 @@ PUT modifica un recurso con ese id
 
 DELETE elimina el recurso
 ```
-# /event/:idEvent/options #
+### /event/:idEvent/options ###
 ```
 GET trae las Opciones del Evento que tiene idEvento
 
@@ -67,7 +67,7 @@ POST crea una nueva Opcion para el Evento
 DELETE borra las Opciones
 ```
 
-# /events/:idEvent/options/:id #
+### /events/:idEvent/options/:id ###
 ```
 GET trae una opcion de evento especifico de ese evento
 
@@ -77,15 +77,15 @@ PUT modifica una opcion de evento especifico de ese evento
 
 DELETE elimina una opcion de evento especifico de ese evento
 ```
-# /events/:idEvent/options/:idOption/votes #
+### /events/:idEvent/options/:idOption/votes ###
 ```
 Acepta los metodos OPTIONS, GET, POST, DELETE
 ```
-# /events/:idEvent/options/:idOption/votes/:id #
+### /events/:idEvent/options/:idOption/votes/:id ###
 ```
 Acepta los metodos OPTIONS, GET, DELETE
 ```
-# /monitoring #
+### /monitoring ###
 ```
 Acepta el metodo GET - Funcionalidad: Devuelve un contador con la cantidad de eventos creados y horarios votados anotados en las últimas 2 horas.
 ```
