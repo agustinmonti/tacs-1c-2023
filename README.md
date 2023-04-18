@@ -10,6 +10,7 @@ docker compose up
 ## RUTAS y Metodos ##
 
 /login
+
 POST, crea una session para el usuario
 OPTION, porque CORS manda un option para ver si puede mandar POST
 
