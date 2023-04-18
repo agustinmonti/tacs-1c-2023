@@ -35,11 +35,6 @@ public class Router {
         post("/users",UserController::newUser);
         delete("/users",UserController::deleteAll);
 
-        options("/usuarios/:id",UserController::obtenerOptionsUsuario);
-        get("/usuarios/:id", UserController::obtenerUsuario);
-        put("/usuarios/:id",UserController::actualizarUsuario);
-        delete("/usuarios/:id",UserController::borrar);
-
         options("/events",EventController::getEventsOptions);
         get("/events", EventController::getEvents);
         post("/events",EventController::newEvent);
