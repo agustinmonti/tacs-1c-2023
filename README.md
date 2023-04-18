@@ -34,7 +34,7 @@ Acepta los metodos OPTIONS, GET, POST, DELETE
 Acepta los metodos OPTIONS, GET, DELETE
 
 /monitoring
-Acepta el metodo GET
+Acepta el metodo GET - Funcionalidad: Devuelve un contador con la cantidad de eventos creados y horarios votados anotados en las últimas 2 horas.
 
 ## Links ##
 * [Discord](https://discord.gg/ChK8N2h5 "Discord")
