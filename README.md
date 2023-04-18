@@ -79,15 +79,25 @@ DELETE: Elimina una opcion de evento especifico de ese evento.
 ```
 ### /events/:idEvent/options/:idOption/votes ###
 ```
-Acepta los metodos OPTIONS, GET, POST, DELETE
+GET: Trae los votos de la opcion idOption del evento idEvent.
+
+OPTION: Te dice que metodos podes usar con esa URI.
+
+POST: Crea un nuevo voto para la opcion idOption del evento idEvent.
+
+DELETE: Elimina los votos de la opcion idOption del evento idEvent.
 ```
 ### /events/:idEvent/options/:idOption/votes/:id ###
 ```
-Acepta los metodos OPTIONS, GET, DELETE
+GET: Trae el voto id de la opcion idOption del evento idEvent.
+
+OPTION: Te dice que metodos podes usar con esa URI.
+
+DELETE: Elimina el voto id de la opcion idOption del evento idEvent.
 ```
 ### /monitoring ###
 ```
-GET: Devuelve un contador con la cantidad de eventos creados y horarios votados anotados en las últimas 2 horas.
+GET: Trae un contador con la cantidad de eventos creados y horarios votados anotados en las últimas 2 horas.
 ```
 ## Links ##
 * [Discord](https://discord.gg/ChK8N2h5 "Discord")
