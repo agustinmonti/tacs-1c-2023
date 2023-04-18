@@ -48,7 +48,7 @@ export const CreateEventForm = () => {
         console.log(formValues)
 
         try {
-            const res = await fetch('http://localhost:8080/eventos', {
+            const res = await fetch('http://localhost:8080/events', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export const CreateEventForm = () => {
                 body: JSON.stringify( formValues )
             });
             
-            const data = res.json();
+            const data = await res.json();
             console.log(data)
 
         } catch (error) {
