@@ -11,71 +11,71 @@ docker compose up
 
 ### /login ###
 ```
-POST, crea una session para el usuario
+POST: Crea una session para el usuario.
 
-OPTION, porque CORS manda un option para ver si puede mandar POST
+OPTION: Porque CORS manda un option para ver si puede mandar POST.
 ```
 
 ### /users ###
 ```
-GET trae los recursos de esa URI
+GET: Trae los recursos de esa URI.
 
-OPTION te dice que metodos podes usar con esa URI
+OPTION: Te dice que metodos podes usar con esa URI.
 
-POST crea un nuevo recurso para esa URI, en el frontend es /register que hace un fetch con metodo POST a /users y sus datos en el Body
+POST: Crea un nuevo recurso para esa URI, en el frontend es /register que hace un fetch con metodo POST a /users y sus datos en el Body.
 
-DELETE borra los recursos de esa URI
+DELETE: Borra los recursos de esa URI.
 ```
 ### /users/:id ###
 ```
-GET trae un recurso con esa id
+GET: Trae un recurso con esa id.
 
-OPTION te dice que metodos podes usar con esa URI
+OPTION: Te dice que metodos podes usar con esa URI.
 
-PUT modifica un recurso con ese id
+PUT: Modifica un recurso con ese id.
 
-DELETE elimina el recurso
+DELETE: Elimina el recurso.
 ```
 ### /events ###
 ```
-GET trae los eventos
+GET: Trae los eventos.
 
-OPTION te dice que metodos podes usar con esa URI
+OPTION: Te dice que metodos podes usar con esa URI.
 
-POST crea un nuevo recurso para esa URI
+POST: Crea un nuevo recurso para esa URI.
 
-DELETE borra los recursos de esa URI
+DELETE: Borra los recursos de esa URI.
 ```
 ### /events/:id ###
 ```
-GET trae un recurso con esa id
+GET: Trae un recurso con esa id.
 
-OPTION te dice que metodos podes usar con esa URI
+OPTION: Te dice que metodos podes usar con esa URI.
 
-PUT modifica un recurso con ese id
+PUT: Modifica un recurso con ese id.
 
-DELETE elimina el recurso
+DELETE: Elimina el recurso.
 ```
 ### /event/:idEvent/options ###
 ```
-GET trae las Opciones del Evento que tiene idEvento
+GET: Trae las Opciones del Evento que tiene idEvento.
 
-OPTION te dice que metodos podes usar con esa URI
+OPTION: Te dice que metodos podes usar con esa URI.
 
-POST crea una nueva Opcion para el Evento
+POST: Crea una nueva Opcion para el Evento.
 
-DELETE borra las Opciones
+DELETE: Borra las Opciones.
 ```
 
 ### /events/:idEvent/options/:id ###
 ```
-GET trae una opcion de evento especifico de ese evento
+GET: Trae una opcion de evento especifico de ese evento.
 
-OPTION te dice que metodos podes usar con esa URI
+OPTION: Te dice que metodos podes usar con esa URI.
 
-PUT modifica una opcion de evento especifico de ese evento
+PUT: Modifica una opcion de evento especifico de ese evento.
 
-DELETE elimina una opcion de evento especifico de ese evento
+DELETE: Elimina una opcion de evento especifico de ese evento.
 ```
 ### /events/:idEvent/options/:idOption/votes ###
 ```
@@ -87,7 +87,7 @@ Acepta los metodos OPTIONS, GET, DELETE
 ```
 ### /monitoring ###
 ```
-Acepta el metodo GET - Funcionalidad: Devuelve un contador con la cantidad de eventos creados y horarios votados anotados en las últimas 2 horas.
+GET: Devuelve un contador con la cantidad de eventos creados y horarios votados anotados en las últimas 2 horas.
 ```
 ## Links ##
 * [Discord](https://discord.gg/ChK8N2h5 "Discord")
