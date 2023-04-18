@@ -77,7 +77,7 @@ export const VotesPage = () => {
             <th>User Id |</th>
             <th>Name |</th>
             <th>Email |</th>
-            <th>Date DD/MM/YYYY</th>
+            <th>Date DD/MM/YYYY HH:MM:SS</th>
           </tr>
           {Array.isArray(votes) &&
             votes.map((vote) => (
@@ -86,7 +86,7 @@ export const VotesPage = () => {
                 <td>{vote.user.id}</td>
                 <td>{vote.user.name}</td>
                 <td>{vote.user.email}</td>
-                <td>{vote.votingDate.date.day}/{vote.votingDate.date.month}/{vote.votingDate.date.year}</td>
+                <td>{vote.readAbleVotingDate}</td>
               </tr>
             ))}
         </tbody>
