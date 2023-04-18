@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 
-export const UsuariosPage = () => {
+export const UsersPage = () => {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   const getUsers = async () => {
-    const response = await fetch('http://localhost:8080/usuarios');
+    const response = await fetch('http://localhost:8080/users');
     const data = await response.json();
     setUsers(data);
   };
@@ -16,16 +16,16 @@ export const UsuariosPage = () => {
   }, []);
 
   const handleDelete = () => {
-          fetch('http://localhost:8080/usuarios', {
+          fetch('http://localhost:8080/users', {
               method: 'DELETE'
           })
           .then(response => {
               if (response.ok) {
-                  navigate('/usuarios');
+                  navigate('/users');
           } else if(response.status == 404) {
-              navigate('/usuarios');
+              navigate('/users');
           } else {
-              navigate('/usuarios');
+              navigate('/users');
               throw new Error('Error sending request');
           }
           })
@@ -39,19 +39,19 @@ export const UsuariosPage = () => {
 
   return (
     <div>
-      <h3>Usuarios</h3>
+      <h3>Users</h3>
       <table>
         <tbody>
           <tr>
             <th>Id</th>
-            <th>Nombre</th>
+            <th>Name</th>
             <th>Email</th>
           </tr>
           {Array.isArray(users) &&
             users.map((user) => (
               <tr key={user.id}>
                 <td>{user.id}</td>
-                <td>{user.nombre}</td>
+                <td>{user.name}</td>
                 <td>{user.email}</td>
               </tr>
             ))}

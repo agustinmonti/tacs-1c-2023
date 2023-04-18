@@ -7,51 +7,51 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class RepositorioUsuario implements Repository<User>{
-    public static RepositorioUsuario instancia = new RepositorioUsuario();
+public class UserRepository implements Repository<User>{
+    public static UserRepository instancia = new UserRepository();
 
-    List<User> usuarios = new ArrayList<>();
+    List<User> users = new ArrayList<>();
     @Override
     public User findById(Long id) {
-        return usuarios.stream().filter(user -> user.getId() == id).findFirst().get();
+        return users.stream().filter(user -> user.getId() == id).findFirst().get();
     }
 
     @Override
     public List<User> findAll() {
-        return usuarios;
+        return users;
     }
 
     @Override
     public void save(User entidad) {
-        entidad.setId(usuarios.stream().count());
-        usuarios.add(entidad);
+        entidad.setId(users.stream().count());
+        users.add(entidad);
     }
 
     @Override
     public void update(User entidad) {
-        User unUser = usuarios.stream().filter(user -> user.getId() == entidad.getId()).findFirst().get();
+        User unUser = users.stream().filter(user -> user.getId() == entidad.getId()).findFirst().get();
         unUser.setEmail(entidad.getEmail());
-        unUser.setNombre(entidad.getNombre());
+        unUser.setName(entidad.getName());
         unUser.setPasswordHash(entidad.getPasswordHash());
     }
 
     @Override
     public void delete(User entidad) {
-        usuarios.remove(entidad);
+        users.remove(entidad);
     }
 
     @Override
     public void deleteAll() {
-        usuarios.clear();
+        users.clear();
     }
 
     @Override
     public void deleteById(long l) {
-        Optional<User> userToDelete = usuarios.stream()
+        Optional<User> userToDelete = users.stream()
                 .filter(u -> u.getId() == l)
                 .findFirst();
         if (userToDelete.isPresent()) {
-            usuarios.remove(userToDelete.get());
+            users.remove(userToDelete.get());
         } else {
             throw new NoSuchElementException("User with ID " + l + " not found");
         }

@@ -2,12 +2,10 @@ package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
 import org.grupo.tacs.model.User;
-import org.grupo.tacs.repos.RepositorioUsuario;
-import spark.ModelAndView;
+import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -31,11 +29,11 @@ public class UserController {
      * @param request nada importante.
      * @param response nada importante.
      */
-    public static Object obtenerUsuarios(Request request, Response response) {
+    public static Object getUsers(Request request, Response response) {
         Map<String,Object> parametros = new HashMap<>();
         response.status(200);
         Gson gson = new Gson();
-        String respuesta = gson.toJson( RepositorioUsuario.instancia.findAll());
+        String respuesta = gson.toJson( UserRepository.instancia.findAll());
         return respuesta;
     }
 
@@ -45,17 +43,17 @@ public class UserController {
      * @param request contiene el parametro id.
      * @param response nada importante.
      */
-    public static Object obtenerUsuario(Request request, Response response) {
+    public static Object getUser(Request request, Response response) {
         //aca le pegaria a un RepositorioUsuarios y un usuario en particular
         Gson gson = new Gson();
         String respuesta = "";
         try {
-            User usuario = RepositorioUsuario.instancia.findById(Long.parseLong(request.params(":id")));
+            User usuario = UserRepository.instancia.findById(Long.parseLong(request.params(":id")));
             response.status(200);
             respuesta = gson.toJson(usuario);
         }catch (NoSuchElementException e){
             response.status(404);
-            respuesta = gson.toJson("No lo encontre!");
+            respuesta = gson.toJson("Not Found!");
         }
         return respuesta;
         //return new ModelAndView(parametros, "usuarios/usuario.html");
@@ -67,9 +65,7 @@ public class UserController {
      * @param request contiene los datos del usuario a crear en el Body.
      * @param response no se usa.
      */
-    public static Object nuevoUsuario(Request request, Response response){
-
-        System.out.println("nuevo Usuario!!");
+    public static Object newUser(Request request, Response response){
         // deberia usar un try catch()
         //obtengo los datos del request
         /* Ejemplo
@@ -92,7 +88,7 @@ public class UserController {
         System.out.println(request.body().toString());
         Gson gson = new Gson();
         User nuevo = gson.fromJson(request.body().toString(),User.class);
-        RepositorioUsuario.instancia.save(nuevo);
+        UserRepository.instancia.save(nuevo);
         return gson.toJson(nuevo);
     }
 
@@ -103,29 +99,29 @@ public class UserController {
      * @param response
      * @return 200
      */
-    public static Object obtenerOptionsUsuarios(Request request, Response response) {
+    public static Object getUsersOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST, DELETE";
-        return armarResponse(response, allowedMethods);
+        return buildResponse(response, allowedMethods);
     }
 
-    public static Response armarResponse(Response response, String allowedMethods) {
+    static Response buildResponse(Response response, String allowedMethods) {
         response.status(200);
         response.header("Allow", allowedMethods);
         return response;
     }
 
-    public static Object obtenerOptionsUsuario(Request request, Response response) {
+    public static Object getUserOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST, PUT, DELETE";
-        return armarResponse(response, allowedMethods);
+        return buildResponse(response, allowedMethods);
     }
-    public static Object actualizarUsuario(Request request, Response response) {
-        User viejo = RepositorioUsuario.instancia.findById(Long.parseLong(request.params(":id")));
+    public static Object updateUser(Request request, Response response) {
+        User viejo = UserRepository.instancia.findById(Long.parseLong(request.params(":id")));
         response.status(200);
         Gson gson = new Gson();
         User user = new User("","","");
         user = gson.fromJson(request.body(),User.class);
-        if (!user.getNombre().equals("")) {
-            viejo.setNombre(user.getNombre());
+        if (!user.getName().equals("")) {
+            viejo.setName(user.getName());
         }
         if (!user.getEmail().equals("")){
             viejo.setEmail(user.getEmail());
@@ -137,15 +133,15 @@ public class UserController {
         return gson.toJson(respuesta);
     }
 
-    public static Object borrarTodos(Request request, Response response) {
-        RepositorioUsuario.instancia.deleteAll();
+    public static Object deleteAll(Request request, Response response) {
+        UserRepository.instancia.deleteAll();
         response.status(200);
         return response;
     }
 
-    public static Object borrar(Request request, Response response) {
+    public static Object delete(Request request, Response response) {
         try {
-            RepositorioUsuario.instancia.deleteById(Long.parseLong(request.params(":id")));
+            UserRepository.instancia.deleteById(Long.parseLong(request.params(":id")));
             response.status(200);
         }catch(NoSuchElementException e){
             response.status(404);

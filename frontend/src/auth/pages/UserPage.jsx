@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 
-export const UsuarioPage = () => {
+export const UserPage = () => {
     const [user, setUser] = useState({});
     const { id } = useParams();
     const [username, setUsername] = useState('');
@@ -11,12 +11,12 @@ export const UsuarioPage = () => {
     const navigate = useNavigate();
 
     const getUser =() => {
-      const response = fetch(`http://localhost:8080/usuarios/${id}`,{})
+      const response = fetch(`http://localhost:8080/users/${id}`,{})
         .then(response => {
           if (response.ok){
             return response.json();
           } else if (response.status === 404) {
-            navigate('/usuarios');
+            navigate('/users');
           }
           throw new Error('Error retrieving user');
         })
@@ -33,21 +33,21 @@ export const UsuarioPage = () => {
     }, [id]);
 
     useEffect(() => {
-        setUsername(user.nombre);
+        setUsername(user.name);
         setEmail(user.email);
     }, [user]);
 
     const handleDelete = () => {
-        fetch(`http://localhost:8080/usuarios/${id}`, {
+        fetch(`http://localhost:8080/users/${id}`, {
             method: 'DELETE'
         })
         .then(response => {
             if (response.ok) {
-                navigate('/usuarios');
+                navigate('/users');
         } else if(response.status == 404) {
-            navigate('/usuarios');
+            navigate('/users');
         } else {
-            navigate('/usuarios');
+            navigate('/users');
             throw new Error('Error sending request');
         }
         })
@@ -62,8 +62,8 @@ export const UsuarioPage = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const updatedFields = {};
-        if (username !== user.nombre){
-            updatedFields.nombre = username;
+        if (username !== user.name){
+            updatedFields.name = username;
         }
         if (email !== user.email){
             updatedFields.email = email;
@@ -74,7 +74,7 @@ export const UsuarioPage = () => {
         if (confirmPassword !== '') {
             updatedFields.confirmPassword = confirmPassword;
         }
-        fetch(`http://localhost:8080/usuarios/${id}`, {
+        fetch(`http://localhost:8080/users/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -83,11 +83,11 @@ export const UsuarioPage = () => {
         })
         .then(response => {
             if (response.ok) {
-                navigate('/usuarios');
+                navigate('/users');
             } else if(response.status == 404) {
-                navigate('/usuarios');
+                navigate('/users');
             } else {
-                navigate('/usuarios');
+                navigate('/users');
                 throw new Error('Error sending request');
             }
         })
@@ -101,7 +101,7 @@ export const UsuarioPage = () => {
 
     return (
     <div>
-        <h3>Usuario {id}</h3>
+        <h3>User {id}</h3>
         <form onSubmit={handleSubmit}>
             <label>
                 Username:

@@ -1,15 +1,15 @@
 import { useNavigate, useParams  } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
 
-export const VotosPage = () => {
+export const VotesPage = () => {
   const [votes, setVotes] = useState([]);
   const [user, setUser] = useState();
   const navigate = useNavigate();
-  const { idEvento } = useParams();
-  const { idOpcion } = useParams();
+  const { idEvent } = useParams();
+  const { idOption } = useParams();
   useEffect(()=>{
         const getVotes = async () => {
-        const response = await fetch(`http://localhost:8080/eventos/${idEvento}/opciones/${idOpcion}/votos`);
+        const response = await fetch(`http://localhost:8080/events/${idEvent}/options/${idOption}/votes`);
         const data = await response.json();
         console.log("data",data);
         setVotes(data);
@@ -19,11 +19,11 @@ export const VotosPage = () => {
     }, []);
 
   if(!votes){
-    return <div>Cargando...</div>
+    return <div>Loading...</div>
   }
-  const handleVotar = () => {
+  const handleVoting = () => {
         event.preventDefault();
-        fetch(`http://localhost:8080/eventos/${idEvento}/opciones/${idOpcion}/votos`, {
+        fetch(`http://localhost:8080/events/${idEvent}/options/${idOption}/votes`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,16 +45,16 @@ export const VotosPage = () => {
   }
 
   const handleDelete = () => {
-          fetch(`http://localhost:8080/eventos/${idEvento}/opciones/${idOpcion}/votos`, {
+          fetch(`http://localhost:8080/events/${idEvent}/options/${idOption}/votes`, {
               method: 'DELETE'
           })
           .then(response => {
               if (response.ok) {
-                  navigate(`/eventos/${idEvento}/opciones/${idOpcion}/votos`);
+                  navigate(`/events/${idEvent}/options/${idOption}/votes`);
           } else if(response.status == 404) {
-              navigate(`/eventos/${idEvento}/opciones/${idOpcion}/votos`);
+              navigate(`/events/${idEvent}/options/${idOption}/votes`);
           } else {
-              navigate(`/eventos/${idEvento}/opciones/${idOpcion}/votos`);
+              navigate(`/events/${idEvent}/options/${idOption}/votes`);
               throw new Error('Error sending request');
           }
           })
@@ -69,27 +69,29 @@ export const VotosPage = () => {
 
   return (
     <div>
-      <h3>Votos del Evento:{idEvento} Opcion:{idOpcion}</h3>
+      <h3>Event:{idEvent} Option:{idOption} votes:</h3>
       <table>
         <tbody>
           <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Fecha</th>
+            <th>Vote Id |</th>
+            <th>User Id |</th>
+            <th>Name |</th>
+            <th>Email |</th>
+            <th>Date DD/MM/YYYY</th>
           </tr>
           {Array.isArray(votes) &&
             votes.map((vote) => (
               <tr key={vote.id}>
                 <td>{vote.id}</td>
-                <td>{vote.user.nombre}</td>
+                <td>{vote.user.id}</td>
+                <td>{vote.user.name}</td>
                 <td>{vote.user.email}</td>
-                <td>{vote.fechaDeVotacion.date.day}/{vote.fechaDeVotacion.date.month}/{vote.fechaDeVotacion.date.year}</td>
+                <td>{vote.votingDate.date.day}/{vote.votingDate.date.month}/{vote.votingDate.date.year}</td>
               </tr>
             ))}
         </tbody>
       </table>
-      <button onClick={() => handleVotar()}>Votar</button>
+      <button onClick={() => handleVoting()}>Votar</button>
       <button onClick={() => handleDelete()}>Delete All</button>
     </div>
   );

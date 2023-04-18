@@ -1,6 +1,5 @@
 package org.grupo.tacs;
 import org.grupo.tacs.controllers.*;
-import org.grupo.tacs.model.User;
 import spark.Spark;
 
 import static spark.Spark.*;
@@ -27,29 +26,28 @@ public class Router {
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             response.type("application/json");
         });
-        options("/login",LoginController::obtenerOptions);
+        options("/login",LoginController::getOptions);
         post("/login",LoginController::login);
 
         //Defino Rutas
-        options("/usuarios",UserController::obtenerOptionsUsuarios);
-        get("/usuarios", UserController::obtenerUsuarios);
-        post("/usuarios",UserController::nuevoUsuario);
-        delete("/usuarios",UserController::borrarTodos);
+        options("/users",UserController::getUsersOptions);
+        get("/users", UserController::getUsers);
+        post("/users",UserController::newUser);
+        delete("/users",UserController::deleteAll);
 
-        options("/usuarios/:id",UserController::obtenerOptionsUsuario);
-        get("/usuarios/:id", UserController::obtenerUsuario);
-        put("/usuarios/:id",UserController::actualizarUsuario);
-        delete("/usuarios/:id",UserController::borrar);
+        options("/users/:id",UserController::getUserOptions);
+        get("/users/:id", UserController::getUser);
+        put("/users/:id",UserController::updateUser);
+        delete("/users/:id",UserController::delete);
 
-        options("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::opcionesVotos);
-        get("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::obtenerVotos);
-        post("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::crearVoto);
-        delete("/eventos/:idEvento/opciones/:idOpcion/votos",VoteController::eliminarVotos);
+        options("/events/:idEvent/options/:idOption/votes",VoteController::getVotesOptions);
+        get("/events/:idEvent/options/:idOption/votes",VoteController::getVotes);
+        post("/events/:idEvent/options/:idOption/votes",VoteController::createVote);
+        delete("/events/:idEvent/options/:idOption/votes",VoteController::deleteAllVotes);
 
-        options("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::opcionesVoto);
-        get("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::obtenerVoto);
-        post("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::editarVoto);
-        delete("/eventos/:idEvento/opciones/:idOpcion/votos/:id",VoteController::eliminarVoto);
+        options("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVoteOptions);
+        get("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVote);
+        delete("/events/:idEvent/options/:idOption/votes/:id",VoteController::deleteVote);
 
         get("/monitoring", MonitorController::obtenerContadorEventosYHorarios);
     }
