@@ -1,6 +1,5 @@
 package org.grupo.tacs;
 import org.grupo.tacs.controllers.*;
-import org.grupo.tacs.model.User;
 import spark.Spark;
 
 import static spark.Spark.*;
@@ -27,13 +26,14 @@ public class Router {
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             response.type("application/json");
         });
+        options("/login",LoginController::getOptions);
+        post("/login",LoginController::login);
 
-        UserController userController = new UserController();
         //Defino Rutas
-        options("/usuarios",UserController::obtenerOptionsUsuarios);
-        get("/usuarios", UserController::obtenerUsuarios);
-        post("/usuarios",UserController::nuevoUsuario);
-        delete("/usuarios",UserController::borrarTodos);
+        options("/users",UserController::getUsersOptions);
+        get("/users", UserController::getUsers);
+        post("/users",UserController::newUser);
+        delete("/users",UserController::deleteAll);
 
         options("/usuarios/:id",UserController::obtenerOptionsUsuario);
         get("/usuarios/:id", UserController::obtenerUsuario);
@@ -49,5 +49,31 @@ public class Router {
         get("/events/:id", EventController::getEvent);
         put("/events/:id",EventController::updateEvent);
         delete("/events/:id",EventController::deleteEvent);
+        
+        options("/users/:id",UserController::getUserOptions);
+        get("/users/:id", UserController::getUser);
+        put("/users/:id",UserController::updateUser);
+        delete("/users/:id",UserController::delete);
+
+        options("/events/:idEvent/options", EventOptionController::getOptionsMethodOptions);
+        get("/events/:idEvent/options", EventOptionController::getOptions);
+        post("/events/:idEvent/options", EventOptionController::newOption);
+        delete("/events/:idEvent/options", EventOptionController::deleteAllOptions);
+
+        options("/eventos/:idEvento/opciones/:id", EventOptionController::getOptionMethodOptions);
+        get("/eventos/:idEvento/opciones/:id", EventOptionController::getOption);
+        put("/eventos/:idEvento/opciones/:id", EventOptionController::updateOption);
+        delete("/eventos/:idEvento/opciones/:id", EventOptionController::deleteOption);
+
+        options("/events/:idEvent/options/:idOption/votes",VoteController::getVotesOptions);
+        get("/events/:idEvent/options/:idOption/votes",VoteController::getVotes);
+        post("/events/:idEvent/options/:idOption/votes",VoteController::createVote);
+        delete("/events/:idEvent/options/:idOption/votes",VoteController::deleteAllVotes);
+
+        options("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVoteOptions);
+        get("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVote);
+        delete("/events/:idEvent/options/:idOption/votes/:id",VoteController::deleteVote);
+
+        get("/monitoring", MonitorController::obtenerContadorEventosYHorarios);
     }
 }

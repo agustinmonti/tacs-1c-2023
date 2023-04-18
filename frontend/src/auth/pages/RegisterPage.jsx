@@ -10,7 +10,7 @@ export const RegisterPage = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        fetch('http://localhost:8080/usuarios', {
+        fetch('http://localhost:8080/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

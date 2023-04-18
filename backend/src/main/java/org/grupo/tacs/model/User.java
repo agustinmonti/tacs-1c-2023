@@ -2,24 +2,24 @@ package org.grupo.tacs.model;
 
 public class User {
     Long id;
-    String nombre;
+    String name;
     String email;
     String passwordHash;
 
     /**
      * El método {@code Usuario} es el constructor de la clase {@code Usuario}.
-     * @param nombre Es el nombre de usuario de la nueva instancia.
+     * @param name Es el nombre de usuario de la nueva instancia.
      * @param passwordHash Es el hashcode del password de la nueva instancia.
      * @param email Es el tipo de usuario que será la nueva instancia.
      */
-    public User(String nombre, String passwordHash, String email) {
-        this.nombre = nombre;
+    public User(String name, String passwordHash, String email) {
+        this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
     public String getEmail() {
@@ -42,8 +42,8 @@ public class User {
         this.email = email;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setPasswordHash(String passwordHash) {

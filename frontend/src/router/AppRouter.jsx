@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { LoginPage, RegisterPage, UsuariosPage, UsuarioPage } from "../auth";
+import { LoginPage, RegisterPage, UsersPage, UserPage, VotesPage, MarketingPage } from "../auth";
 import { EventsPage } from "../events";
 
 export const AppRouter = () => {
@@ -7,7 +7,7 @@ export const AppRouter = () => {
     
     if( authStatus === 'checking'){
         return(
-            <h3>Cargando...</h3>
+            <h3>Loading...</h3>
         )
     }
 
@@ -21,8 +21,10 @@ export const AppRouter = () => {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/" element={ <EventsPage /> } />
 
-                        <Route path="/usuarios" element={<UsuariosPage />} />
-                        <Route path="/usuarios/:id" element={<UsuarioPage />} />
+                        <Route path="/users" element={<UsersPage />} />
+                        <Route path="/users/:id" element={<UserPage />} />
+                        <Route path="/events/:idEvent/options/:idOption/votes" element={<VotesPage />}/>
+                        <Route path="/monitoring" element={<MarketingPage />}/>
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>
                 )
