@@ -22,7 +22,7 @@ GET trae los recursos de esa URI
 
 OPTION te dice que metodos podes usar con esa URI
 
-POST crea un nuevo recurso para esa URI
+POST crea un nuevo recurso para esa URI, en el frontend es /register que hace un fetch con metodo POST a /users y sus datos en el Body
 
 DELETE borra los recursos de esa URI
 ```
