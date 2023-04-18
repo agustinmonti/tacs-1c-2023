@@ -35,10 +35,10 @@ public class Router {
         post("/users",UserController::newUser);
         delete("/users",UserController::deleteAll);
 
-        options("/usuarios/:id",UserController::obtenerOptionsUsuario);
-        get("/usuarios/:id", UserController::obtenerUsuario);
-        put("/usuarios/:id",UserController::actualizarUsuario);
-        delete("/usuarios/:id",UserController::borrar);
+        options("/users/:id",UserController::getUserOptions);
+        get("/users/:id", UserController::getUser);
+        put("/users/:id",UserController::updateUser);
+        delete("/users/:id",UserController::delete);
 
         options("/events",EventController::getEventsOptions);
         get("/events", EventController::getEvents);
@@ -49,11 +49,6 @@ public class Router {
         get("/events/:id", EventController::getEvent);
         put("/events/:id",EventController::updateEvent);
         delete("/events/:id",EventController::deleteEvent);
-        
-        options("/users/:id",UserController::getUserOptions);
-        get("/users/:id", UserController::getUser);
-        put("/users/:id",UserController::updateUser);
-        delete("/users/:id",UserController::delete);
 
         options("/events/:idEvent/options", EventOptionController::getOptionsMethodOptions);
         get("/events/:idEvent/options", EventOptionController::getOptions);

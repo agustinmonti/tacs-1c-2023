@@ -24,7 +24,8 @@ public class EventController {
         response.status(200);
         Gson gson = new Gson();
         String events = gson.toJson( EventRepository.instance.findAll());
-        return events;
+        // return events;
+        return gson.toJson( "eventos");
     }
 
     /**
@@ -55,13 +56,15 @@ public class EventController {
      * @param response no se usa.
      */
     public static Object newEvent(Request request, Response response){
-        System.out.println("nuevo evento!!");
+        // System.out.println("nuevo evento!!");
         response.status(201);
-        System.out.println(request.body().toString());
+        // System.out.println(request.body().toString());
         Gson gson = new Gson();
-        Event newEvent = gson.fromJson(request.body().toString(),Event.class);
-        EventRepository.instance.save(newEvent);
-        return gson.toJson(newEvent);
+        // Event newEvent = gson.fromJson(request.body().toString(),Event.class);
+        // EventRepository.instance.save(newEvent);
+        //return gson.toJson(newEvent);
+
+        return request.body().toString();
     }
 
     /**
@@ -87,7 +90,7 @@ public class EventController {
         return getResponse(response, allowedMethods);
     }
     public static Object updateEvent(Request request, Response response) {
-        Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
+        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
         response.status(200);
         Gson gson = new Gson();
         User user = new User("","","");
@@ -97,14 +100,16 @@ public class EventController {
         if (!event.getName().equals("")) {
             old.setName(event.getName());
         }
-        String eventJson = gson.toJson(old);
-        return gson.toJson(eventJson);
+        String eventJson = gson.toJson(old);*/
+        //return gson.toJson(eventJson);
+        return "evento modificado";
     }
 
     public static Object deleteEvents(Request request, Response response) {
         EventRepository.instance.deleteAll();
         response.status(200);
-        return response;
+        // return  response;
+        return "eliminados";
     }
 
     public static Object deleteEvent(Request request, Response response) {
@@ -114,6 +119,8 @@ public class EventController {
         }catch(NoSuchElementException e){
             response.status(404);
         }
-        return response;
+        // return  response;
+
+        return  "eliminado";
     }
 }
