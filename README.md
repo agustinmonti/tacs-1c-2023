@@ -7,6 +7,34 @@ Abren un cmd o powershell en el directorio `tacs-1c-2023` y ejecutan este comand
 ```
 docker compose up
 ```
+## RUTAS y Metodos ##
+
+/users 
+Acepta los metodos OPTIONS, GET, POST, DELETE
+
+/users/:id 
+Acepta los metodos OPTIONS, GET, PUT, DELETE
+
+/events
+Acepta los metodos OPTIONS, GET, POST, DELETE
+
+/events/:id
+Acepta los metodos OPTIONS, GET, PUT, DELETE
+
+/event/:idEvent/options
+Acepta los metodos OPTIONS, GET, POST, DELETE
+
+/events/:idEvent/options/:id
+Acepta los metodos OPTIONS, GET, PUT, DELETE
+
+/events/:idEvent/options/:idOption/votes
+Acepta los metodos OPTIONS, GET, POST, DELETE
+
+/events/:idEvent/options/:idOption/votes/:id
+Acepta los metodos OPTIONS, GET, DELETE
+
+/monitoring
+Acepta el metodo GET
 
 ## Links ##
 * [Discord](https://discord.gg/ChK8N2h5 "Discord")
