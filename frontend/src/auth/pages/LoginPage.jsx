@@ -1,8 +1,12 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { LoginForm } from '../components/LoginForm'
 import './loginPage.css'
+import { RegisterForm } from '../components/RegisterForm';
 
-export const LoginPage = () => {
+export const LoginPage = ({ register = false }) => {
+
+    const [showRegister, setShowRegister] = useState(register);
+
     return (
         <div className='container-fluid'>
             <div className="row align-items-center">
@@ -17,7 +21,11 @@ export const LoginPage = () => {
                 </div>
                 <div className="col-12 col-md-5 col-xl-6 p-0">
                     <div className="login-box p-5 d-flex flex-column justify-content-center">
-                        <LoginForm />
+                        {
+                            showRegister
+                            ? <RegisterForm setShowRegister={setShowRegister}/>
+                            : <LoginForm setShowRegister={setShowRegister}/>
+                        }
                     </div>
                 </div>
             </div>

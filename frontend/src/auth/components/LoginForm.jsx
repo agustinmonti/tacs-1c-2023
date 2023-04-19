@@ -1,10 +1,14 @@
 import { useNavigate, Link } from 'react-router-dom'
 import React, { useState } from 'react'
 
-export const LoginForm = () => {
+export const LoginForm = ({ setShowRegister }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+
+    const handleGoToRegister = () => {
+        setShowRegister(true);
+    } 
 
     const handleSubmit = (event) => {
             event.preventDefault();
@@ -43,7 +47,7 @@ export const LoginForm = () => {
             <input type="submit" className='btn btn-primary w-100' />
             <small style={{float:'right',marginTop:'10px'}}>
                 ¿No tienes cuenta?
-                <Link className="ms-1" to={'/register'}>Registrate aquí </Link>
+                <Link className="ms-1" to={'/register'} onClick={handleGoToRegister}>Registrate aquí </Link>
             </small>
         </form>
     )

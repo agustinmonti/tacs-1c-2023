@@ -96,7 +96,6 @@ export const CreateEventForm = () => {
                 <label className="form-check-label" htmlFor="isPublic">¿Evento público?</label>
             </div>
             <button type="submit" className="btn btn-primary btn-lg w-100" disabled={ isLoading }>
-                
                 {
                     isLoading
                     ?
