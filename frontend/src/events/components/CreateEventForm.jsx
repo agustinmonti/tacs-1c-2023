@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { useEventsStore } from '../../hooks'
 import { CreateEventOptionsForm } from "./CreateEventOptionsForm";
 
 export const CreateEventForm = () => {
@@ -12,6 +13,8 @@ export const CreateEventForm = () => {
     });
 
     const { name, description, isPublic, options } = formValues;
+
+    const { startCreatingEvent } = useEventsStore();
 
     const onChange = ( e ) => {
 
@@ -46,23 +49,7 @@ export const CreateEventForm = () => {
         e.preventDefault();
 
         console.log(formValues)
-
-        try {
-            const res = await fetch('http://localhost:8080/events', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify( formValues )
-            });
-            
-            const data = await res.json();
-            console.log(data)
-
-        } catch (error) {
-            console.log(error);
-        }
-
+        startCreatingEvent(formValues)
     }
 
     return (
