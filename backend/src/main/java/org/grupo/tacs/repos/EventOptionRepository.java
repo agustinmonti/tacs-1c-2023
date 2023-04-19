@@ -10,6 +10,8 @@ public class EventOptionRepository implements Repository<EventOption>{
 
     public static EventOptionRepository instance = new EventOptionRepository();
     List<EventOption> eventOptions = new ArrayList<>();
+    private Long nextId = 0L;
+
     public List<EventOption> findByEventId(Long id){
         return eventOptions.stream().filter(op->op.getEventOptionParentId()==id).collect(Collectors.toList());
     }
@@ -25,10 +27,11 @@ public class EventOptionRepository implements Repository<EventOption>{
 
     @Override
     public void save(EventOption entidad) {
-        if(entidad.getId()==null){
-            entidad.setId(eventOptions.stream().count());
-            eventOptions.add(entidad);
+        if (entidad.getId() == null) {
+            entidad.setId(nextId);
+            nextId++;
         }
+        eventOptions.add(entidad);
     }
 
     @Override

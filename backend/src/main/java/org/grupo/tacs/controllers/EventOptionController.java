@@ -30,22 +30,34 @@ public class EventOptionController {
     }
 
     public static Object getOptions(Request request, Response response) {
-        List<HashMap<String,Object>> data = new ArrayList<>();
-        for (Long i=0L;i<=3L;i++){
-            data.add(HashOption(i,0L));
-        }
         Gson gson = new Gson();
         response.status(200);
-        return gson.toJson(data);
+        //List<EventOption> options = EventOptionRepository.instance.findByEventId(Long.parseLong(request.queryParams(":idEvent")));
+        List<EventOption> options = EventOptionRepository.instance.findAll();
+        return gson.toJson(options);
     }
 
     public static Object newOption(Request request, Response response) {
         //TODO Verificar con la session que el usuario sea el creador del evento
         Gson gson = new Gson();
-        EventOption newEventOption = gson.fromJson(request.body(),EventOption.class);
-        EventOptionRepository.instance.save(newEventOption);
-        return gson.toJson(newEventOption);
+        String resp = "";
+        Object requestBody = gson.fromJson(request.body(), Object.class);
+        EventOption newOption;
+        if (requestBody instanceof Map) {
+            Map<String, Object> requestMap = (Map<String, Object>) requestBody;
+            if (requestMap.containsKey("eventOptionParentId") && requestMap.containsKey("start") && requestMap.containsKey("end")) {
+                Long eventID = Long.parseLong(requestMap.get("eventOptionParentId").toString());
+                LocalDateTime start = LocalDateTime.parse(requestMap.get("start").toString());
+                LocalDateTime end = LocalDateTime.parse(requestMap.get("end").toString());
+                newOption = new EventOption(eventID, start, end);
+                EventOptionRepository.instance.save(newOption);
+                resp = gson.toJson(newOption);
+                response.status(201);
+            }
+        }
+        return resp;
     }
+
 
     public static Object deleteAllOptions(Request request, Response response) {
         /*TODO agregar un metodo a EventOptionRepository para borrar todas las Opciones que tengan

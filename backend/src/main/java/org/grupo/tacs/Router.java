@@ -49,15 +49,16 @@ public class Router {
         get("/events/:id", EventController::getEvent);
         put("/events/:id",EventController::updateEvent);
         delete("/events/:id",EventController::deleteEvent);
+
         options("/events/:idEvent/options", EventOptionController::getOptionsMethodOptions);
         get("/events/:idEvent/options", EventOptionController::getOptions);
         post("/events/:idEvent/options", EventOptionController::newOption);
         delete("/events/:idEvent/options", EventOptionController::deleteAllOptions);
 
-        options("/eventos/:idEvento/opciones/:id", EventOptionController::getOptionMethodOptions);
-        get("/eventos/:idEvento/opciones/:id", EventOptionController::getOption);
-        put("/eventos/:idEvento/opciones/:id", EventOptionController::updateOption);
-        delete("/eventos/:idEvento/opciones/:id", EventOptionController::deleteOption);
+        options("/events/:idEvent/options/:id", EventOptionController::getOptionMethodOptions);
+        get("/events/:idEvent/options/:id", EventOptionController::getOption);
+        put("/events/:idEvent/options/:id", EventOptionController::updateOption);
+        delete("/events/:idEvent/options/:id", EventOptionController::deleteOption);
 
         options("/events/:idEvent/options/:idOption/votes",VoteController::getVotesOptions);
         get("/events/:idEvent/options/:idOption/votes",VoteController::getVotes);

@@ -50,4 +50,12 @@ public class EventOption {
     public Long getEventOptionParentId() {
         return eventOptionParentId;
     }
+
+    public String getReadAbleEnd() {
+        return readAbleEnd;
+    }
+
+    public String getReadAbleStart() {
+        return readAbleStart;
+    }
 }
