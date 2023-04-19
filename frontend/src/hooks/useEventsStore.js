@@ -2,10 +2,13 @@ import { useDispatch, useSelector } from "react-redux"
 
 import Swal from 'sweetalert2'
 import { api } from "../api";
+import { onCloseCreateEventModal, onSetCurrentEvent } from "../store";
+import { useNavigate } from "react-router-dom";
 
 export const useEventsStore = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { currentEvent } = useSelector( state => state.events );
 
@@ -15,9 +18,16 @@ export const useEventsStore = () => {
 
             const response = await api.post('/events', newEvent); 
             console.log(response)
+            //const eventCreated = response.data.event;
+            const eventCreated = newEvent;
+
+            dispatch(onCloseCreateEventModal());
+            dispatch(onSetCurrentEvent( eventCreated ));
+            navigate(`/event/${ 1 }`);
+
         } catch (error) {
             console.log(error);
-            Swal.fire('Error al guardar', error.response, 'error');
+            Swal.fire('Error al guardar', 'El evento no se guardó correctamente', 'error');
         }
     }
 

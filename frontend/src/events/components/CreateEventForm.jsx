@@ -12,6 +12,8 @@ export const CreateEventForm = () => {
         options: []
     });
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const { name, description, isPublic, options } = formValues;
 
     const { startCreatingEvent } = useEventsStore();
@@ -47,9 +49,12 @@ export const CreateEventForm = () => {
 
     const onSubmit = async(e) => {
         e.preventDefault();
+        setIsLoading( true );
 
         console.log(formValues)
-        startCreatingEvent(formValues)
+        await startCreatingEvent(formValues);
+
+        setIsLoading(false);
     }
 
     return (
@@ -79,7 +84,7 @@ export const CreateEventForm = () => {
 
             <CreateEventOptionsForm options = { options } handleAddOption={ handleAddOption } handleRemoveOption={ handleRemoveOption }/>
 
-            <div className="mb-3 form-check">
+            <div className="my-3 form-check">
                 <input 
                     type="checkbox" 
                     className="form-check-input" 
@@ -90,7 +95,18 @@ export const CreateEventForm = () => {
                 />
                 <label className="form-check-label" htmlFor="isPublic">¿Evento público?</label>
             </div>
-            <button type="submit" className="btn btn-primary btn-lg w-100">Aceptar</button>
+            <button type="submit" className="btn btn-primary btn-lg w-100" disabled={ isLoading }>
+                
+                {
+                    isLoading
+                    ?
+                        <div className="spinner-border mt-1 p-0" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    :
+                    <span className="d-block my-1">Aceptar</span>
+                }
+            </button>
         </form>
     )
 }

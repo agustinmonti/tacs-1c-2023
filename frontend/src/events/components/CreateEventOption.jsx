@@ -24,13 +24,17 @@ export const CreateEventOption = ({ option, handleRemoveOption }) => {
                 Fin: { option.end.toLocaleString() }
             </p>
 
-            <button
-                type='button'
-                className='btn btn-danger btn-sm'
-                onClick={ onRemove }
-            >
-                X
-            </button>
+            {
+                ( handleRemoveOption ) &&
+                <button
+                    type='button'
+                    className='btn btn-danger btn-sm'
+                    onClick={ onRemove }
+                >
+                    X
+                </button>
+
+            }
         </div>
     )
 }
