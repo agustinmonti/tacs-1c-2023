@@ -17,7 +17,6 @@ export const useAuthStore = () => {
             const response = await api.post('/users', newUser); 
             console.log(response)
             //const userCreated = response.data.user;
-
             Swal.fire('Registrado', 'El registro falló sin éxito', 'success');
             return true;
         } catch (error) {
@@ -26,10 +25,25 @@ export const useAuthStore = () => {
         }
     }
 
+    const startLogin = async( user ) => {
+        try {
+            const response = await api.post('/login', user); 
+            console.log(response)
+            //const userCreated = response.data.user;
+            if( response.status === 200 ){
+                return true;
+            }
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error', 'El ingreso falló exitosamente', 'error');
+        }
+    }
+
 
     return {
         user,
 
-        startCreatingUser
+        startCreatingUser,
+        startLogin
     }
 }

@@ -1,52 +1,82 @@
 import { useNavigate, Link } from 'react-router-dom'
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { useAuthStore, useForm } from '../../hooks'
+
+const initialForm = {
+    email: '',
+    password: ''
+}
 
 export const LoginForm = ({ setShowRegister }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+
+    const { formState, email, password, onInputChange } = useForm(initialForm);
+
+    const { startLogin } = useAuthStore();
+
+    const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleGoToRegister = () => {
         setShowRegister(true);
-    } 
+        navigate('/register');
+    }
 
-    const handleSubmit = (event) => {
-            event.preventDefault();
-            fetch('http://localhost:8080/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                email: email,
-                password: password
-              })
-            })
-            .then(response => {
-              if (response.ok) {
-                return response.json();
-              } else {
-                throw new Error('Error sending request');
-              }
-            })
-            .then(data => {
-               console.log('Response data:', data);
-               navigate(`/users/${data.id}`)
-            })
-            .catch(error => {
-              console.error('Error:', error);
-            });
-        };
+    const handleSubmit = async(e) => {
 
+        e.preventDefault();
+        setIsLoading(true);
+
+        const success = await startLogin( formState );
+        setIsLoading(false);
+
+        if(success) navigate('/');
+    };
 
     return (
         <form className='login-form' onSubmit={handleSubmit}>
-            <h3 className='text-center mt-0 pt-0 mb-4 text-white '>Ingresar</h3>
-            <input type="email" className='form-control mb-3' placeholder='Email' value={email} onChange={(event)=> setEmail(event.target.value)}/>
-            <input type="password" className='form-control mb-3' placeholder='Password' value={password} onChange={(event)=> setPassword(event.target.value)} />
-            <input type="submit" className='btn btn-primary w-100' />
+            <h3 className='text-center mt-0 pt-0 mb-4 text-white'>Ingresar</h3>
+            <div className="container-fluid p-0">
+                <div className="row">
+                    <div className="col-12">
+                        <input 
+                            type="email" 
+                            className='form-control mb-3' 
+                            placeholder='Email'
+                            name='email'
+                            value={email}
+                            onChange={onInputChange}
+                        />
+                    </div>
+                    <div className="col-12">
+                        <input 
+                            type="password" 
+                            className='form-control mb-3' 
+                            placeholder='Contraseña'
+                            name='password'
+                            value={password}
+                            onChange={onInputChange}
+                        />
+                    </div>
+                </div>
+            </div>
+            <button
+                className='btn btn-primary w-100'
+                type='submit'
+                disabled={ isLoading }
+            >
+                {
+                    isLoading
+                    ?
+                        <div className="spinner-border mt-1 p-0" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </div>
+                    :
+                    <span className="d-block my-1">Ingresar</span>
+                }
+            </button>
             <small style={{float:'right',marginTop:'10px'}}>
-                ¿No tienes cuenta?
+                ¿No tienes cuenta cuenta?
                 <Link className="ms-1" to={'/register'} onClick={handleGoToRegister}>Registrate aquí </Link>
             </small>
         </form>

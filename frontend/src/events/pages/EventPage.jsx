@@ -11,7 +11,7 @@ export const EventPage = () => {
 
     useEffect(() => {
         
-        if(currentEvent === {}){
+        if(!currentEvent){
             //load event by id in params
         }
     
