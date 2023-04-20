@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useEventsStore } from "../../hooks"
 import { useParams } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
-import { CreateEventOption } from "../components/CreateEventOption";
+import { Event } from "../components/Event";
 
 export const EventPage = () => {
 
@@ -28,17 +28,7 @@ export const EventPage = () => {
                 <div className="row">
                     <div className="col"></div>
                     <div className="col-12 col-md-8">
-                        <div className="border rounded p-3">
-                            <h2>{ currentEvent.name }</h2>
-                            <p>{ currentEvent.description }</p>
-                            <hr />
-                            <h4>Opciones:</h4>
-                            {
-                                currentEvent.options.map( ( option, i ) => (
-                                    <CreateEventOption option={option} />
-                                ))
-                            }
-                        </div>
+                        <Event event={ currentEvent } />
                     </div>
                     <div className="col"></div>
                 </div>

@@ -17,7 +17,7 @@ export const useEventsStore = () => {
         try {
 
             const response = await api.post('/events', newEvent); 
-            console.log(response)
+            console.log(response);
             //const eventCreated = response.data.event;
             const eventCreated = newEvent;
 
@@ -31,10 +31,26 @@ export const useEventsStore = () => {
         }
     }
 
+    const startVoting = async( optionId ) => {
+
+        try {
+
+            const response = await api.post('/events', optionId); 
+            console.log(response);
+
+            
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error al votar', 'El voto no se guardó correctamente', 'error');
+        }
+
+    }
+
 
     return {
         currentEvent,
 
-        startCreatingEvent
+        startCreatingEvent,
+        startVoting,
     }
 }
