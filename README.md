@@ -56,7 +56,7 @@ PUT: Modifica un recurso con ese id.
 
 DELETE: Elimina el recurso.
 ```
-### /event/:idEvent/options ###
+### /events/:idEvent/options ###
 ```
 GET: Trae las Opciones del Evento que tiene idEvento.
 
