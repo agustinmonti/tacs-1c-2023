@@ -16,14 +16,14 @@ export const useEventsStore = () => {
 
         try {
 
-            const response = await api.post('/events', newEvent); 
-            console.log(response);
-            //const eventCreated = response.data.event;
-            const eventCreated = newEvent;
+            const { status, data } = await api.post('/events', newEvent); 
 
-            dispatch(onCloseCreateEventModal());
-            dispatch(onSetCurrentEvent( eventCreated ));
-            navigate(`/event/${ 1 }`);
+            if( status === 201 ){
+                dispatch(onCloseCreateEventModal());
+                navigate(`/event/${ data.id }`);
+            }else{
+                console.error( data.msg );
+            }
 
         } catch (error) {
             console.log(error);
@@ -31,13 +31,17 @@ export const useEventsStore = () => {
         }
     }
 
-    const startVoting = async( optionId ) => {
+    const startVoting = async( optionIds = [] ) => {
 
         try {
 
-            const response = await api.post('/events', optionId); 
-            console.log(response);
+            const { status, data } = await api.post(`/events/${currentEvent.id}/vote`, optionIds );
 
+            if( status === 201 ){
+                console.log('Votado con exito');
+            }else{
+                console.error(data.msg);
+            }
             
         } catch (error) {
             console.log(error);

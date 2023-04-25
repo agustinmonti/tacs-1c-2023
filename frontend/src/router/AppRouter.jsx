@@ -20,19 +20,13 @@ export const AppRouter = () => {
                     <>
                         <Route path="/login" element={<LoginPage register={false}/>} />
                         <Route path="/register" element={<LoginPage register />} />
-                        <Route path="/event/:id" element={ <EventPage /> } />
-                        <Route path="/" element={ <EventsPage /> } />
-
-                        <Route path="/users" element={<UsersPage />} />
-                        <Route path="/users/:id" element={<UserPage />} />
-                        <Route path="/events/:idEvent/options/:idOption/votes" element={<VotesPage />}/>
-                        <Route path="/events/:idEvent/options" element={<EventOptionsPage />}/>
-                        <Route path="/monitoring" element={<MarketingPage />}/>
-                        <Route path="/*" element={<Navigate to={"/"} />} />
+                        <Route path="/*" element={<Navigate to={"/login"} />} />
                     </>
                 )
                 : (
                     <>
+                        <Route path="/event/:id" element={ <EventPage /> } />
+                        <Route path="/user/:id" element={<UserPage />} />
                         <Route path="/" element={ <EventsPage /> } />
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>
