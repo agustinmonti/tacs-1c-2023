@@ -8,13 +8,12 @@ export const CreateEventForm = () => {
     const [ formValues, setFormValues] = useState({
         name: '',
         description: '',
-        isPublic: false,
         options: []
     });
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const { name, description, isPublic, options } = formValues;
+    const { name, description, options } = formValues;
 
     const { startCreatingEvent } = useEventsStore();
 
@@ -84,17 +83,7 @@ export const CreateEventForm = () => {
 
             <CreateEventOptionsForm options = { options } handleAddOption={ handleAddOption } handleRemoveOption={ handleRemoveOption }/>
 
-            <div className="my-3 form-check">
-                <input 
-                    type="checkbox" 
-                    className="form-check-input" 
-                    id="isPublic"
-                    checked={ isPublic }
-                    onChange={ (e) => { setFormValues({...formValues, isPublic: e.target.checked}) } }
-                    name="isPublic"
-                />
-                <label className="form-check-label" htmlFor="isPublic">¿Evento público?</label>
-            </div>
+            <hr />
             <button type="submit" className="btn btn-primary btn-lg w-100" disabled={ isLoading }>
                 {
                     isLoading

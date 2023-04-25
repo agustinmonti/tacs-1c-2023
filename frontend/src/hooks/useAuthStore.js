@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { api } from "../api";
 import Swal from "sweetalert2";
-import { onLogout, onLogin } from "../store";
+import { onLogout, onLogin, onLogoutEvents } from "../store";
 
 export const useAuthStore = () => {
 
@@ -67,7 +67,8 @@ export const useAuthStore = () => {
             const { status, data } = {
                 status: 200,
                 data: {
-                    token: '123abc'
+                    token: '123abc',
+                    user: { name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}
                 }
             }
 
@@ -90,6 +91,7 @@ export const useAuthStore = () => {
 
     const startLogout = () => {
         localStorage.clear();
+        dispatch(onLogoutEvents());
         dispatch(onLogout());
     }
 
