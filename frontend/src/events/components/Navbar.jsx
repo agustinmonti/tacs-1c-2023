@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import './navbar.css'
+import { useAuthStore } from '../../hooks'
 
 export const Navbar = () => {
+
+    const { user, startLogout } = useAuthStore();
 
     return (
         <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
@@ -16,10 +19,15 @@ export const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to={'/login'}>Login</Link>
+                            <Link className="nav-link" to={'/user/1'}>Perfil</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to={'/usuario/1'}>Perfil</Link>
+                            <button
+                                className='nav-link'
+                                onClick={ startLogout }
+                            >
+                                Logout
+                            </button>
                         </li>
                     </ul>
                 </div>
