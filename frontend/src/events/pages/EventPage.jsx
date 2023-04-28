@@ -20,13 +20,7 @@ export const EventPage = () => {
         <>
             <Navbar />
             <div className="container" style={{marginTop:'70px'}}>
-                <div className="row">
-                    <div className="col"></div>
-                    <div className="col-12 col-md-8">
-                        <Event event={ currentEvent } />
-                    </div>
-                    <div className="col"></div>
-                </div>
+                <Event event={ currentEvent } />
             </div>
             
         </>

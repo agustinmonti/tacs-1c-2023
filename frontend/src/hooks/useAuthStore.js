@@ -68,7 +68,7 @@ export const useAuthStore = () => {
                 status: 200,
                 data: {
                     token: '123abc',
-                    user: { name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}
+                    user: { id: 1, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}
                 }
             }
 

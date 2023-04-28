@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 import Swal from 'sweetalert2'
 import { api } from "../api";
-import { onCloseCreateEventModal, onSetCurrentEvent, onSetEvents } from "../store";
+import { onCloseCreateEventModal, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading, onToggleVote } from "../store";
 import { useNavigate } from "react-router-dom";
 import { addHours } from "date-fns";
 
@@ -13,6 +13,10 @@ export const useEventsStore = () => {
 
     const { currentEvent, events } = useSelector( state => state.events );
     const { user } = useSelector( state => state.auth );
+
+    const showActions = () => {
+        return currentEvent.owner?.id === user?.id;
+    }
 
     const startCreatingEvent = async( newEvent ) => {
 
@@ -33,13 +37,18 @@ export const useEventsStore = () => {
         }
     }
 
-    const startVoting = async( optionIds = [] ) => {
+    const startVoting = async( optionId ) => {
 
         try {
 
-            const { status, data } = await api.post(`/events/${currentEvent.id}/vote`, optionIds );
+            //const { status, data } = await api.post(`/events/${currentEvent.id}/vote`, optionId );
+            const { status, data } = {
+                status: 201,
+                data: {}
+            };
 
             if( status === 201 ){
+                dispatch(onToggleVote(optionId));
                 console.log('Votado con exito');
             }else{
                 console.error(data.msg);
@@ -56,6 +65,7 @@ export const useEventsStore = () => {
         
         try {
 
+            dispatch(onStartLoading());
             //const { status, data } = await api.get(`/events?user=${ user.id }`);
 
             const { status, data } = {
@@ -86,7 +96,7 @@ export const useEventsStore = () => {
                     ]
                 }
             }
-
+            dispatch(onStopLoading());
             if( status === 200 ){
                 dispatch(onSetEvents( data.events ));
             }else{
@@ -95,6 +105,7 @@ export const useEventsStore = () => {
             
         } catch (error) {
             console.error(error);
+            dispatch(onStopLoading());
         }
     }
 
@@ -102,6 +113,7 @@ export const useEventsStore = () => {
         
         try {
 
+            dispatch(onStartLoading());
             //const { status, data } = await api.get(`/events/${ id }`);
 
             const { status, data } = {
@@ -128,13 +140,13 @@ export const useEventsStore = () => {
                                 }
                             ],
                             status: 'Activo',
-                            participants: [{ userId: 1, fullname: 'Carlos Alberto', email: 'carlos@alberto.com' }],
+                            owner: { id: 1, email: 'alberto@carlos.com' },
+                            participants: [{ id: 1, fullname: 'Carlos Alberto', email: 'carlos@alberto.com' },{ id: 2, fullname: 'Enzo Rodrigez', email: 'carlos@alberto.com' }],
                             createdDate: new Date(),
-                            owner: { id: 1, email: 'alberto@carlos.com' }
                         }
                 }
             }
-
+            dispatch(onStopLoading());
             if( status === 200 ){
                 dispatch(onSetCurrentEvent( data.event ));
             }else{
@@ -142,6 +154,7 @@ export const useEventsStore = () => {
             }
             
         } catch (error) {
+            dispatch(onStopLoading());
             console.error(error);
         }
     }
@@ -150,6 +163,7 @@ export const useEventsStore = () => {
     return {
         currentEvent,
         events,
+        showActions,
 
         startCreatingEvent,
         startVoting,
