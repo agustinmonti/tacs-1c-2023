@@ -2,8 +2,8 @@ import { EventOption } from "./EventOption";
 import { EventOptionList } from "./EventOptionList";
 
 export const Event = ({ event }) => {
-
-    const { name, description, options = [], isPublic } = event;
+    console.log(event)
+    const { name, description, options = [] } = event;
 
     return (
         <div className="border rounded">

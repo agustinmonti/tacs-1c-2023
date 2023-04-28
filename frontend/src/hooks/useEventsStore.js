@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'
 import { api } from "../api";
 import { onCloseCreateEventModal, onSetCurrentEvent, onSetEvents } from "../store";
 import { useNavigate } from "react-router-dom";
+import { addHours } from "date-fns";
 
 export const useEventsStore = () => {
 
@@ -97,6 +98,54 @@ export const useEventsStore = () => {
         }
     }
 
+    const startGettingEvent = async ( id ) => {
+        
+        try {
+
+            //const { status, data } = await api.get(`/events/${ id }`);
+
+            const { status, data } = {
+                status: 200,
+                data: {
+                    event: {
+                            id: id,
+                            name: `Evento ${id}`,
+                            description: 'Descripción del evento 1, hola probando uno dos tres',
+                            options: [
+                                {
+                                    id: 1,
+                                    start: new Date(),
+                                    end: addHours( new Date(), 2),
+                                    votes: 2,
+                                    selected: true,
+                                },
+                                {
+                                    id: 2,
+                                    start: addHours( new Date(), 2),
+                                    end: addHours( new Date(), 4),
+                                    votes: 1,
+                                    selected: false
+                                }
+                            ],
+                            status: 'Activo',
+                            participants: [{ userId: 1, fullname: 'Carlos Alberto', email: 'carlos@alberto.com' }],
+                            createdDate: new Date(),
+                            owner: { id: 1, email: 'alberto@carlos.com' }
+                        }
+                }
+            }
+
+            if( status === 200 ){
+                dispatch(onSetCurrentEvent( data.event ));
+            }else{
+                console.error(data.msg);
+            }
+            
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     return {
         currentEvent,
@@ -104,6 +153,7 @@ export const useEventsStore = () => {
 
         startCreatingEvent,
         startVoting,
-        startGettingEvents
+        startGettingEvents,
+        startGettingEvent,
     }
 }
