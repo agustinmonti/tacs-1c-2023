@@ -2,37 +2,36 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage, RegisterPage, UsersPage, UserPage, VotesPage, MarketingPage } from "../auth";
 import { EventsPage, EventOptionsPage } from "../events";
 import { EventPage } from "../events/pages/EventPage";
+import { useAuthStore } from "../hooks";
+import { useEffect } from "react";
 
 export const AppRouter = () => {
-	const authStatus = "not-authenticated";
+
+    const { status, checkAuthToken } = useAuthStore();
+
+    useEffect(() => {
+        checkAuthToken();
+    }, []);
     
-    if( authStatus === 'checking'){
-        return(
-            <h3>Loading...</h3>
-        )
+    if( status === 'checking' ){
+        return <h3>Loading...</h3>
     }
 
 	return (
 		<Routes>
             {
-                ( authStatus === "not-authenticated")
+                ( status === "not-authenticated")
                 ? (
                     <>
                         <Route path="/login" element={<LoginPage register={false}/>} />
                         <Route path="/register" element={<LoginPage register />} />
-                        <Route path="/event/:id" element={ <EventPage /> } />
-                        <Route path="/" element={ <EventsPage /> } />
-
-                        <Route path="/users" element={<UsersPage />} />
-                        <Route path="/users/:id" element={<UserPage />} />
-                        <Route path="/events/:idEvent/options/:idOption/votes" element={<VotesPage />}/>
-                        <Route path="/events/:idEvent/options" element={<EventOptionsPage />}/>
-                        <Route path="/monitoring" element={<MarketingPage />}/>
-                        <Route path="/*" element={<Navigate to={"/"} />} />
+                        <Route path="/*" element={<Navigate to={"/login"} />} />
                     </>
                 )
                 : (
                     <>
+                        <Route path="/event/:id" element={ <EventPage /> } />
+                        <Route path="/user/:id" element={<UserPage />} />
                         <Route path="/" element={ <EventsPage /> } />
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>

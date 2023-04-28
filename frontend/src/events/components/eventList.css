@@ -1,0 +1,6 @@
+.event-item {
+    transition: ease .3s all;
+}
+.event-item:hover {
+    cursor: pointer;
+}

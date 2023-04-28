@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 export const eventsSlice = createSlice({
     name: 'events',
     initialState: {
-        currentEvent: {}
+        currentEvent: {},
+        events: []
     },
     reducers: {
         onSetCurrentEvent: (state, { payload } ) => {
@@ -11,6 +12,16 @@ export const eventsSlice = createSlice({
         },
         onRemoveCurrentEvent: (state) => {
             state.currentEvent = {};
+        },
+        onSetEvents: (state, { payload }) => {
+            state.events = payload;
+        },
+        onRemoveEvents: (state) => {
+            state.events = [];
+        },
+        onLogoutEvents: (state) => {
+            state.events = [],
+            state.currentEvent = {}
         }
     }
 });
@@ -20,6 +31,7 @@ export const eventsSlice = createSlice({
 export const { 
     onSetCurrentEvent,
     onRemoveCurrentEvent,
-    onAddNewOptionToCurrentEvent,
-    onRemoveOptionToCurrentEvent
+    onSetEvents,
+    onRemoveEvents,
+    onLogoutEvents
 } = eventsSlice.actions;
