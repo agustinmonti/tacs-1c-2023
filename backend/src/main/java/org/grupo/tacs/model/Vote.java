@@ -8,7 +8,6 @@ public class Vote {
     User user;
     LocalDateTime votingDate;
     String readAbleVotingDate;
-
     Long optionParentID;
 
     public Vote(Long idOpcion, User votante){

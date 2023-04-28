@@ -5,19 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3e8a0b3a-6909-4781-9a29-07d51606ca37" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/grupo/tacs/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/grupo/tacs/Router.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/grupo/tacs/controllers/UserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/grupo/tacs/model/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/public/usuarios/usuario.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/public/usuarios/usuarios.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/model/EventOption.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/model/EventOption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/model/Vote.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/model/Vote.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/repos/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/org/grupo/tacs/repos/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,6 +35,9 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
   <component name="ProjectId" id="2OTw1xc6NXElvzsoUPnjjNXjt2Q" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -39,9 +45,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Bernardo/Desktop/tacs-1c-2023/backend",
+    "last_opened_file_path": "E:/Intellij/Proyectos/tacs-1c-2023",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -53,6 +60,21 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="tacs-1c-2023" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="tacs-1c-2023" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -69,5 +91,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

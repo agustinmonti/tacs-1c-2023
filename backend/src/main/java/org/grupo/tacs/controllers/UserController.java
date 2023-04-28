@@ -49,6 +49,7 @@ public class UserController {
         String resp = "";
         try {
             User user = UserRepository.instance.findById(Long.parseLong(request.params(":id")));
+            System.out.println(user.getName());
             response.status(200);
             resp = gson.toJson(user);
         }catch (NoSuchElementException e){
