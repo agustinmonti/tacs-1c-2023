@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 public class EventOption {
     Long id;
     Long eventOptionParentId;
-
     LocalDateTime start;
     String readAbleStart;
     LocalDateTime end;
