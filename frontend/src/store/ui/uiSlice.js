@@ -3,9 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 export const uiSlice = createSlice({
 	name: "ui",
 	initialState: {
+        isLoadingUI: false,
 		isCreateEventModalOpen: false,
 	},
 	reducers: {
+        onStartLoading: (state) => {
+			state.isLoadingUI = true;
+		},
+        onStopLoading: (state) => {
+			state.isLoadingUI = false;
+		},
 		onOpenCreateEventModal: (state) => {
 			state.isCreateEventModalOpen = true;
 		},
@@ -17,4 +24,9 @@ export const uiSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { onOpenCreateEventModal, onCloseCreateEventModal } = uiSlice.actions;
+export const { 
+    onStartLoading,
+    onStopLoading,
+    onOpenCreateEventModal, 
+    onCloseCreateEventModal,
+} = uiSlice.actions;
