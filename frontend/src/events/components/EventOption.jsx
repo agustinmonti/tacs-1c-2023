@@ -3,7 +3,7 @@ import { useEventsStore } from "../../hooks";
 
 export const EventOption = ({ option }) => {
 
-    const { id, start, end, selected } = option;
+    const { id, start, end, selected, votes } = option;
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -28,9 +28,7 @@ export const EventOption = ({ option }) => {
             }
         }
     }, [selected])
-    
-    //TODO: useEffect para reconocer si la opción ya fue votada por el usuario
-    
+        
     return (
         <div className="border rounded p-2 mb-2 w-100 d-flex justify-content-between align-items-center">
             <div className="option-info">
@@ -41,7 +39,11 @@ export const EventOption = ({ option }) => {
                     <span className="fw-semibold">Fin: </span> { end.toLocaleString() }
                 </p>
             </div>
-            <div className="option-actions">
+            <div className="option-actions d-flex">
+                <div className="border rounded px-3 mx-2">
+                    <span className="fw-bold" style={{fontSize:'30px', width:'40px'}}>{ votes }</span>
+                </div>
+
                 <button className={ buttonInfo.className }
                     style={{width: '40px'}}
                     onClick={ handleVote }

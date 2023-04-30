@@ -26,13 +26,26 @@ export const eventsSlice = createSlice({
         onToggleVote: (state, { payload }) => {
             state.currentEvent.options = state.currentEvent.options.map( option => {
                 if( option.id === payload ){
+                    let votes = option.votes;
+                    if( option.selected ){
+                        votes--;
+                    }else{
+                        votes++;
+                    }
                     return {
                         ...option,
+                        votes:votes,
                         selected: !option.selected
                     }
                 }
                 return option;
             })
+        },
+        onRemoveParticipant: (state, { payload }) => {
+            state.currentEvent.participants = state.currentEvent.participants.filter( participant => participant.id !== payload )
+        },
+        onAddParticipant: (state, { payload }) => {
+            state.currentEvent.participants.push( payload );
         }
     }
 });
@@ -45,5 +58,7 @@ export const {
     onSetEvents,
     onRemoveEvents,
     onLogoutEvents,
-    onToggleVote
+    onToggleVote,
+    onRemoveParticipant,
+    onAddParticipant
 } = eventsSlice.actions;

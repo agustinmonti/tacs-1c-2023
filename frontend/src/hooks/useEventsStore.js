@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from "react-redux"
 
 import Swal from 'sweetalert2'
 import { api } from "../api";
-import { onCloseCreateEventModal, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading, onToggleVote } from "../store";
+import { onAddParticipant, onCloseCreateEventModal, onRemoveParticipant, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading, onToggleVote } from "../store";
 import { useNavigate } from "react-router-dom";
 import { addHours } from "date-fns";
+import { useMemo } from "react";
 
 export const useEventsStore = () => {
 
@@ -14,9 +15,13 @@ export const useEventsStore = () => {
     const { currentEvent, events } = useSelector( state => state.events );
     const { user } = useSelector( state => state.auth );
 
-    const showActions = () => {
+    const isOwner = useMemo(() => {
         return currentEvent.owner?.id === user?.id;
-    }
+    }, [ currentEvent ]);
+
+    const isParticipating = useMemo (() => {
+        return currentEvent.participants?.some( participant => participant.id === user.id );
+    }, [ currentEvent ])
 
     const startCreatingEvent = async( newEvent ) => {
 
@@ -141,7 +146,7 @@ export const useEventsStore = () => {
                             ],
                             status: 'Activo',
                             owner: { id: 1, email: 'alberto@carlos.com' },
-                            participants: [{ id: 1, fullname: 'Carlos Alberto', email: 'carlos@alberto.com' },{ id: 2, fullname: 'Enzo Rodrigez', email: 'carlos@alberto.com' }],
+                            participants: [{ id: 1, fullname: 'Carlos Alberto', email: 'carlos@alberto.com' },{ id: 2, fullname: 'Enzo Rodrigez', email: 'enzo@rodriguez.com' }],
                             createdDate: new Date(),
                         }
                 }
@@ -159,15 +164,46 @@ export const useEventsStore = () => {
         }
     }
 
+    const startToggleSignUpForCurrentEvent = async () => {
+        const newParticipant = {
+            id: user.id,
+            fullname: `${user.name} ${user.lastname}`,
+            email: user.email
+        }
+
+        try {
+
+            //const { status2, data2 } = await api.post(`/events/${ currentEvent.id }/signup`);
+            const { status, data } = {
+                status: 201,
+                data: {
+                    msg: 'Hola'
+                }
+            };
+
+            if( isParticipating ){
+                dispatch( onRemoveParticipant( user.id ));
+            }else{
+                dispatch( onAddParticipant( newParticipant ));
+            }
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     return {
         currentEvent,
         events,
-        showActions,
+        isOwner,
+        isParticipating,
 
         startCreatingEvent,
         startVoting,
         startGettingEvents,
         startGettingEvent,
+        startToggleSignUpForCurrentEvent,
     }
 }

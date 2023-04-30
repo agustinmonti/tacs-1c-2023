@@ -21,27 +21,37 @@ export const EventsPage = () => {
 
             <header style={{marginTop: '70px'}} className='container'>
                 <div className="row">
-                    <div className="col border rounded p-3 d-flex justify-content-between">
-                        <div className="user-info">
-                            <h3>{ user.name } { user.lastname }</h3>
-                            <p style={{margin: 0}}>{ user.email }</p>
+                    <div className="col-12">
+                        <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between">
+                            <div className="user-info">
+                                <h3>{ user.name } { user.lastname }</h3>
+                                <p style={{margin: 0}}>{ user.email }</p>
+                            </div>
+                            <button 
+                                className="btn btn-primary" 
+                                type="button"
+                                onClick={ openCreateEventModal }
+                            >
+                                Crear un evento
+                            </button>
                         </div>
-                        <button 
-                            className="btn btn-primary" 
-                            type="button"
-                            onClick={ openCreateEventModal }
-                        >
-                            Crear un evento
-                        </button>
                     </div>
                 </div>
             </header>
 
             <main className='container mt-3'>
                 <div className="row">
-                    <div className="col border rounded p-3">
-                        <h3>Eventos creados</h3>
-                        <EventsList events={ events }/>
+                    <div className="col-12 col-lg-6">
+                        <div className='border rounded bg-white shadow-sm p-3'>
+                            <h3>Eventos creados</h3>
+                            <EventsList events={ events }/>
+                        </div>
+                    </div>
+                    <div className="col-12 col-lg-6">
+                        <div className="border rounded bg-white shadow-sm p-3">
+                            <h3>Participando en:</h3>
+                            <EventsList events={ events }/>
+                        </div>
                     </div>
                 </div>
             </main>
