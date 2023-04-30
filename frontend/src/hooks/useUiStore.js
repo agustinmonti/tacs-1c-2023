@@ -6,7 +6,8 @@ export const useUiStore = () => {
     const dispatch = useDispatch();
 
     const { 
-        isCreateEventModalOpen, 
+        isLoadingUI,
+        isCreateEventModalOpen,
     } = useSelector( state => state.ui );
 
     const openCreateEventModal = () => {
@@ -18,6 +19,7 @@ export const useUiStore = () => {
     }
 
     return {
+        isLoadingUI,
         isCreateEventModalOpen,
 
         openCreateEventModal,

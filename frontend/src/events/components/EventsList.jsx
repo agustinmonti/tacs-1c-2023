@@ -38,7 +38,7 @@ export const EventsList = ({ events = [] }) => {
                             <button 
                                 className="btn btn-success px-4 rounded-0"
                             >
-                                <i class="fa-solid fa-user"></i> 
+                                <i className="fa-solid fa-user"></i> 
                                 <br />
                                 {ev.totalParticipants}
                             </button>
@@ -47,7 +47,7 @@ export const EventsList = ({ events = [] }) => {
                                 style={{height:'115px',borderStartStartRadius:0,borderEndStartRadius:0}}
                                 className="btn btn-primary px-4 d-flex align-items-center"
                             >
-                                <i class="fa-solid fa-eye"></i>
+                                <i className="fa-solid fa-eye"></i>
                             </Link>
                         </div>
                     </div>
