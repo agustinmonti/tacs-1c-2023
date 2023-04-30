@@ -1,4 +1,4 @@
-package org.grupo.tacs.controllers;
+/*package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
@@ -60,9 +60,9 @@ public class EventOptionController {
 
 
     public static Object deleteAllOptions(Request request, Response response) {
-        /*TODO agregar un metodo a EventOptionRepository para borrar todas las Opciones que tengan
-          el eventOptionParentId==eventId.
-        * */
+        //TODO agregar un metodo a EventOptionRepository para borrar todas las Opciones que tengan
+          //el eventOptionParentId==eventId.
+
         EventOptionRepository.instance.deleteAll();
         response.status(200);
         return response;
@@ -112,4 +112,4 @@ public class EventOptionController {
         EventOptionRepository.instance.deleteById(Long.parseLong(request.params(":id")));
         return response;
     }
-}
+}*/
