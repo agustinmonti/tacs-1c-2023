@@ -24,7 +24,7 @@ public class EventController {
         response.status(200);
         Gson gson = new Gson();
         String events = gson.toJson( EventRepository.instance.findAll());
-        // return events;
+         //return events;
         return gson.toJson( "eventos");
     }
 
@@ -56,15 +56,15 @@ public class EventController {
      * @param response no se usa.
      */
     public static Object newEvent(Request request, Response response){
-        // System.out.println("nuevo evento!!");
+        System.out.println("nuevo evento!!");
         response.status(201);
-        // System.out.println(request.body().toString());
+        System.out.println(request.body().toString());
         Gson gson = new Gson();
-        // Event newEvent = gson.fromJson(request.body().toString(),Event.class);
-        // EventRepository.instance.save(newEvent);
-        //return gson.toJson(newEvent);
+        Event newEvent = gson.fromJson(request.body().toString(),Event.class);
+        EventRepository.instance.insert(newEvent);
+        return gson.toJson(newEvent);
 
-        return request.body().toString();
+        //return request.body().toString();
     }
 
     /**

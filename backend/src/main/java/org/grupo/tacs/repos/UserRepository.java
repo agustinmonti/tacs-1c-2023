@@ -23,13 +23,10 @@ public class UserRepository implements Repository<User>{
     List<User> users = new ArrayList<>();
     @Override
     public User findById(Long id) {
+
         MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-
-        User pepe = new User("pepe", "pepe@gmail.com", "pepeHash").setId(54L);
-        collection.insertOne(pepe);
-
         Bson condition = Filters.eq("_id", id);
-        FindIterable<User> users = collection.find(condition, User.class);
+        FindIterable<User> users = collection.find(condition);
         return users.first();
 
         //return users.stream().filter(user -> user.getId() == id).findFirst().get();
@@ -37,7 +34,8 @@ public class UserRepository implements Repository<User>{
 
     @Override
     public List<User> findAll() {
-        return users;
+        MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
+        return collection.find().into(new ArrayList<>());
     }
 
     @Override
@@ -46,6 +44,12 @@ public class UserRepository implements Repository<User>{
         //    entidad.setId(users.stream().count());
             users.add(entidad);
         }
+    }
+
+    public void insert(User user) {
+        MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
+        //User pepe = new User("pepe", "pepe@gmail.com", "pepeHash").setId(2L);
+        collection.insertOne(user);
     }
 
     @Override
@@ -65,11 +69,10 @@ public class UserRepository implements Repository<User>{
     public void delete(User entidad) {
 
         MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-
         Bson condition = Filters.eq("_id", entidad.getId());
-        collection.deleteOne(condition);
 
-        try (collection.deleteOne(condition)) {
+        try {
+            collection.deleteOne(condition);
         } catch (MongoException e) {
                 e.printStackTrace();
         }
@@ -81,14 +84,25 @@ public class UserRepository implements Repository<User>{
     }
 
     @Override
-    public void deleteById(long l) {
-        Optional<User> userToDelete = users.stream()
+    public void deleteById(long id) {
+
+        MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
+        Bson condition = Filters.eq("_id", id);
+
+        try {
+            collection.deleteOne(condition);
+        } catch (MongoException e) {
+            e.printStackTrace();
+        }
+
+
+        /*Optional<User> userToDelete = users.stream()
                 .filter(u -> u.getId() == l)
                 .findFirst();
         if (userToDelete.isPresent()) {
             users.remove(userToDelete.get());
         } else {
             throw new NoSuchElementException("User with ID " + l + " not found");
-        }
+        }*/
     }
 }

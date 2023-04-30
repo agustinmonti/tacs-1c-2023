@@ -1,6 +1,7 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import com.mongodb.client.FindIterable;
 import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
@@ -32,8 +33,7 @@ public class EventOptionController {
     public static Object getOptions(Request request, Response response) {
         Gson gson = new Gson();
         response.status(200);
-        //List<EventOption> options = EventOptionRepository.instance.findByEventId(Long.parseLong(request.queryParams(":idEvent")));
-        List<EventOption> options = EventOptionRepository.instance.findAll();
+        List<EventOption> options = EventOptionRepository.instance.findByEventId(Long.parseLong(request.queryParams(":idEvent")));
         return gson.toJson(options);
     }
 

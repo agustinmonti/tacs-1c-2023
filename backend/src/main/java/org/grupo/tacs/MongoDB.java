@@ -24,7 +24,7 @@ public class MongoDB {
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         String connectionString = "mongodb+srv://gciruzzi:123@mongo.xebsbis.mongodb.net/?retryWrites=true&w=majority";
-        //String connectionString = "mongodb+srv://gciruzzi:123@mongodb:27017/?retryWrites=true&w=majority";
+        //String connectionString = "mongodb://gciruzzi:123@mongodb:27017/?authSource=admin";
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .codecRegistry(pojoCodecRegistry)
@@ -38,7 +38,7 @@ public class MongoDB {
                 MongoCollection<User> collection = database.getCollection("Users", User.class);
                 User pepe = new User("pepe", "pepe@gmail.com", "pepeHash").setId(54L);
                 //Bson condition = Filters.eq("_id", 1L);
-                //collection.findOneAndUpdate(condition, Updates.set("user_name","ivana"));
+                //collection.findOneAndUpdate(condition, Updates.set("name","ivana"));
                 collection.insertOne(pepe);
                 mongoClient.close();
             } catch (MongoException e) {

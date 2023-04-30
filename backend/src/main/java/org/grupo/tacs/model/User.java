@@ -20,10 +20,14 @@ public class User {
      * @param passwordHash Es el hashcode del password de la nueva instancia.
      * @param email Es el tipo de usuario que será la nueva instancia.
      */
+
     public User (String name, String passwordHash, String email) {
         this.name = name;
         this.passwordHash = passwordHash;
         this.email = email;
+    }
+
+    public User() {
     }
 
     public String getName() {
