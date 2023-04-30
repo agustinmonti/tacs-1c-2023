@@ -33,7 +33,7 @@ public class UserController {
         Map<String,Object> parametros = new HashMap<>();
         response.status(200);
         Gson gson = new Gson();
-        String respuesta = gson.toJson( UserRepository.instance.findAll());
+        String respuesta = gson.toJson(UserRepository.instance.findAll());
         return respuesta;
     }
 
@@ -88,7 +88,7 @@ public class UserController {
         response.status(201);
         Gson gson = new Gson();
         User nuevo = gson.fromJson(request.body().toString(),User.class);
-        UserRepository.instance.save(nuevo);
+        UserRepository.instance.insert(nuevo);
         return gson.toJson(nuevo);
     }
 

@@ -1,6 +1,7 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import com.mongodb.client.FindIterable;
 import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
@@ -29,13 +30,13 @@ public class EventOptionController {
         return buildResponse(response, allowedMethods);
     }
 
-    public static Object getOptions(Request request, Response response) {
+    /*public static Object getOptions(Request request, Response response) {
         Gson gson = new Gson();
         response.status(200);
         //List<EventOption> options = EventOptionRepository.instance.findByEventId(Long.parseLong(request.queryParams(":idEvent")));
-        List<EventOption> options = EventOptionRepository.instance.findAll();
+        FindIterable<EventOption> options = EventOptionRepository.instance.findAll();
         return gson.toJson(options);
-    }
+    }*/
 
     public static Object newOption(Request request, Response response) {
         //TODO Verificar con la session que el usuario sea el creador del evento
@@ -50,7 +51,7 @@ public class EventOptionController {
                 LocalDateTime start = LocalDateTime.parse(requestMap.get("start").toString());
                 LocalDateTime end = LocalDateTime.parse(requestMap.get("end").toString());
                 newOption = new EventOption(eventID, start, end);
-                EventOptionRepository.instance.save(newOption);
+                //EventOptionRepository.instance.save(newOption);
                 resp = gson.toJson(newOption);
                 response.status(201);
             }
@@ -63,7 +64,7 @@ public class EventOptionController {
         /*TODO agregar un metodo a EventOptionRepository para borrar todas las Opciones que tengan
           el eventOptionParentId==eventId.
         * */
-        EventOptionRepository.instance.deleteAll();
+        //EventOptionRepository.instance.deleteAll();
         response.status(200);
         return response;
     }
@@ -77,9 +78,9 @@ public class EventOptionController {
         Gson gson = new Gson();
         String respuesta = "";
         try {
-            EventOption eventOption = EventOptionRepository.instance.findById(Long.parseLong(request.params(":id")));
+            //EventOption eventOption = EventOptionRepository.instance.findById(Long.parseLong(request.params(":id")));
             response.status(200);
-            respuesta = gson.toJson(eventOption);
+            //respuesta = gson.toJson(eventOption);
         }catch (NoSuchElementException e){
             response.status(404);
             respuesta = gson.toJson("Not Found!");
@@ -91,25 +92,26 @@ public class EventOptionController {
         //TODO Verificar con la session que el usuario sea el creador del evento
         Gson gson = new Gson();
         Object requestBody = gson.fromJson(response.body(),Object.class);
-        EventOption old = EventOptionRepository.instance.findById(Long.parseLong(request.params(":id")));
+        //EventOption old = EventOptionRepository.instance.findById(Long.parseLong(request.params(":id")));
         response.status(200);
         if (requestBody instanceof Map) {
             Map<String, Object> requestMap = (Map<String, Object>) requestBody;
             if (requestMap.containsKey("start")) {
-                old.setStart((LocalDateTime) requestMap.get("start"));
+            //    old.setStart((LocalDateTime) requestMap.get("start"));
             }
             if (requestMap.containsKey("end")) {
-                old.setEnd((LocalDateTime) requestMap.get("end"));
+              //  old.setEnd((LocalDateTime) requestMap.get("end"));
             }
         }
-        EventOptionRepository.instance.save(old);
-        String respuesta = gson.toJson(old);
+        //EventOptionRepository.instance.save(old);
+        //String respuesta = gson.toJson(old);
+        String respuesta = "hola";
         return respuesta;
     }
 
     public static Object deleteOption(Request request, Response response) {
         //TODO Verificar con la session que el usuario sea el creador del evento
-        EventOptionRepository.instance.deleteById(Long.parseLong(request.params(":id")));
+       // EventOptionRepository.instance.deleteById(Long.parseLong(request.params(":id")));
         return response;
     }
 }

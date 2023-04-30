@@ -1,6 +1,9 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.Filters;
+import org.bson.conversions.Bson;
 import org.grupo.tacs.excepciones.WrongPasswordException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.model.User;
@@ -43,6 +46,7 @@ public class LoginController {
             Map<String, Object> jsonMap = gson.fromJson(requestBody, Map.class);
             String email = (String) jsonMap.get("email");
             String password = (String) jsonMap.get("password");
+            Bson condition = Filters.eq("email", email);
             User usuario = usuarios.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
             if(!usuario.getPasswordHash().equals(password)){
                 throw new WrongPasswordException();

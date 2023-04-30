@@ -51,7 +51,7 @@ public class Router {
         delete("/events/:id",EventController::deleteEvent);
 
         options("/events/:idEvent/options", EventOptionController::getOptionsMethodOptions);
-        get("/events/:idEvent/options", EventOptionController::getOptions);
+        //get("/events/:idEvent/options", EventOptionController::getOptions);
         post("/events/:idEvent/options", EventOptionController::newOption);
         delete("/events/:idEvent/options", EventOptionController::deleteAllOptions);
 

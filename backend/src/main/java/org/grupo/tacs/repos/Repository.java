@@ -1,5 +1,7 @@
 package org.grupo.tacs.repos;
 
+import com.mongodb.client.FindIterable;
+
 import java.util.List;
 
 public interface Repository<T> {
