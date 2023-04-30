@@ -20,6 +20,3 @@ services:
     image: mongo
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=gciruzzi
-      - MONGO_INITDB_ROOT_PASSWORD=123
