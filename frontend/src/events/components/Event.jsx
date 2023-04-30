@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { EventOptionList } from "./EventOptionList";
 import { useEventsStore } from "../../hooks";
+import { OwnerActions } from "./OwnerActions";
+import { UserActions } from "./UserActions";
 
 export const Event = ({ event }) => {
 
     const { name, description, options = [], owner = {}, participants = [], createdDate } = event;
 
-    const { showActions } = useEventsStore();
+    const { isOwner } = useEventsStore();
 
     const hasParticipants = () => {
         return participants.length > 0
@@ -15,7 +17,7 @@ export const Event = ({ event }) => {
     return (
         <div className="row">
             <div className="col-12 mb-3">
-                <div className="border rounded p-3 d-flex justify-content-between align-items-center">
+                <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between align-items-center">
                     <div className="event-header-info">
                         <h3>{ name }</h3>
                         <p className="m-0">
@@ -26,23 +28,19 @@ export const Event = ({ event }) => {
                             Fecha de creación: { createdDate?.toLocaleString() } 
                         </p>
                     </div>
-                    {
-                        showActions() && 
                         <div className="event-actions">
-                            <div className="btn-group">
-                                <button className="btn btn-secondary">
-                                    Cerrar votación
-                                </button>
-                                <button className="btn btn-danger">
-                                    Eliminar
-                                </button>
-                            </div>
+                            {
+                                isOwner
+                                ?
+                                    <OwnerActions />
+                                :
+                                    <UserActions />
+                            }
                         </div>
-                    }
                 </div>
             </div>
             <div className="col-12 col-lg-8">
-                <div className="border rounded mb-3">
+                <div className="border rounded shadow-sm bg-white mb-3">
                     <div className="event-body p-3">
                         <div className="p-3">
                             <p className="fs-4 fw-semibold mb-2">Descripción:</p>
@@ -52,16 +50,11 @@ export const Event = ({ event }) => {
                             <p className="fs-4 fw-semibold mb-2">Opciones:</p>
                             <EventOptionList options={ options } />
                         </div>
-                        <div className="text-end p-3">
-                            <button className="btn btn-primary">
-                                Ver resultados
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
             <div className="col-12 col-lg-4">
-                <div className="border rounded p-3 mb-3">
+                <div className="border rounded shadow-sm bg-white p-3 mb-3">
                     <h3>Participantes ({ participants.length }) </h3>
                     <ul className="list-group list-group-flush">
                         {
