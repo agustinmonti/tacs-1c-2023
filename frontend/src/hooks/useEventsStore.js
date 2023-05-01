@@ -98,6 +98,20 @@ export const useEventsStore = () => {
                             status: 'Activo',
                             totalParticipants: 0
                         }
+                    ],
+                    eventsParticipating: [
+                        {
+                            id: 1,
+                            name: 'Evento 1',
+                            description: 'Descripción del evento 1, hola probando uno dos tres',
+                            status: 'Activo',
+                        },
+                        {
+                            id: 2,
+                            name: 'Evento 2',
+                            description: 'Descripción del evento 2, hola',
+                            status: 'Cerrado',
+                        }
                     ]
                 }
             }

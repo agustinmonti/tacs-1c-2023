@@ -17,7 +17,7 @@ export const Event = ({ event }) => {
     return (
         <div className="row">
             <div className="col-12 mb-3">
-                <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between align-items-center">
+                <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between align-items-center animate__animated animate__fadeIn">
                     <div className="event-header-info">
                         <h3>{ name }</h3>
                         <p className="m-0">
@@ -40,7 +40,7 @@ export const Event = ({ event }) => {
                 </div>
             </div>
             <div className="col-12 col-lg-8">
-                <div className="border rounded shadow-sm bg-white mb-3">
+                <div className="border rounded shadow-sm bg-white mb-3 animate__animated animate__fadeIn">
                     <div className="event-body p-3">
                         <div className="p-3">
                             <p className="fs-4 fw-semibold mb-2">Descripción:</p>
@@ -54,7 +54,10 @@ export const Event = ({ event }) => {
                 </div>
             </div>
             <div className="col-12 col-lg-4">
-                <div className="border rounded shadow-sm bg-white p-3 mb-3">
+                <div 
+                    style={{transition:'all .3s ease'}}
+                    className="border rounded shadow-sm bg-white p-3 mb-3 animate__animated animate__fadeIn"
+                >
                     <h3>Participantes ({ participants.length }) </h3>
                     <ul className="list-group list-group-flush">
                         {

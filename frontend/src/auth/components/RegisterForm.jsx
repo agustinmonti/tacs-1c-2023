@@ -37,7 +37,7 @@ export const RegisterForm = ({ setShowRegister }) => {
     } 
 
     return (
-        <form className='login-form' onSubmit={handleSubmit}>
+        <form className='login-form animate__animated animate__fadeIn' onSubmit={handleSubmit}>
             <h3 className='text-center mt-0 pt-0 mb-4 text-white'>Registrarse</h3>
             <div className="container-fluid p-0">
                 <div className="row">

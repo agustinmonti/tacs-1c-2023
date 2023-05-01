@@ -7,10 +7,10 @@ export const EventsList = ({ events = [] }) => {
 
     const statusClass = ( event ) => {
         if( event.status === 'Activo'){
-            return 'badge text-bg-info'
+            return 'badge text-bg-primary'
         }
 
-        return 'badge text-bg-secondary'
+        return 'badge text-bg-dark'
     }
 
     const descriptionText = ( event ) => {
@@ -22,7 +22,7 @@ export const EventsList = ({ events = [] }) => {
     }
 
     return (
-        <div>
+        <div className="mt-3">
             {
                 events.map( ev => (
                     <div key={ ev.id } 
@@ -33,15 +33,9 @@ export const EventsList = ({ events = [] }) => {
                             <p className="fs-4 m-0">{ev.name}</p>
                             <p className="fs-6 m-0">{descriptionText(ev)}</p>
                             <span className={statusClass(ev)}>{ ev.status }</span>
+                            <span className="badge text-bg-secondary ms-2"><i className="fa-solid fa-user"></i>  {ev.totalParticipants}</span>
                         </div>
                         <div className="d-flex">
-                            <button 
-                                className="btn btn-success px-4 rounded-0"
-                            >
-                                <i className="fa-solid fa-user"></i> 
-                                <br />
-                                {ev.totalParticipants}
-                            </button>
                             <Link 
                                 to={`/event/${ev.id}`} 
                                 style={{height:'115px',borderStartStartRadius:0,borderEndStartRadius:0}}

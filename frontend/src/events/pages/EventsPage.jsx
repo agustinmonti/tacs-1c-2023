@@ -22,7 +22,7 @@ export const EventsPage = () => {
             <header style={{marginTop: '70px'}} className='container'>
                 <div className="row">
                     <div className="col-12">
-                        <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between">
+                        <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between animate__animated animate__fadeIn">
                             <div className="user-info">
                                 <h3>{ user.name } { user.lastname }</h3>
                                 <p style={{margin: 0}}>{ user.email }</p>
@@ -42,13 +42,13 @@ export const EventsPage = () => {
             <main className='container mt-3'>
                 <div className="row">
                     <div className="col-12 col-lg-6">
-                        <div className='border rounded bg-white shadow-sm p-3'>
+                        <div className='border rounded mb-3 bg-white shadow-sm p-3 animate__animated animate__fadeIn'>
                             <h3>Eventos creados</h3>
                             <EventsList events={ events }/>
                         </div>
                     </div>
                     <div className="col-12 col-lg-6">
-                        <div className="border rounded bg-white shadow-sm p-3">
+                        <div className="border rounded mb-3 bg-white shadow-sm p-3 animate__animated animate__fadeIn">
                             <h3>Participando en:</h3>
                             <EventsList events={ events }/>
                         </div>

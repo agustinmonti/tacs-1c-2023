@@ -39,7 +39,7 @@ export const useAuthStore = () => {
             
             const { status, data } = {
                 status: 200,
-                data: { user: { name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}, token: '123abc' }
+                data: { user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}, token: '123abc' }
             }
 
             if( status === 200 ){
