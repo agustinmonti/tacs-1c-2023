@@ -19,20 +19,19 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDB {
-    public static MongoDatabase mongodb() {
-
+    /*public static MongoDatabase mongodb() {
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         //String connectionString = "mongodb+srv://gciruzzi:123@mongo.xebsbis.mongodb.net/?retryWrites=true&w=majority";
-        String connectionString = "mongodb://mongodb:27017";
+        String connectionString = "mongodb://localhost:27017";
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .codecRegistry(pojoCodecRegistry)
                 .build();
 
         MongoClient mongoClient = MongoClients.create(settings);
-        return mongoClient.getDatabase("mydb");
-        /*try (MongoClient mongoClient = MongoClients.create(settings)) {
+        return mongoClient.getDatabase("mydb");}*/
+/*try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 MongoDatabase database = mongoClient.getDatabase("mydb");
                 MongoCollection<User> collection = database.getCollection("Users", User.class);
@@ -45,5 +44,10 @@ public class MongoDB {
                 e.printStackTrace();
             }
         }*/
+
+    static String CONNECTION_STRING = "mongodb://localhost:27017";
+    public static MongoClient getMongoClient(){
+        String connectionString = CONNECTION_STRING;
+        return MongoClients.create(connectionString);
     }
 }

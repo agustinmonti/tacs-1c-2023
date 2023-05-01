@@ -1,17 +1,22 @@
 package org.grupo.tacs;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.grupo.tacs.controllers.*;
+import org.grupo.tacs.extras.SwaggerConfig;
 import spark.Spark;
 
 import static spark.Spark.*;
 
 public class Router {
+    private static SwaggerConfig swaggerConfig;
     public static void main(String[] args){
         // HTTP port
         port(8080);
-        Spark.staticFileLocation("../frontend");
+        swaggerConfig = new SwaggerConfig();
         //No creo que tengamos que cargar valores a la DB
         new Main().run(); //Crea algunos usuarios para probar GET /usuarios
         Router.config();
+        swaggerConfig.configureSwagger();
 
     }
 
@@ -21,29 +26,49 @@ public class Router {
     public static void config(){
         before((request, response) -> {
             response.status(200);
-            response.header("Access-Control-Allow-Origin", "http://localhost:5173");
+            response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             response.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
             response.type("application/json");
         });
 
 
-        options("/login",LoginController::getOptions);
-        post("/login",LoginController::login);
+        options("/auth/login",LoginController::getOptions);
+        post("/auth/login",LoginController::login);
+
+        options("/users",UserController::getUsersOptions);
         post("/users",UserController::newUser);
         
         //Defino Rutas
 
         get("/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)
+
+        options("/events",EventController::getEventsOptions);
         post("/events",EventController::newEvent); // crea un evento
         get("/events/:id", EventController::getEvent); // trae un evento en especifico, con todas sus opciones  y votos
+
+        options("/events/:id",EventController::getEventOptions);
         put("/events/:id",EventController::updateEvent); //  cerrar evento
         delete("/events/:id",EventController::deleteEvent); // eliminar un evento
         put("/events/:id/vote", EventController::updateVote); // agregar o remover el voto de una opcion
         get("/monitoring", EventController::monitoring); // monitoring ()
         put("/events/:id/participant", EventController::updateParticipant);//anotarse y desanotarse
 
-
+        get("/swagger.json", (request, response) -> {
+            try {
+                response.status(200);
+                response.type("application/json");
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                String json = mapper.writeValueAsString(swaggerConfig.getSwagger());
+                //System.out.println(json);
+                return json;
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.status(500);
+                return "Error generating Swagger JSON";
+            }
+        });
         //Los que se van:
 
         /* options("/users",UserController::getUsersOptions);

@@ -1,12 +1,19 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventRepository;
 import spark.Request;
 import spark.Response;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -19,6 +26,14 @@ public class EventController {
      * @param request contiene el parametro id.
      * @param response nada importante.
      */
+    @ApiOperation(value = "Get a specific event", response = Event.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved the event"),
+            @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+    })
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public static Object getEvent(Request request, Response response) {
         //aca le pegaria a un EventRepository y un event en particular
         Gson gson = new Gson();
@@ -122,12 +137,12 @@ public class EventController {
         return "participación actualizada";
     }
 
-    /**
-     * El método {@code getEventsOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
+
+    /* * El método {@code getEventsOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
      * puede usar POST con un OPTIONS antes de hacer el fetch POST.
      * @param request
      * @param response
-     * @return 200
+     * @return 200*/
 
     public static Object getEventsOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST, DELETE";
@@ -155,10 +170,10 @@ public class EventController {
         return getResponse(response, allowedMethods);
     }
 
-     * El método {@code getEvents} obtiene todos los usuarios
+     /** El método {@code getEvents} obtiene todos los usuarios
      * Es usado en Router para GET /events
      * @param request nada importante.
-     * @param response nada importante.
+     * @param response nada importante.*/
 
 
     public static Object deleteEvents(Request request, Response response) {
@@ -166,5 +181,5 @@ public class EventController {
         response.status(200);
         // return  response;
         return "eliminados";
-    }*/
+    }
 }
