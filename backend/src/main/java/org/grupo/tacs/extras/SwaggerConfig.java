@@ -153,6 +153,21 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(404, new Response()
                                 .description("No se encontro el evento o su opcion a votar"))));
 
+        swagger.path("/events/:id/participant",new Path()
+                .put(new Operation()
+                        .tag("events")
+                        .summary("Permite subscribirse a un evento")
+                        .description("Un usuario logeado puede subscribirse a un evento")
+                        .parameter(new PathParameter()
+                                .name("id")
+                                .description("Id del evento a buscar")
+                                .required(true)
+                                .format("int64"))
+                        .response(201,new Response()
+                                .description("El usuario se subscribio correctamente"))
+                        .response(404, new Response()
+                                .description("No se encontro el evento"))));
+
         swagger.path("/monitoring", new Path()
                 .get(new Operation()
                         .tag("monitoring")
