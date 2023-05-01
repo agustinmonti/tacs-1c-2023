@@ -30,7 +30,7 @@ public class UserRepository implements Repository<User>{
         ObjectId objectId = new ObjectId("644ed6a559b0074582fed075");
         Bson condition = Filters.eq("_id", objectId);
 
-        //Esto hay que descomentarlo cuando se cambie el Long por ObjectId:
+        //Esto hay que descomentarlo cuando se cambie el Long de parametro por String que vendria a ser el hashcode de ObjectId:
         //ObjectId objectId = new ObjectId(id);
         //Bson condition = Filters.eq("_id", objectId);
 
