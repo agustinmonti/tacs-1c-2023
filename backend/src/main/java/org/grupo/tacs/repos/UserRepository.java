@@ -31,7 +31,8 @@ public class UserRepository implements Repository<User>{
         Bson condition = Filters.eq("_id", objectId);
 
         //Esto hay que descomentarlo cuando se cambie el Long por ObjectId:
-        //Bson condition = Filters.eq("_id", id);
+        //ObjectId objectId = new ObjectId(id);
+        //Bson condition = Filters.eq("_id", objectId);
 
         FindIterable<User> users = collection.find(condition);
         return users.first();
