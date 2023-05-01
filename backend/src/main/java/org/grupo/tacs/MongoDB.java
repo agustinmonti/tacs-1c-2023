@@ -23,8 +23,8 @@ public class MongoDB {
 
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-        //String connectionString = "mongodb+srv://gciruzzi:123@mongo.xebsbis.mongodb.net/?retryWrites=true&w=majority";
-        String connectionString = "mongodb://mongodb:27017";
+        String connectionString = "mongodb+srv://gciruzzi:123@mongo.xebsbis.mongodb.net/?retryWrites=true&w=majority";
+        //String connectionString = "mongodb://mongodb:27017";
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
                 .codecRegistry(pojoCodecRegistry)

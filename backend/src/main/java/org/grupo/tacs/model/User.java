@@ -5,7 +5,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 public class User {
-    @BsonId
+    @BsonProperty("id")
     Long id;
     @BsonProperty(value = "name")
     String name;

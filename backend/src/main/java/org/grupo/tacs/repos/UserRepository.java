@@ -25,7 +25,14 @@ public class UserRepository implements Repository<User>{
     public User findById(Long id) {
 
         MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-        Bson condition = Filters.eq("_id", id);
+
+        //Esto esta hardcodeado para que busque unicamente un hax que ya sabes que existe
+        ObjectId objectId = new ObjectId("644ed6a559b0074582fed075");
+        Bson condition = Filters.eq("_id", objectId);
+
+        //Esto hay que descomentarlo cuando se cambie el Long por ObjectId:
+        //Bson condition = Filters.eq("_id", id);
+
         FindIterable<User> users = collection.find(condition);
         return users.first();
 
