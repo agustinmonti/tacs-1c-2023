@@ -12,7 +12,7 @@ export const useEventsStore = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { currentEvent, events } = useSelector( state => state.events );
+    const { currentEvent, myEvents, participantEvents } = useSelector( state => state.events );
     const { user } = useSelector( state => state.auth );
 
     const isOwner = useMemo(() => {
@@ -76,7 +76,7 @@ export const useEventsStore = () => {
             const { status, data } = {
                 status: 200,
                 data: {
-                    events: [
+                    myEvents: [
                         {
                             id: 1,
                             name: 'Evento 1',
@@ -99,7 +99,7 @@ export const useEventsStore = () => {
                             totalParticipants: 0
                         }
                     ],
-                    eventsParticipating: [
+                    participantEvents: [
                         {
                             id: 1,
                             name: 'Evento 1',
@@ -117,7 +117,10 @@ export const useEventsStore = () => {
             }
             dispatch(onStopLoading());
             if( status === 200 ){
-                dispatch(onSetEvents( data.events ));
+                dispatch(onSetEvents( {
+                    myEvents: data.myEvents,
+                    participantEvents: data.participantEvents
+                } ));
             }else{
                 console.error(data.msg);
             }
@@ -210,7 +213,8 @@ export const useEventsStore = () => {
 
     return {
         currentEvent,
-        events,
+        myEvents,
+        participantEvents,
         isOwner,
         isParticipating,
 
