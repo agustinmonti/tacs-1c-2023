@@ -1,4 +1,4 @@
-package org.grupo.tacs.controllers;
+/*package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
@@ -69,4 +69,4 @@ public class VoteController {
         response.status(200);
         return response;
     }
-}
+}*/

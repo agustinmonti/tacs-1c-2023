@@ -24,20 +24,6 @@ public class UserController {
     */
 
     /**
-     * El método {@code getUsers} obtiene todos los usuarios
-     * Es usado en Router para GET /users
-     * @param request nada importante.
-     * @param response nada importante.
-     */
-    public static Object getUsers(Request request, Response response) {
-        Map<String,Object> parametros = new HashMap<>();
-        response.status(200);
-        Gson gson = new Gson();
-        String respuesta = gson.toJson(UserRepository.instance.findAll());
-        return respuesta;
-    }
-
-    /**
      * El método {@code getUser} obtiene un user con un id especifico
      * Es usado en Router para GET /users/{id}
      * @param request contiene el parametro id.
@@ -87,18 +73,33 @@ public class UserController {
          */
         response.status(201);
         Gson gson = new Gson();
-        User nuevo = gson.fromJson(request.body().toString(),User.class);
+
+        User nuevo = gson.fromJson(request.body(),User.class);
         UserRepository.instance.insert(nuevo);
         return gson.toJson(nuevo);
     }
 
     /**
+     * El método {@code getUsers} obtiene todos los usuarios
+     * Es usado en Router para GET /users
+     * @param request nada importante.
+     * @param response nada importante.
+
+    public static Object getUsers(Request request, Response response) {
+        Map<String,Object> parametros = new HashMap<>();
+        response.status(200);
+        Gson gson = new Gson();
+        String respuesta = gson.toJson(UserRepository.instance.findAll());
+        return respuesta;
+    }
+
+
      * El método {@code getUsersOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
      * puede usar POST con un OPTIONS antes de hacer el fetch POST.
      * @param request
      * @param response
      * @return 200
-     */
+
     public static Object getUsersOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST, DELETE";
         return buildResponse(response, allowedMethods);
@@ -150,4 +151,5 @@ public class UserController {
         }
         return response;
     }
+    */
 }

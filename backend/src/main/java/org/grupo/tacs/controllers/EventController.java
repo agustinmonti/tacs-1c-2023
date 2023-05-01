@@ -14,21 +14,6 @@ import java.util.NoSuchElementException;
 public class EventController {
 
     /**
-     * El método {@code getEvents} obtiene todos los usuarios
-     * Es usado en Router para GET /events
-     * @param request nada importante.
-     * @param response nada importante.
-     */
-    public static Object getEvents(Request request, Response response) {
-        Map<String,Object> param = new HashMap<>();
-        response.status(200);
-        Gson gson = new Gson();
-        String events = gson.toJson( EventRepository.instance.findAll());
-         //return events;
-        return gson.toJson( "eventos");
-    }
-
-    /**
      * El método {@code getEvent} obtiene un id especifico
      * Es usado en Router para GET /events/{id}
      * @param request contiene el parametro id.
@@ -67,28 +52,6 @@ public class EventController {
         //return request.body().toString();
     }
 
-    /**
-     * El método {@code getEventsOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
-     * puede usar POST con un OPTIONS antes de hacer el fetch POST.
-     * @param request
-     * @param response
-     * @return 200
-     */
-    public static Object getEventsOptions(Request request, Response response) {
-        String allowedMethods = "OPTIONS, GET, POST, DELETE";
-        return getResponse(response, allowedMethods);
-    }
-
-    private static Response getResponse(Response response, String allowedMethods) {
-        response.status(200);
-        response.header("Allow", allowedMethods);
-        return response;
-    }
-
-    public static Object getEventOptions(Request request, Response response) {
-        String allowedMethods = "OPTIONS, GET, POST, PUT, DELETE";
-        return getResponse(response, allowedMethods);
-    }
     public static Object updateEvent(Request request, Response response) {
         /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
         response.status(200);
@@ -105,13 +68,6 @@ public class EventController {
         return "evento modificado";
     }
 
-    public static Object deleteEvents(Request request, Response response) {
-        EventRepository.instance.deleteAll();
-        response.status(200);
-        // return  response;
-        return "eliminados";
-    }
-
     public static Object deleteEvent(Request request, Response response) {
         try {
             EventRepository.instance.deleteById(Long.parseLong(request.params(":id")));
@@ -123,4 +79,92 @@ public class EventController {
 
         return  "eliminado";
     }
+
+    public static Object monitoring(Request request, Response response) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("events",50);
+        data.put("votes",30);
+        Gson gson = new Gson();
+        return gson.toJson(data);
+    }
+
+    public static Object updateVote(Request request, Response response) {
+        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
+        response.status(200);
+        Gson gson = new Gson();
+        User user = new User("","","");
+        User array[] =  new User[10];
+        Event event = new Event("",true, user,array);
+        event = gson.fromJson(request.body(),Event.class);
+        if (!event.getName().equals("")) {
+            old.setName(event.getName());
+        }
+        String eventJson = gson.toJson(old);*/
+        //return gson.toJson(eventJson);
+        response.status(200);
+        return "voto realizado";
+    }
+
+    public static Object updateParticipant(Request request, Response response) {
+        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
+        response.status(200);
+        Gson gson = new Gson();
+        User user = new User("","","");
+        User array[] =  new User[10];
+        Event event = new Event("",true, user,array);
+        event = gson.fromJson(request.body(),Event.class);
+        if (!event.getName().equals("")) {
+            old.setName(event.getName());
+        }
+        String eventJson = gson.toJson(old);*/
+        //return gson.toJson(eventJson);
+        response.status(200);
+        return "participación actualizada";
+    }
+
+    /**
+     * El método {@code getEventsOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
+     * puede usar POST con un OPTIONS antes de hacer el fetch POST.
+     * @param request
+     * @param response
+     * @return 200
+
+    public static Object getEventsOptions(Request request, Response response) {
+        String allowedMethods = "OPTIONS, GET, POST, DELETE";
+        return getResponse(response, allowedMethods);
+    }
+
+    public static Object getEvents(Request request, Response response) {
+    Map<String,Object> param = new HashMap<>();
+    response.status(200);
+    Gson gson = new Gson();
+    //filtrar por user
+    String events = gson.toJson( EventRepository.instance.findAll());
+    //return events;
+    return gson.toJson( "eventos");
+    }
+
+    private static Response getResponse(Response response, String allowedMethods) {
+        response.status(200);
+        response.header("Allow", allowedMethods);
+        return response;
+    }
+
+    public static Object getEventOptions(Request request, Response response) {
+        String allowedMethods = "OPTIONS, GET, POST, PUT, DELETE";
+        return getResponse(response, allowedMethods);
+    }
+
+     * El método {@code getEvents} obtiene todos los usuarios
+     * Es usado en Router para GET /events
+     * @param request nada importante.
+     * @param response nada importante.
+
+
+    public static Object deleteEvents(Request request, Response response) {
+        EventRepository.instance.deleteAll();
+        response.status(200);
+        // return  response;
+        return "eliminados";
+    }*/
 }
