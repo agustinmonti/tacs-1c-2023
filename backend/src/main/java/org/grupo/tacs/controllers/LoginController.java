@@ -3,6 +3,10 @@ package org.grupo.tacs.controllers;
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.bson.conversions.Bson;
 import org.grupo.tacs.excepciones.WrongPasswordException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
@@ -11,11 +15,15 @@ import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
 import spark.Response;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
+@Api(tags = {"login"})
 public class LoginController {
 
     public static User getUserSession(Request request, Response response){
@@ -35,6 +43,13 @@ public class LoginController {
      * @param response
      * @return
      */
+    @ApiOperation(value = "Authenticate a user", response = String.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Authentication successful"),
+            @ApiResponse(code = 401, message = "Invalid credentials")
+    })
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     public static Object login(Request request, Response response) {
         List<User> usuarios = UserRepository.instance.findAll();
         Map<String, Long> myMap = new HashMap<String, Long>();
@@ -66,6 +81,12 @@ public class LoginController {
             return gson.toJson(myMap);
         }
     }
+    @ApiOperation(value = "Log out a user", response = String.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Logout successful"),
+            @ApiResponse(code = 401, message = "Unauthorized")
+    })
+    @GET
     public Response logout(Request request, Response response){
         request.session().invalidate();
         response.redirect("/");

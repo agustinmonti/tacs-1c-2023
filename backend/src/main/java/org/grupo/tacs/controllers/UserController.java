@@ -1,6 +1,7 @@
 package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
+import io.swagger.annotations.Api;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
@@ -9,7 +10,7 @@ import spark.Response;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
+@Api(tags = {"user"})
 public class UserController {
     /* Como obtener el User a partir de una session creada con login
     public static User obtenerUsuarioSession(Request request, Response response){
@@ -83,7 +84,7 @@ public class UserController {
      * El método {@code getUsers} obtiene todos los usuarios
      * Es usado en Router para GET /users
      * @param request nada importante.
-     * @param response nada importante.
+     * @param response nada importante.*/
 
     public static Object getUsers(Request request, Response response) {
         Map<String,Object> parametros = new HashMap<>();
@@ -94,11 +95,11 @@ public class UserController {
     }
 
 
-     * El método {@code getUsersOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
+     /** El método {@code getUsersOptions} envia un status 200 para OPTIONS porque CORS se le da que se tiene que fijar si
      * puede usar POST con un OPTIONS antes de hacer el fetch POST.
      * @param request
      * @param response
-     * @return 200
+     * @return 200*/
 
     public static Object getUsersOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST, DELETE";
@@ -151,5 +152,4 @@ public class UserController {
         }
         return response;
     }
-    */
 }
