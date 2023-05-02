@@ -70,6 +70,7 @@ public class LoginController {
             request.session().attribute("id", usuario.getId());
             response.removeCookie("error");
             myMap.put("id", usuario.getId());
+            //myMap.put("id", Long.decode("0x"+usuario.getId().toHexString()));
             response.body(gson.toJson(myMap));
 
         }catch(WrongPasswordException | UserDoesNotExistException e){

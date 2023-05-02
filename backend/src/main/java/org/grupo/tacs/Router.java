@@ -13,8 +13,6 @@ public class Router {
         // HTTP port
         port(8080);
         swaggerConfig = new SwaggerConfig();
-        //No creo que tengamos que cargar valores a la DB
-        new Main().run(); //Crea algunos usuarios para probar GET /usuarios
         Router.config();
         swaggerConfig.configureSwagger();
 
@@ -38,7 +36,7 @@ public class Router {
 
         options("/users",UserController::getUsersOptions);
         post("/users",UserController::newUser);
-        
+        get("/users", UserController::getUsers);
         //Defino Rutas
 
         get("/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)

@@ -1,65 +1,68 @@
 package org.grupo.tacs.repos;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoException;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
 import org.grupo.tacs.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
+import static com.mongodb.client.model.Filters.eq;
 import static org.grupo.tacs.MongoDB.getMongoClient;
 
 public class UserRepository implements Repository<User>{
     public static UserRepository instance = new UserRepository();
 
     MongoClient mongoClient;
+    private ObjectMapper objectMapper;
     List<User> users = new ArrayList<>();
     @Override
     public User findById(Long id) {
-        User usuario;
+        List<User> allUsers = this.findAll();
+        if(id<0 || id >= allUsers.stream().count()) {
+            return null;
+        }
+        return allUsers.get(Math.toIntExact(id));
+        //return users.stream().filter(user -> user.getId() == id).findFirst().get();
+    }
+
+    @Override
+    public List<User> findAll() {
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
+            List<User> userList = new ArrayList<>();
+            for (User user : collection.find()) {
+                userList.add(user);
+            }
+            return userList;
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
+    }
+
+    @Override
+    public void save(User entidad) {
         mongoClient = MongoDB.getMongoClient();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
 
             // Usas el repo aca
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
-            ObjectId objectId = new ObjectId(Long.toHexString(id));
-            Bson condition = Filters.eq("_id", objectId);
-            //Esto hay que descomentarlo cuando se cambie el Long de parametro por String que vendria a ser el hashcode de ObjectId:
-            //ObjectId objectId = new ObjectId(id);
-
-            FindIterable<User> users = collection.find(condition);
-            usuario = users.first();
+            User existingUser = collection.find(Filters.eq("email", entidad.getEmail())).first();
+            if (existingUser != null) {
+                throw new RuntimeException("User with email " + entidad.getEmail() + " already exists");
+            }
+            collection.insertOne(entidad);
         } finally {
             mongoClient.close(); //cerras el cliente
-        }
-        return usuario;
-        //return users.stream().filter(user -> user.getId() == id).findFirst().get();
-    }
-
-    @Override
-    public List<User> findAll() {
-        /*MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-        return collection.find().into(new ArrayList<>());*/
-
-        return users;
-    }
-
-    @Override
-    public void save(User entidad) {
-        if(entidad.getId()==null){
-        //    entidad.setId(users.stream().count());
-            users.add(entidad);
         }
     }
 
@@ -114,7 +117,7 @@ public class UserRepository implements Repository<User>{
 
 
         Optional<User> userToDelete = users.stream()
-                .filter(u -> u.getId() == id)
+                .filter(u -> u.getId() == id/*new ObjectId(Long.toHexString(id))*/)
                 .findFirst();
         if (userToDelete.isPresent()) {
             users.remove(userToDelete.get());

@@ -47,7 +47,12 @@ public class MongoDB {
 
     static String CONNECTION_STRING = "mongodb://localhost:27017";
     public static MongoClient getMongoClient(){
-        String connectionString = CONNECTION_STRING;
-        return MongoClients.create(connectionString);
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(CONNECTION_STRING))
+                .codecRegistry(pojoCodecRegistry)
+                .build();
+        return MongoClients.create(settings);
     }
 }

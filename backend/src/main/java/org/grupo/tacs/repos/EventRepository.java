@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.grupo.tacs.MongoDB.mongodb;
 
 public class EventRepository implements Repository<Event>{
     public static EventRepository instance = new EventRepository();
