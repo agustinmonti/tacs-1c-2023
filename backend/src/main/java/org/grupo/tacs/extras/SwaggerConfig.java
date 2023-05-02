@@ -30,9 +30,10 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .name("User")
                 .description("User object")
                 .property("name", new StringProperty().description("User name"))
+                .property("lastname", new StringProperty().description("User lastname"))
                 .property("email", new StringProperty().description("User email"))
                 .property("passwordHash", new StringProperty().description("User password"))
-                .example("{ \"name\": \"Bob Esponja\",\"email\": \"bobesponja@proton.me\",\"passwordHash\": \"abcd1234\"}");
+                .example("{ \"name\": \"Bob\",\"lastname\":\"Esponja\",\"email\": \"bobesponja@proton.me\",\"passwordHash\": \"abcd1234\"}");
         swagger.addDefinition("User", user);
 
         Model credentials = new ModelImpl()
