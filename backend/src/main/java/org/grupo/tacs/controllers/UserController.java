@@ -35,11 +35,10 @@ public class UserController {
         Gson gson = new Gson();
         String resp = "";
         try {
-            User user = UserRepository.instance.findById(Long.parseLong(request.params(":id")));
+            User user = UserRepository.instance.findById(/*Long.parseLong*/(request.params(":id")));
             if(user == null){
                 throw new NoSuchElementException();
             }
-            System.out.println(user.getName());
             response.status(200);
             resp = gson.toJson(user);
         }catch (NoSuchElementException e){
@@ -79,7 +78,7 @@ public class UserController {
         Gson gson = new Gson();
 
         User nuevo = gson.fromJson(request.body(),User.class);
-        UserRepository.instance.insert(nuevo);
+        UserRepository.instance.save(nuevo);
         return gson.toJson(nuevo);
     }
 
@@ -122,7 +121,7 @@ public class UserController {
     public static Object updateUser(Request request, Response response) {
         Gson gson = new Gson();
         Object requestBody = gson.fromJson(response.body(),Object.class);
-        User old = UserRepository.instance.findById(Long.parseLong(request.params(":id")));
+        User old = UserRepository.instance.findById(/*Long.parseLong*/(request.params(":id")));
         response.status(200);
         if (requestBody instanceof Map) {
             Map<String, Object> requestMap = (Map<String, Object>) requestBody;
@@ -132,7 +131,7 @@ public class UserController {
             if (requestMap.containsKey("email")) {
                 old.setEmail((String)requestMap.get("email"));
             }if (requestMap.containsKey("passwordHash")) {
-                old.setPasswordHash((String)requestMap.get("passwordHash"));
+                old.setPassword((String)requestMap.get("passwordHash"));
             }
         }
         UserRepository.instance.save(old);
@@ -148,7 +147,7 @@ public class UserController {
 
     public static Object delete(Request request, Response response) {
         try {
-            UserRepository.instance.deleteById(Long.parseLong(request.params(":id")));
+            UserRepository.instance.deleteById(/*Long.parseLong*/(request.params(":id")));
             response.status(200);
         }catch(NoSuchElementException e){
             response.status(404);

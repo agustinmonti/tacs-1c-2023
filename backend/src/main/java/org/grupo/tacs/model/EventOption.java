@@ -4,20 +4,24 @@ import org.grupo.tacs.extras.Helper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class EventOption {
     Long id;
-    Long eventOptionParentId;
+    //Long eventOptionParentId;
     LocalDateTime start;
-    String readAbleStart;
+    //String readAbleStart;
     LocalDateTime end;
-    String readAbleEnd;
-    public EventOption(Long idPadre, LocalDateTime start, LocalDateTime end){
-        this.eventOptionParentId = idPadre;
+    //String readAbleEnd;
+    List<Vote> votes;
+
+    public EventOption(/*Long idPadre,*/ LocalDateTime start, LocalDateTime end, List<Vote> votes){
+        //this.eventOptionParentId = idPadre;
         this.start = start;
         this.end = end;
-        this.readAbleStart= Helper.getReadableDate(start);
-        this.readAbleEnd=Helper.getReadableDate(end);
+        this.votes = votes;
+        //this.readAbleStart= Helper.getReadableDate(start);
+        //this.readAbleEnd=Helper.getReadableDate(end);
     }
 
     public Long getId() {
@@ -38,15 +42,15 @@ public class EventOption {
 
     public void setStart(LocalDateTime start) {
         this.start = start;
-        this.readAbleStart = Helper.getReadableDate(start);
+        //this.readAbleStart = Helper.getReadableDate(start);
     }
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
-        this.readAbleEnd = Helper.getReadableDate(end);
+        //this.readAbleEnd = Helper.getReadableDate(end);
     }
 
-    public Long getEventOptionParentId() {
+    /*public Long getEventOptionParentId() {
         return eventOptionParentId;
     }
 
@@ -56,5 +60,9 @@ public class EventOption {
 
     public String getReadAbleStart() {
         return readAbleStart;
-    }
+    }*/
+
+    public List<Vote> getVotes() {return votes;}
+
+    public void setVotes(List<Vote> votes) {this.votes = votes;}
 }

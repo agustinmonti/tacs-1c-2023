@@ -4,37 +4,46 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDateTime;
+
 public class User {
     @BsonProperty("id")
-    Long id;
+    ObjectId id;
     @BsonProperty(value = "name")
     String name;
+    @BsonProperty(value = "lastname")
+    String lastname;
     @BsonProperty(value = "email")
     String email;
-    @BsonProperty(value = "passwordHash")
-    String passwordHash;
+    @BsonProperty(value = "password")
+    String password;
+    @BsonProperty(value = "createdDate")
+    LocalDateTime createdDate;
+
 
     /**
      * El método {@code Usuario} es el constructor de la clase {@code Usuario}.
      * @param name Es el nombre de usuario de la nueva instancia.
-     * @param passwordHash Es el hashcode del password de la nueva instancia.
+     * @param password Es el hashcode del password de la nueva instancia.
      * @param email Es el tipo de usuario que será la nueva instancia.
      */
 
-    public User (String name, String passwordHash, String email) {
+    public User (String name, String lastname, String password, String email) {
         this.name = name;
-        this.passwordHash = passwordHash;
+        this.lastname = lastname;
+        this.password = password;
         this.email = email;
+        this.createdDate = LocalDateTime.now();
     }
 
     public User() {
     }
 
-    public Long getId() {
+    public ObjectId getId() {
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 
@@ -46,6 +55,14 @@ public class User {
         this.name = name;
     }
 
+    public String getLastName() {
+        return this.lastname;
+    }
+
+    public void setLastName(String lastname) {
+        this.lastname = lastname;
+    }
+
     public String getEmail() {
         return this.email;
     }
@@ -54,11 +71,15 @@ public class User {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return this.passwordHash;
+    public String getPassword() {
+        return this.password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public LocalDateTime getCreatedDate() {return createdDate;}
+
+    public void setCreatedDate(LocalDateTime createdDate) {this.createdDate = createdDate;}
 }

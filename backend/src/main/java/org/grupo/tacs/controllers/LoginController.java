@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.WrongPasswordException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.model.User;
@@ -52,7 +53,7 @@ public class LoginController {
     @Consumes(MediaType.APPLICATION_JSON)
     public static Object login(Request request, Response response) {
         List<User> usuarios = UserRepository.instance.findAll();
-        Map<String, Long> myMap = new HashMap<String, Long>();
+        Map<String, ObjectId> myMap = new HashMap<String, ObjectId>();
         Gson gson = new Gson();
         try{
             //String email = request.queryParams("email");
@@ -63,7 +64,7 @@ public class LoginController {
             String password = (String) jsonMap.get("password");
             Bson condition = Filters.eq("email", email);
             User usuario = usuarios.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
-            if(!usuario.getPasswordHash().equals(password)){
+            if(!usuario.getPassword().equals(password)){
                 throw new WrongPasswordException();
             }
             request.session(true);

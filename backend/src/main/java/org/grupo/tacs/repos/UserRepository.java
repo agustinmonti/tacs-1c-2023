@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.Updates;
+import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
 import org.grupo.tacs.model.User;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -23,12 +26,29 @@ public class UserRepository implements Repository<User>{
     private ObjectMapper objectMapper;
     List<User> users = new ArrayList<>();
     @Override
-    public User findById(Long id) {
+    public User findById(String id) {
+
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
+            ObjectId objectId = new ObjectId(id);
+            Bson condition = Filters.eq("_id", objectId);
+            FindIterable<User> users = collection.find(condition);
+            return users.first();
+        }  finally {
+            mongoClient.close(); //cerras el cliente
+        }
+
+        /*
         List<User> allUsers = this.findAll();
         if(id<0 || id >= allUsers.stream().count()) {
             return null;
         }
         return allUsers.get(Math.toIntExact(id));
+        */
+
+
         //return users.stream().filter(user -> user.getId() == id).findFirst().get();
     }
 
@@ -38,54 +58,52 @@ public class UserRepository implements Repository<User>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
-            List<User> userList = new ArrayList<>();
-            for (User user : collection.find()) {
-                userList.add(user);
-            }
-            return userList;
-        } finally {
+            return collection.find().into(new ArrayList<>());
+        }  finally {
             mongoClient.close(); //cerras el cliente
         }
     }
 
     @Override
-    public void save(User entidad) {
+    public void save(User user) {
         mongoClient = MongoDB.getMongoClient();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-
-            // Usas el repo aca
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
-            User existingUser = collection.find(Filters.eq("email", entidad.getEmail())).first();
+            User existingUser = collection.find(Filters.eq("email", user.getEmail())).first();
             if (existingUser != null) {
-                throw new RuntimeException("User with email " + entidad.getEmail() + " already exists");
+                throw new RuntimeException("User with email " + user.getEmail() + " already exists");
             }
-            collection.insertOne(entidad);
+            user.setCreatedDate(LocalDateTime.now());
+            collection.insertOne(user);
         } finally {
             mongoClient.close(); //cerras el cliente
         }
     }
 
-    public void insert(User user) {
-        /*MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-        //User pepe = new User("pepe", "pepe@gmail.com", "pepeHash").setId(2L);
-        collection.insertOne(user);*/
-    }
-
-    @Override
+    @Override //NO SE USA
     public void update(User entidad) {
-        /*MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
+        /*
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
+            Bson condition = Filters.eq("_id", entidad.getId());
+            collection.findOneAndUpdate(condition, (Bson) entidad);
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
+        */
 
-        Bson condition = Filters.eq("_id", entidad.getId());
-        collection.findOneAndUpdate(condition, Updates.set("name","jorge"));*/
 
         User unUser = users.stream().filter(user -> user.getId() == entidad.getId()).findFirst().get();
         unUser.setEmail(entidad.getEmail());
         unUser.setName(entidad.getName());
-        unUser.setPasswordHash(entidad.getPasswordHash());
+        unUser.setPassword(entidad.getPassword());
+
     }
 
-    @Override
+    @Override //NO SE USA
     public void delete(User entidad) {
 
         /*MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
@@ -98,31 +116,35 @@ public class UserRepository implements Repository<User>{
         }*/
     }
 
-    @Override
+    @Override //NO SE USA
     public void deleteAll() {
         users.clear();
     }
 
-    @Override
-    public void deleteById(long id) {
+    @Override //NO SE USA
+    public void deleteById(String id) {
 
-        /*MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-        Bson condition = Filters.eq("_id", id);
-
+        mongoClient = MongoDB.getMongoClient();
         try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
+            ObjectId objectId = new ObjectId(id);
+            Bson condition = Filters.eq("_id", objectId);
             collection.deleteOne(condition);
-        } catch (MongoException e) {
-            e.printStackTrace();
-        }*/
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
 
-
+        /*
         Optional<User> userToDelete = users.stream()
-                .filter(u -> u.getId() == id/*new ObjectId(Long.toHexString(id))*/)
+                .filter(u -> u.getId() == new ObjectId(Long.toHexString(id))
                 .findFirst();
         if (userToDelete.isPresent()) {
             users.remove(userToDelete.get());
         } else {
             throw new NoSuchElementException("User with ID " + id + " not found");
         }
+        */
+
     }
 }

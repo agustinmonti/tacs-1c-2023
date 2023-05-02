@@ -7,13 +7,21 @@ import java.time.LocalDateTime;
 public class Vote {
     User user;
     LocalDateTime votingDate;
-    String readAbleVotingDate;
-    Long optionParentID;
+    //String readAbleVotingDate;
+    //Long optionParentID;
 
-    public Vote(Long idOpcion, User votante){
+    public Vote(/*Long idOpcion,*/ User votante){
         this.user = votante;
-        this.optionParentID = idOpcion;
+        //this.optionParentID = idOpcion;
         this.votingDate = LocalDateTime.now();
-        this.readAbleVotingDate= Helper.getReadableDate(this.votingDate);
+        //this.readAbleVotingDate= Helper.getReadableDate(this.votingDate);
     }
+
+    public User getUser() {return user;}
+
+    public void setUser(User user) {this.user = user;}
+
+    public LocalDateTime getVotingDateDate() {return votingDate;}
+
+    public void setVotingDateDate(LocalDateTime votingDate) {this.votingDate = votingDate;}
 }

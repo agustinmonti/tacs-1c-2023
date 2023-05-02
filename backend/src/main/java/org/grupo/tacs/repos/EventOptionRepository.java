@@ -13,10 +13,11 @@ public class EventOptionRepository implements Repository<EventOption>{
     private Long nextId = 0L;
 
     public List<EventOption> findByEventId(Long id){
-        return eventOptions.stream().filter(op->op.getEventOptionParentId()==id).collect(Collectors.toList());
+        return new ArrayList<>();
+        //return eventOptions.stream().filter(op->op.getEventOptionParentId()==id).collect(Collectors.toList());
     }
     @Override
-    public EventOption findById(Long id) {
+    public EventOption findById(String id) {
         return null;
     }
 
@@ -50,7 +51,7 @@ public class EventOptionRepository implements Repository<EventOption>{
     }
 
     @Override
-    public void deleteById(long l) {
+    public void deleteById(String l) {
 
     }
 }

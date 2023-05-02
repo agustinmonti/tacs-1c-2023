@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.bson.types.ObjectId;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventRepository;
@@ -39,7 +40,7 @@ public class EventController {
         Gson gson = new Gson();
         String eventJson = "";
         try {
-            Event event = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
+            Event event = EventRepository.instance.findById(/*Long.parseLong*/(request.params(":id")));
             response.status(200);
             eventJson = gson.toJson(event);
         }catch (NoSuchElementException e){
@@ -61,7 +62,7 @@ public class EventController {
         System.out.println(request.body().toString());
         Gson gson = new Gson();
         Event newEvent = gson.fromJson(request.body().toString(),Event.class);
-        EventRepository.instance.insert(newEvent);
+        EventRepository.instance.save(newEvent);
         return gson.toJson(newEvent);
 
         //return request.body().toString();
@@ -78,14 +79,18 @@ public class EventController {
         if (!event.getName().equals("")) {
             old.setName(event.getName());
         }
-        String eventJson = gson.toJson(old);*/
-        //return gson.toJson(eventJson);
+        String eventJson = gson.toJson(old);
+        return gson.toJson(eventJson);*/
+        Gson gson = new Gson();
+        Event event = gson.fromJson(request.body(),Event.class);
+        event.setId(new ObjectId(request.params(":id")));
+        EventRepository.instance.update(event);
         return "evento modificado";
     }
 
     public static Object deleteEvent(Request request, Response response) {
         try {
-            EventRepository.instance.deleteById(Long.parseLong(request.params(":id")));
+            EventRepository.instance.deleteById(/*Long.parseLong*/(request.params(":id")));
             response.status(200);
         }catch(NoSuchElementException e){
             response.status(404);

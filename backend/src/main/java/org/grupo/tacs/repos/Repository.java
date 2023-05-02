@@ -1,11 +1,12 @@
 package org.grupo.tacs.repos;
 
 import com.mongodb.client.FindIterable;
+import org.bson.types.ObjectId;
 
 import java.util.List;
 
 public interface Repository<T> {
-    T findById(Long id);
+    T findById(String id);
     List<T> findAll();
     void save(T entidad);
     void update(T entidad);
@@ -13,6 +14,6 @@ public interface Repository<T> {
 
     void deleteAll();
 
-    void deleteById(long l);
+    void deleteById(String l);
 }
 
