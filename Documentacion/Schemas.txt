@@ -6,14 +6,17 @@ Event:
         id: ID
         start: DateTime
         end: DateTime
-        [{
+        votes: [{
             userId: ID->User
             createdDate: DateTime
         }]
     }]
+    participants: [{
+        userId
+    }]
     createdDate: DateTime
     //lastVotedDate: DateTime
-    createdBy: ID->User
+    owner: ID->User
 
 User:
     id: ID
