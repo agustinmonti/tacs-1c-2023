@@ -4,10 +4,11 @@ import { EventsPage, EventOptionsPage } from "../events";
 import { EventPage } from "../events/pages/EventPage";
 import { useAuthStore, useUiStore } from "../hooks";
 import { useEffect } from "react";
+import { MonitorPage } from "../events/pages/MonitorPage";
 
 export const AppRouter = () => {
 
-    const { status, checkAuthToken } = useAuthStore();
+    const { status, user, checkAuthToken } = useAuthStore();
     const { isLoadingUI } = useUiStore();
 
     useEffect(() => {
@@ -40,6 +41,10 @@ export const AppRouter = () => {
                         <Route path="/event/:id" element={ <EventPage /> } />
                         <Route path="/user/:id" element={<UserPage />} />
                         <Route path="/" element={ <EventsPage /> } />
+                        {
+                            user.isAdmin &&
+                            <Route path="/monitor" element={ <MonitorPage /> } />
+                        }
                         <Route path="/*" element={<Navigate to={"/"} />} />
                     </>
                 )
