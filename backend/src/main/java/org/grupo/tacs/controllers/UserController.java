@@ -36,12 +36,15 @@ public class UserController {
         String resp = "";
         try {
             User user = UserRepository.instance.findById(Long.parseLong(request.params(":id")));
+            if(user == null){
+                throw new NoSuchElementException();
+            }
             System.out.println(user.getName());
             response.status(200);
             resp = gson.toJson(user);
         }catch (NoSuchElementException e){
             response.status(404);
-            resp = gson.toJson("Not Found!");
+            resp = gson.toJson("User not Found!");
         }
         return resp;
         //return new ModelAndView(parametros, "usuarios/usuario.html");
