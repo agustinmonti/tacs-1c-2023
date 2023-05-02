@@ -15,6 +15,7 @@ Event:
         userId
     }]
     createdDate: DateTime
+    status: enum['Activo','Cerrado']
     //lastVotedDate: DateTime
     owner: ID->User
 
