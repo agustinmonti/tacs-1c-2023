@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
+import org.grupo.tacs.excepciones.ThisEmailIsAlreadyInUseException;
 import org.grupo.tacs.model.User;
 
 import java.time.LocalDateTime;
@@ -72,10 +73,11 @@ public class UserRepository implements Repository<User>{
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
             User existingUser = collection.find(Filters.eq("email", user.getEmail())).first();
             if (existingUser != null) {
-                throw new RuntimeException("User with email " + user.getEmail() + " already exists");
+                throw new ThisEmailIsAlreadyInUseException(user.getEmail());
+            }else{
+                user.setCreatedDate(LocalDateTime.now());
+                collection.insertOne(user);
             }
-            user.setCreatedDate(LocalDateTime.now());
-            collection.insertOne(user);
         } finally {
             mongoClient.close(); //cerras el cliente
         }
