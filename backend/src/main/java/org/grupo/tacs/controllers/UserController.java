@@ -2,6 +2,7 @@ package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
+import org.grupo.tacs.excepciones.ThisEmailIsAlreadyInUseException;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
@@ -74,12 +75,16 @@ public class UserController {
         Comienzo a crear el usuario
         User nuevo = new User(nombre,password,email)
          */
-        response.status(201);
-        Gson gson = new Gson();
-
-        User nuevo = gson.fromJson(request.body(),User.class);
-        UserRepository.instance.save(nuevo);
-        return gson.toJson(nuevo);
+        try{
+            response.status(201);
+            Gson gson = new Gson();
+            User nuevo = gson.fromJson(request.body(),User.class);
+            UserRepository.instance.save(nuevo);
+            return gson.toJson(nuevo);
+        }catch(ThisEmailIsAlreadyInUseException e){
+            response.status(409);//Email already taken
+        }
+        return "";
     }
 
     /**

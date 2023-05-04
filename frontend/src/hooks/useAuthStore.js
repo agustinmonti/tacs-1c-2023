@@ -39,7 +39,7 @@ export const useAuthStore = () => {
             
             const { status, data } = {
                 status: 200,
-                data: { user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}, token: '123abc' }
+                data: { user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com', isAdmin: true }, token: '123abc' }
             }
 
             if( status === 200 ){
@@ -68,7 +68,7 @@ export const useAuthStore = () => {
                 status: 200,
                 data: {
                     token: '123abc',
-                    user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com'}
+                    user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com', isAdmin: true }
                 }
             }
 
