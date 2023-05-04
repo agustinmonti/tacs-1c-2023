@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public class User {
     @BsonProperty("id")
-    ObjectId id;
+    ObjectId _id;
     @BsonProperty(value = "name")
     String name;
     @BsonProperty(value = "lastname")
@@ -17,6 +17,8 @@ public class User {
     String email;
     @BsonProperty(value = "password")
     String password;
+    @BsonProperty(value = "isAdmin")
+    Boolean isAdmin;
     @BsonProperty(value = "createdDate")
     LocalDateTime createdDate;
 
@@ -28,11 +30,12 @@ public class User {
      * @param email Es el tipo de usuario que será la nueva instancia.
      */
 
-    public User (String name, String lastname, String password, String email) {
+    public User (String name, String lastname, String password, Boolean isAdmin, String email) {
         this.name = name;
         this.lastname = lastname;
         this.password = password;
         this.email = email;
+        this.isAdmin = isAdmin;
         this.createdDate = LocalDateTime.now();
     }
 
@@ -40,11 +43,11 @@ public class User {
     }
 
     public ObjectId getId() {
-        return this.id;
+        return this._id;
     }
 
     public void setId(ObjectId id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getName() {
@@ -78,6 +81,10 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setIsAdmin(Boolean isAdmin) {this.isAdmin = isAdmin;}
+
+    public Boolean getIsAdmin() {return isAdmin;}
 
     public LocalDateTime getCreatedDate() {return createdDate;}
 

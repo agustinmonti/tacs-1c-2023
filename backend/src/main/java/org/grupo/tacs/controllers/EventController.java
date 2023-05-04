@@ -16,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -101,9 +102,10 @@ public class EventController {
     }
 
     public static Object monitoring(Request request, Response response) {
+        List<Integer> result = EventRepository.instance.monitoring();
         Map<String, Object> data = new HashMap<>();
-        data.put("events",50);
-        data.put("votes",30);
+        data.put("events",result.get(0));
+        data.put("votes",result.get(1));
         Gson gson = new Gson();
         return gson.toJson(data);
     }

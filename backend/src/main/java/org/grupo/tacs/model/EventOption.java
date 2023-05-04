@@ -24,6 +24,10 @@ public class EventOption {
         //this.readAbleEnd=Helper.getReadableDate(end);
     }
 
+    public EventOption(){
+
+    }
+
     public Long getId() {
         return id;
     }

@@ -11,8 +11,8 @@ public class TestDatabaseSeeder {
     }
 
     public void run() {
-        UserRepository.instance.save(new User("Ana","Maria","1","a@gmail.com"));
-        UserRepository.instance.save(new User("Bob","Ferro","2","b@hotmail.com"));
-        UserRepository.instance.save(new User("Celeste","Ailen","3","c@yahoo.com"));
+        UserRepository.instance.save(new User("Ana","Maria","1",true,"a@gmail.com"));
+        UserRepository.instance.save(new User("Bob","Ferro","2",true,"b@hotmail.com"));
+        UserRepository.instance.save(new User("Celeste","Ailen","3",false,"c@yahoo.com"));
     }
 }

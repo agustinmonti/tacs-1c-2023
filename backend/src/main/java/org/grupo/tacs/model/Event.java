@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Event {
     @BsonProperty("id")
-    ObjectId id;
+    ObjectId _id;
     @BsonProperty(value = "name")
     String name;
     @BsonProperty(value = "desc")
@@ -46,7 +46,7 @@ public class Event {
 
     }
 
-    public ObjectId getId() {return id;}
+    public ObjectId getId() {return _id;}
 
     public String getName() {return name;}
 
@@ -62,7 +62,7 @@ public class Event {
     public List<User> getParticipants() {return participants;}
 
     public Event setId(ObjectId id) {
-        this.id = id;
+        this._id = id;
         return this;
     }
 
