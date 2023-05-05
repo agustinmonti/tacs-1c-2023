@@ -50,7 +50,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .property("name", new StringProperty().description("Event name"))
                 .property("createdBy", new LongProperty().description("Created by user"))
                 .property("guests", new ArrayProperty().description("Lista de Invitados"))
-                .example("{ \"name\": \"Evento Aburrido\", \"createdBy\": 1, \"guests\": [\"Julia\", \"Bernardo\", \"Bob Esponja\"] }");
+                .example("{ \"name\": \"Evento Aburrido\", \"guests\": [\"Julia\", \"Bernardo\", \"Bob Esponja\"] }");
 
         swagger.addDefinition("Event",event);
 
@@ -75,6 +75,20 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
         swagger.tag(new Tag().name("monitoring").description("Muestra datos de marketing"));
 
         swagger.path("/auth/login", new Path()
+                .post(new Operation()
+                        .tags(Arrays.asList("login"))
+                        .summary("Autenticar un usuario")
+                        .description("Autenticar a un usuario existente")
+                        .parameter(new BodyParameter()
+                                .name("credentials")
+                                .description("Credenciales de autenticación")
+                                .schema(credentials))
+                        .response(200, new Response()
+                                .description("Autenticación exitosa"))
+                        .response(401, new Response()
+                                .description("Credenciales inválidas"))));
+
+        swagger.path("/v2/auth/login", new Path()
                 .post(new Operation()
                         .tags(Arrays.asList("login"))
                         .summary("Autenticar un usuario")
