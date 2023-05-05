@@ -64,7 +64,8 @@ public class EventController {
         response.status(201);
         System.out.println(request.body().toString());
         Gson gson = new Gson();
-        Event newEvent = gson.fromJson(request.body().toString(),Event.class);
+        Event newEvent = gson.fromJson(request.body(),Event.class);
+        newEvent.setCreatedBy(getUserFromSession(request,response));
         EventRepository.instance.save(newEvent);
         return gson.toJson(newEvent);
 
