@@ -21,10 +21,7 @@ import org.grupo.tacs.model.Vote;
 
 import javax.print.Doc;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -107,9 +104,59 @@ public class EventRepository implements Repository<Event>{
         */
     }
 
-    public void updateVote(Event event) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
+    public void updateVote(Event event, EventOption eventOption, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            //eventOptions me trae la opcion que mande por body
+            List<EventOption> eventOptions = event.getOptions().stream().filter(option -> Objects.equals(option.getId(), eventOption.getId())).collect(Collectors.toList());
+            if(eventOptions.isEmpty()){ //si esta vacio no existe la opcion en ese evento
+                System.out.println("El evento no posee esa opcion");
+            } else{
+                //votes me trae el voto que realizo el usuario que se encuentra logiado si es que realizo un voto
+                List<Vote> votes = eventOptions.get(0).getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+                Bson condition = Filters.eq("_id", event.getId());
+                //updatedEventOptions va a ser lo que voy a modificar al evento(toda la lista entera) en un principio traigo todas las opciones que no contengan a la que voy a modificar(la que se recibio por body)
+                List<EventOption> updatedEventOptions = event.getOptions().stream().filter(option -> !Objects.equals(option.getId(), eventOption.getId())).collect(Collectors.toList());
+                //updatedOption es la opcion que mande por body cuya lista de votos voy a mofidicar en el if de abajo
+                EventOption updatedOption = eventOptions.get(0);
+                if(votes.isEmpty()){
+                    updatedOption.addVote(new Vote(user)); //agrego el voto a la opcion
+                } else{
+                    updatedOption.rmvVote(votes.get(0)); //saco el voto de la opcion
+                }
+                //agrego a updatedEventOptions la opcion cuya lista de votos modifique
+                updatedEventOptions.add(updatedOption);
+                //updateo la lista de opciones entera de event
+                collection.updateOne(condition,Updates.set("options", updatedEventOptions));
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
+    }
 
+    public void updateParticipant(Event event, User user) { //SE USA PARA AGREGAR O REMOVER UN PARTICIPANTE DEL EVENTO
+
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            List<User> participants = event.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            if(participants.isEmpty()){
+                collection.updateOne(condition,Updates.push("participants", user));
+            } else{
+                collection.updateOne(condition,Updates.pull("participants", user));
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
     }
 
     public List<Integer> monitoring() { //FUNCION SOLO DE ADMINS

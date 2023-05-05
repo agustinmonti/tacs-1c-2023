@@ -6,8 +6,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.model.Event;
+import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventRepository;
+import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
 import spark.Response;
 
@@ -69,6 +71,10 @@ public class EventController {
         //return request.body().toString();
     }
 
+    public static User getUserFromSession(Request request, Response response){
+        return UserRepository.instance.findById(request.session().attribute("id"));
+    }
+
     public static Object updateEvent(Request request, Response response) {
         /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
         response.status(200);
@@ -123,8 +129,13 @@ public class EventController {
         }
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
+        Gson gson = new Gson();
+        User user = getUserFromSession(request,response);
+        EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
+        Event event = EventRepository.instance.findById(request.params(":id"));
+        EventRepository.instance.updateVote(event,eventOption,user);
         response.status(200);
-        return "voto realizado";
+        return "voto realizado o retirado";
     }
 
     public static Object updateParticipant(Request request, Response response) {
@@ -140,6 +151,9 @@ public class EventController {
         }
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
+        User user = getUserFromSession(request,response);
+        Event event = EventRepository.instance.findById(request.params(":id"));
+        EventRepository.instance.updateParticipant(event,user);
         response.status(200);
         return "participación actualizada";
     }

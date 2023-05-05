@@ -78,6 +78,8 @@ public class Event {
 
     public void setOptions(List<EventOption> options) {this.options = options;}
 
+    public void addOption(EventOption option) {this.options.add(option);}
+
     public void setParticipants(List<User> participants) {this.participants = participants;}
 
 
