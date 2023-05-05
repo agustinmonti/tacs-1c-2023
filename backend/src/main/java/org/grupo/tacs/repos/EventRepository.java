@@ -108,7 +108,7 @@ public class EventRepository implements Repository<Event>{
     }
 
     public void updateVote(Event event) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
-        
+
 
     }
 
@@ -118,8 +118,7 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
-            Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now().minusHours(2)),Filters.lt("fieldName", LocalDateTime.now()));
-            //List<Event> lista = collection.find().into(new ArrayList<>());
+            Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now().minusHours(2)),Filters.lt("createdDate", LocalDateTime.now()));
             List<Event> eventList = collection.find(condition).into(new ArrayList<>());
             List<Vote> voteList = new ArrayList<>();
             //SI ALMACENAMOS VOTES NO TENDRIAMOS QUE USAR ESTOS FOR Y EL CONDITION SE PUEDE REUTILIZAR QUEDARIA ESTO MISMO EN 2 LINEAS
