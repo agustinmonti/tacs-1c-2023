@@ -11,8 +11,6 @@ public class TestDatabaseSeeder {
         System.out.println("Hello world!");
         run();
     }
-
-=======
     public static void run() {
         UserRepository.instance.save(new User("Ana","Maria","1",true,"a@gmail.com"));
         UserRepository.instance.save(new User("Bob","Ferro","2",true,"b@hotmail.com"));
@@ -24,6 +22,5 @@ public class TestDatabaseSeeder {
         }catch (ThisEmailIsAlreadyInUseException e){
             System.out.println("Ya existe un usuairo con email:"+user.getEmail());
         }
->>>>>>> f9c477d0db185444e248da30ff974bb1dd81eef7
     }
 }
