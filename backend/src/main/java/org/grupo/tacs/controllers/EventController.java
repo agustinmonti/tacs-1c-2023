@@ -50,7 +50,10 @@ public class EventController {
         Gson gson = new Gson();
         String eventJson = "";
         try {
-            Event event = EventRepository.instance.findById(/*Long.parseLong*/(request.params(":id")));
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            if(event == null){
+                throw new NoSuchElementException();
+            }
             response.status(200);
             eventJson = gson.toJson(event);
         }catch (NoSuchElementException e){

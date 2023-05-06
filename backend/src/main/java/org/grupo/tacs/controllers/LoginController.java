@@ -7,10 +7,7 @@ import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.WrongPasswordException;
@@ -106,7 +103,16 @@ public class LoginController {
         response.status(200);
         return response;
     }
-
+    @ApiOperation(value = "Generate JWT token for user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Autenticación exitosa",
+                    responseHeaders = {
+                            @ResponseHeader(name = "Authorization", description = "JWT token", response = String.class)
+                    }),
+            @ApiResponse(code = 401, message = "Credenciales inválidas")
+    })
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     public static Object loginJWT(Request request, Response response) {
         List<User> usuarios = UserRepository.instance.findAll();
         Map<String, ObjectId> myMap = new HashMap<String, ObjectId>();

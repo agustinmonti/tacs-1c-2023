@@ -8,10 +8,9 @@ import io.swagger.models.Tag;
 import io.swagger.models.auth.*;
 import io.swagger.models.auth.ApiKeyAuthDefinition;
 import io.swagger.models.parameters.*;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.LongProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.models.properties.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Api(tags={"login","users"})
@@ -43,22 +42,37 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .property("password", new StringProperty().description("User password"))
                 .example("{ \"email\": \"b@hotmail.com\", \"password\": \"2\" }");
         swagger.addDefinition("User", user);
+        /*
+        this.name = name;
+        this.desc = desc;
+        this.isActive = isActive;
+        this.options = options;
+        this.createdDate = LocalDateTime.now();
+        this.createdBy = createdBy;
+        this.participants = participants;
+        */
 
         Model event = new ModelImpl()
                 .name("Event")
                 .description("Event object")
                 .property("name", new StringProperty().description("Event name"))
                 .property("createdBy", new LongProperty().description("Created by user"))
-                .property("guests", new ArrayProperty().description("Lista de Invitados"))
-                .example("{ \"name\": \"Evento Aburrido\", \"guests\": [\"Julia\", \"Bernardo\", \"Bob Esponja\"] }");
+                .property("options",new ArrayProperty().description("Possible Event time segments")
+                    .items(new ObjectProperty()
+                            .property("start", new DateTimeProperty().description("Start time"))
+                            .property("end", new DateTimeProperty().description("End time"))))
+                .property("participants", new ArrayProperty().description("Participant List")
+                        .items(new ObjectProperty()
+                                .property("participantId", new StringProperty().description("ObjectId of users subscribed to this event"))))
+                .example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\"}], \"participants\": [\"64517fead086c42a7d2acc73\", \"64517fead086c42a7d2acc75\", \"64517fead086c42a7d2acc77\"] }");
 
         swagger.addDefinition("Event",event);
 
         Model eventOption = new ModelImpl()
                 .name("EventOption")
                 .description("Un JSON con el option id")
-                .property("optionId",new LongProperty().description("Option Id"))
-                .example("{\"optionId\": 1}");
+                .property("optionId",new StringProperty().description("ObjectId of an EventOption"))
+                .example("{\"optionId\": \"1\"}");
         swagger.addDefinition("EventOption",eventOption);
 
         //String exampleJson = "{ \"name\": \"Evento Aburrido\", \"createdBy\": 1, \"guests\": [\"Julia\", \"Bernardo\", \"Bob Esponja\"] }";
@@ -88,17 +102,19 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(401, new Response()
                                 .description("Credenciales inválidas"))));
 
+
         swagger.path("/v2/auth/login", new Path()
                 .post(new Operation()
                         .tags(Arrays.asList("login"))
-                        .summary("Autenticar un usuario")
-                        .description("Autenticar a un usuario existente")
+                        .summary("Generate JWT token for user")
+                        .description("Generate JWT token for an existing user")
                         .parameter(new BodyParameter()
                                 .name("credentials")
                                 .description("Credenciales de autenticación")
                                 .schema(credentials))
                         .response(200, new Response()
-                                .description("Autenticación exitosa"))
+                                .description("Autenticación exitosa")
+                                .header("Authorization", new StringProperty().description("JWT token")))
                         .response(401, new Response()
                                 .description("Credenciales inválidas"))));
 
@@ -133,7 +149,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Evento creado satisfactoriamente"))
                         .response(401, new Response().description("BOOM!"))));
 
-        swagger.path("/events/:id", new Path()
+        swagger.path("/events/{id}", new Path()
                 .get(new Operation()
                         .tags(Arrays.asList("events"))
                         .summary("Obtener un evento por ID")
@@ -142,14 +158,14 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .name("id")
                                 .description("ID del evento a buscar")
                                 .required(true)
-                                .type("integer")
-                                .format("int64"))
+                                .type("string")
+                                .format("ObjectId"))
                         .response(200, new Response()
                                 .description("Evento encontrado"))
                         .response(404, new Response()
                                 .description("Evento no encontrado"))));
 
-        swagger.path("/events/:id/vote",new Path()
+        swagger.path("/events/{id}/vote",new Path()
                 .put(new Operation()
                         .tags(Arrays.asList("events"))
                         .summary("Votar una opcion de evento")
@@ -158,8 +174,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .name("id")
                                 .description("Id del evento a buscar")
                                 .required(true)
-                                .type("integer")
-                                .format("int64"))
+                                .type("string")
+                                .format("ObjectId"))
                         .parameter(new BodyParameter()
                                 .name("EventOption")
                                 .schema(eventOption))
@@ -168,7 +184,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(404, new Response()
                                 .description("No se encontro el evento o su opcion a votar"))));
 
-        swagger.path("/events/:id/participant",new Path()
+        swagger.path("/events/{id}/participant",new Path()
                 .put(new Operation()
                         .tag("events")
                         .summary("Permite subscribirse a un evento")
@@ -177,7 +193,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .name("id")
                                 .description("Id del evento a buscar")
                                 .required(true)
-                                .format("int64"))
+                                .type("string")
+                                .format("ObjectId"))
                         .response(201,new Response()
                                 .description("El usuario se subscribio correctamente"))
                         .response(404, new Response()
