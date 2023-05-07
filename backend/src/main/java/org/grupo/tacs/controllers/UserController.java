@@ -36,7 +36,7 @@ public class UserController {
         Gson gson = new Gson();
         String resp = "";
         try {
-            User user = UserRepository.instance.findById(/*Long.parseLong*/(request.params(":id")));
+            User user = UserRepository.instance.findById(request.params(":id"));
             if(user == null){
                 throw new NoSuchElementException();
             }

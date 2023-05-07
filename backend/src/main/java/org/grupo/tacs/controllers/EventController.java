@@ -1,5 +1,10 @@
 package org.grupo.tacs.controllers;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -22,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
+
 public class EventController {
 
     /**
@@ -43,7 +50,10 @@ public class EventController {
         Gson gson = new Gson();
         String eventJson = "";
         try {
-            Event event = EventRepository.instance.findById(/*Long.parseLong*/(request.params(":id")));
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            if(event == null){
+                throw new NoSuchElementException();
+            }
             response.status(200);
             eventJson = gson.toJson(event);
         }catch (NoSuchElementException e){
@@ -205,4 +215,31 @@ public class EventController {
         // return  response;
         return "eliminados";
     }
+
+    public static Object createEventJWT(Request request, Response response) {
+        try {
+            String userId = getVerifiedUserFromToken(request);
+            response.status(201);
+            Gson gson = new Gson();
+            Event newEvent = gson.fromJson(request.body(),Event.class);
+            System.out.println("user id:"+userId);
+            User user = UserRepository.instance.findById(userId);
+            System.out.println("user:"+user.getName());
+            newEvent.setCreatedBy(user);
+            System.out.println("Event Created");
+            EventRepository.instance.save(newEvent);
+            System.out.println("Event Saved");
+            return "Event created";
+        } catch (JWTVerificationException e) {
+            response.status(401);
+            return "Unauthorized";
+        } catch (Exception e) {
+            response.status(500);
+            System.out.println(e);
+            return "Error creating event";
+        }
+    }
+
+
+
 }

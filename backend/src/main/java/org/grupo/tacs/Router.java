@@ -34,6 +34,9 @@ public class Router {
         options("/auth/login",LoginController::getOptions);
         post("/auth/login",LoginController::login);
 
+        options("/v2/auth/login",LoginController::getOptions);
+        post("/v2/auth/login",LoginController::loginJWT);
+
         options("/users",UserController::getUsersOptions);
         post("/users",UserController::newUser);
         get("/users", UserController::getUsers);
@@ -43,6 +46,8 @@ public class Router {
 
         options("/events",EventController::getEventsOptions);
         post("/events",EventController::newEvent); // crea un evento
+        options("/v2/events",EventController::getEventsOptions);
+        post("/v2/events",EventController::createEventJWT);
         get("/events/:id", EventController::getEvent); // trae un evento en especifico, con todas sus opciones  y votos
 
         options("/events/:id",EventController::getEventOptions);
