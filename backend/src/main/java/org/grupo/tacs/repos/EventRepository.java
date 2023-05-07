@@ -8,6 +8,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import org.bson.BsonDocument;
 import org.bson.Document;
@@ -108,9 +109,11 @@ public class EventRepository implements Repository<Event>{
 
         mongoClient = MongoDB.getMongoClient();
         try {
+
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
 
+            /*
             Bson conditionExistOption = Filters.and(Filters.eq("_id", event.getId()), Filters.elemMatch("options", Filters.eq("_id", eventOption.getId())));
             if (collection.find(conditionExistOption).first() != null){
                 Bson conditionExistVoteOfUserInOption = Filters.and(Filters.eq("_id", event.getId()), Filters.elemMatch("options", Filters.and(Filters.eq("_id", eventOption.getId()), Filters.elemMatch("votes", Filters.eq("user._id", user.getId())))));
@@ -124,33 +127,23 @@ public class EventRepository implements Repository<Event>{
             } else{
                 System.out.println("El evento no posee esa opcion");
             }
-
-            /*
-            //eventOptions me trae la opcion que mande por body
-            List<EventOption> eventOptions = event.getOptions().stream().filter(option -> Objects.equals(option.getId(), eventOption.getId())).collect(Collectors.toList());
-            if(eventOptions.isEmpty()){ //si esta vacio no existe la opcion en ese evento
-                System.out.println("El evento no posee esa opcion");
-            } else{
-
-                //votes me trae el voto que realizo el usuario que se encuentra logiado si es que realizo un voto
-                List<Vote> votes = eventOptions.get(0).getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
-                Bson condition = Filters.eq("_id", event.getId());
-                //updatedEventOptions va a ser lo que voy a modificar al evento(toda la lista entera) en un principio traigo todas las opciones que no contengan a la que voy a modificar(la que se recibio por body)
-                List<EventOption> updatedEventOptions = event.getOptions().stream().filter(option -> !Objects.equals(option.getId(), eventOption.getId())).collect(Collectors.toList());
-                //updatedOption es la opcion que mande por body cuya lista de votos voy a mofidicar en el if de abajo
-                EventOption updatedOption = eventOptions.get(0);
-                if(votes.isEmpty()){
-                    updatedOption.addVote(new Vote(user)); //agrego el voto a la opcion
-                } else{
-                    updatedOption.rmvVote(votes.get(0)); //saco el voto de la opcion
-                }
-                //agrego a updatedEventOptions la opcion cuya lista de votos modifique
-                updatedEventOptions.add(updatedOption);
-                //updateo la lista de opciones entera de event
-                collection.updateOne(condition,Updates.set("options", updatedEventOptions));
-
-            }
             */
+
+            EventOption option = event.getOptions().get(eventOption.getId().intValue());
+            if (option == null){
+                throw new NoSuchElementException();
+            }
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            if (votes.isEmpty()){
+                UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
+                collection.updateOne(condition,Updates.push("options.$[filter].votes", new Vote(user)),options);
+            } else{
+                UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
+                collection.updateOne(condition,Updates.pull("options.$[filter].votes", votes.get(0)),options);
+            }
+
+
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {

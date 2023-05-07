@@ -73,7 +73,8 @@ public class EventController {
     }
 
     public static User getUserFromSession(Request request, Response response){
-        return UserRepository.instance.findById(request.session().attribute("id"));
+        ObjectId objectId = request.session().attribute("id");
+        return UserRepository.instance.findById(objectId.toHexString());
     }
 
     public static Object updateEvent(Request request, Response response) {

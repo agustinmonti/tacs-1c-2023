@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class EventOption {
-    Long id;
+    Long _id;
     //Long eventOptionParentId;
     LocalDateTime start;
     //String readAbleStart;
@@ -29,11 +29,11 @@ public class EventOption {
     }
 
     public Long getId() {
-        return id;
+        return _id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this._id = id;
     }
 
     public LocalDateTime getStart() {
