@@ -83,8 +83,9 @@ public class UserController {
             return gson.toJson(nuevo);
         }catch(ThisEmailIsAlreadyInUseException e){
             response.status(409);//Email already taken
+            response.type("text/plain");
+            return "This email is already in use";
         }
-        return "";
     }
 
     /**

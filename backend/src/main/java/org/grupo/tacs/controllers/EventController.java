@@ -6,10 +6,13 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
+import org.grupo.tacs.excepciones.UnauthorizedException;
+import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
@@ -22,6 +25,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,13 +75,21 @@ public class EventController {
      */
     public static Object newEvent(Request request, Response response){
         System.out.println("nuevo evento!!");
-        response.status(201);
-        System.out.println(request.body().toString());
-        Gson gson = new Gson();
-        Event newEvent = gson.fromJson(request.body(),Event.class);
-        newEvent.setCreatedBy(getUserFromSession(request,response));
-        EventRepository.instance.save(newEvent);
-        return gson.toJson(newEvent);
+        try{
+            response.status(201);
+            System.out.println(request.body().toString());
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                    .create();
+            Event newEvent = gson.fromJson(request.body(),Event.class);
+            newEvent.setCreatedBy(getUserFromSession(request,response));
+            EventRepository.instance.save(newEvent);
+            return gson.toJson(newEvent);
+        }catch(Exception e){
+            System.out.println(e);
+            return "";
+        }
+
 
         //return request.body().toString();
     }
@@ -142,7 +154,8 @@ public class EventController {
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
         Gson gson = new Gson();
-        User user = getUserFromSession(request,response);
+        //User user = getUserFromSession(request,response);
+        User user =  getVerifiedUserFromToken(request); //JWT
         EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
         Event event = EventRepository.instance.findById(request.params(":id"));
         EventRepository.instance.updateVote(event,eventOption,user);
@@ -163,7 +176,8 @@ public class EventController {
         }
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
-        User user = getUserFromSession(request,response);
+        //User user = getUserFromSession(request,response); //Spark java Session
+        User user = getVerifiedUserFromToken(request); //JWT
         Event event = EventRepository.instance.findById(request.params(":id"));
         EventRepository.instance.updateParticipant(event,user);
         response.status(200);
@@ -218,19 +232,20 @@ public class EventController {
 
     public static Object createEventJWT(Request request, Response response) {
         try {
-            String userId = getVerifiedUserFromToken(request);
+            User user =  getVerifiedUserFromToken(request);
             response.status(201);
-            Gson gson = new Gson();
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                    .create();
             Event newEvent = gson.fromJson(request.body(),Event.class);
-            System.out.println("user id:"+userId);
-            User user = UserRepository.instance.findById(userId);
+            System.out.println("user id:"+user.getId());
             System.out.println("user:"+user.getName());
             newEvent.setCreatedBy(user);
             System.out.println("Event Created");
             EventRepository.instance.save(newEvent);
             System.out.println("Event Saved");
             return "Event created";
-        } catch (JWTVerificationException e) {
+        } catch (UnauthorizedException | JWTVerificationException e) {
             response.status(401);
             return "Unauthorized";
         } catch (Exception e) {
@@ -241,5 +256,8 @@ public class EventController {
     }
 
 
-
+    public static Object soloPut(Request request, Response response) {
+        String allowedMethods = "PUT";
+        return getResponse(response, allowedMethods);
+    }
 }

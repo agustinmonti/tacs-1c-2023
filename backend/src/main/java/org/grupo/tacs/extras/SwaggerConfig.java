@@ -7,11 +7,15 @@ import io.swagger.models.Info;
 import io.swagger.models.Tag;
 import io.swagger.models.auth.*;
 import io.swagger.models.auth.ApiKeyAuthDefinition;
+import io.swagger.models.auth.OAuth2Definition;
 import io.swagger.models.parameters.*;
 import io.swagger.models.properties.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 
 @Api(tags={"login","users"})
 public class SwaggerConfig extends DefaultJaxrsConfig {
@@ -42,15 +46,6 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .property("password", new StringProperty().description("User password"))
                 .example("{ \"email\": \"b@hotmail.com\", \"password\": \"2\" }");
         swagger.addDefinition("User", user);
-        /*
-        this.name = name;
-        this.desc = desc;
-        this.isActive = isActive;
-        this.options = options;
-        this.createdDate = LocalDateTime.now();
-        this.createdBy = createdBy;
-        this.participants = participants;
-        */
 
         Model event = new ModelImpl()
                 .name("Event")
@@ -64,15 +59,15 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .property("participants", new ArrayProperty().description("Participant List")
                         .items(new ObjectProperty()
                                 .property("participantId", new StringProperty().description("ObjectId of users subscribed to this event"))))
-                .example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\"}], \"participants\": [\"64517fead086c42a7d2acc73\", \"64517fead086c42a7d2acc75\", \"64517fead086c42a7d2acc77\"] }");
-
+                //.example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\"},{\"start\": \"2022-01-01T15:00:00Z\",\"end\": \"2022-01-01T17:00:00Z\"}], \"participants\": [\"64517fead086c42a7d2acc73\", \"64517fead086c42a7d2acc75\", \"64517fead086c42a7d2acc77\"] }");
+                        .example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\"},{\"start\": \"2022-01-01T15:00:00Z\",\"end\": \"2022-01-01T17:00:00Z\"}]}");
         swagger.addDefinition("Event",event);
 
         Model eventOption = new ModelImpl()
                 .name("EventOption")
                 .description("Un JSON con el option id")
                 .property("optionId",new StringProperty().description("ObjectId of an EventOption"))
-                .example("{\"optionId\": \"1\"}");
+                .example("{\"_id\": \"1\"}");
         swagger.addDefinition("EventOption",eventOption);
 
         //String exampleJson = "{ \"name\": \"Evento Aburrido\", \"createdBy\": 1, \"guests\": [\"Julia\", \"Bernardo\", \"Bob Esponja\"] }";
@@ -81,14 +76,25 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .title("TACS-1C-2023")
                 .version("1.0.0")
                 .description("A sample RESTful API built with Spark Java and Swagger"));
-        swagger.securityDefinition("api_key", new ApiKeyAuthDefinition("api_key", In.HEADER));
+
+        /*ApiKeyAuthDefinition securityScheme = new ApiKeyAuthDefinition();
+        securityScheme.setType("apiKey");
+        securityScheme.setIn(In.HEADER);
+        securityScheme.setName("Authorization");
+        securityScheme.setDescription("Enter the token with the `Bearer: ` prefix, e.g. \"Bearer abcde12345\".");
+
+        swagger.securityDefinition("Bearer", securityScheme);
+        SecurityRequirement securityRequirement = new SecurityRequirement();
+        securityRequirement.requirement("Bearer", new ArrayList<>());*/
+
+        swagger.securityDefinition("jwt", new ApiKeyAuthDefinition("Authorization", In.HEADER));
 
         swagger.tag(new Tag().name("login").description("Operaciones de autenticación"));
         swagger.tag(new Tag().name("users").description("Operaciones con cuentas de usuario"));
         swagger.tag(new Tag().name("events").description("Operaciones con eventos"));
         swagger.tag(new Tag().name("monitoring").description("Muestra datos de marketing"));
 
-        swagger.path("/auth/login", new Path()
+        /*swagger.path("/auth/login", new Path()
                 .post(new Operation()
                         .tags(Arrays.asList("login"))
                         .summary("Autenticar un usuario")
@@ -100,7 +106,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(200, new Response()
                                 .description("Autenticación exitosa"))
                         .response(401, new Response()
-                                .description("Credenciales inválidas"))));
+                                .description("Credenciales inválidas"))));*/
 
 
         swagger.path("/v2/auth/login", new Path()
@@ -130,7 +136,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(201, new Response()
                                 .description("Usuario creado satisfactoriamente"))));
 
-        swagger.path("/events", new Path()
+        swagger.path("/v2/events", new Path()
                 .get(new Operation()
                         .tags(Arrays.asList("events"))
                         .summary("Obtener todos los eventos")
@@ -145,6 +151,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .name("event")
                                 .description("Datos del evento a crear")
                                 .schema(event))
+                        //.security(new SecurityRequirement().requirement("jwt", Arrays.asList("read","write")))
                         .response(201, new Response()
                                 .description("Evento creado satisfactoriamente"))
                         .response(401, new Response().description("BOOM!"))));
@@ -165,7 +172,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(404, new Response()
                                 .description("Evento no encontrado"))));
 
-        swagger.path("/events/{id}/vote",new Path()
+        swagger.path("/v2/events/{id}/vote",new Path()
                 .put(new Operation()
                         .tags(Arrays.asList("events"))
                         .summary("Votar una opcion de evento")
@@ -184,7 +191,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(404, new Response()
                                 .description("No se encontro el evento o su opcion a votar"))));
 
-        swagger.path("/events/{id}/participant",new Path()
+        swagger.path("/v2/events/{id}/participant",new Path()
                 .put(new Operation()
                         .tag("events")
                         .summary("Permite subscribirse a un evento")

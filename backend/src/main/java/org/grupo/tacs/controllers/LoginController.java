@@ -10,6 +10,7 @@ import com.mongodb.client.model.Filters;
 import io.swagger.annotations.*;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.WrongPasswordException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.model.User;
@@ -117,6 +118,7 @@ public class LoginController {
         List<User> usuarios = UserRepository.instance.findAll();
         Map<String, ObjectId> myMap = new HashMap<String, ObjectId>();
         Gson gson = new Gson();
+        String token = null;
         try {
             //String email = request.queryParams("email");
             //String password = request.queryParams("password");
@@ -126,18 +128,19 @@ public class LoginController {
             String password = (String) jsonMap.get("password");
             Bson condition = Filters.eq("email", email);
             User usuario = usuarios.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
-            String token = generateToken(usuario);
+            token = generateToken(usuario);
             response.header("Authorization", "Bearer " + token);
             if (!usuario.getPassword().equals(password)) {
                 throw new WrongPasswordException();
             }
-        }catch(WrongPasswordException | UserDoesNotExistException e){
+        } catch (WrongPasswordException | UserDoesNotExistException e) {
             response.cookie("error", "Wrong Credentials", 1);
             response.redirect("/");
-        }catch (Exception e) {
+        } catch (Exception e) {
             response.status(500);
-        }finally {
-            return gson.toJson(myMap);
+        } finally {
+            response.type("text/plain");
+            return "Bearer "+token;
         }
     }
 
@@ -151,8 +154,10 @@ public class LoginController {
         //System.out.println("Login:"+token);
         return token;
     }
-    static String getVerifiedUserFromToken(Request request) {
+    static User getVerifiedUserFromToken(Request request) {
         String token = request.headers("Authorization").replace("Bearer ", "");
+        if(token == null)
+            throw new UnauthorizedException("Unauthorized, No Token");
         //System.out.println("Verify:"+token);
         Algorithm algorithm = Algorithm.HMAC256(JWT_H256_SECRET_PHRASE);
         JWTVerifier verifier = JWT.require(algorithm)
@@ -161,6 +166,6 @@ public class LoginController {
 
         DecodedJWT jwt = verifier.verify(token);
         String userId = jwt.getSubject();
-        return userId;
+        return UserRepository.instance.findById(userId);
     }
 }

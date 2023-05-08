@@ -146,7 +146,9 @@ public class EventRepository implements Repository<Event>{
 
         } catch (MongoException e) {
             e.printStackTrace();
-        } finally {
+        } catch(Exception e){
+            e.printStackTrace();
+        } finally{
             mongoClient.close(); //cerras el cliente
         }
     }

@@ -1,10 +1,19 @@
 package org.grupo.tacs;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.grupo.tacs.controllers.*;
 import org.grupo.tacs.extras.SwaggerConfig;
-import spark.Spark;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+import static com.sun.org.apache.xalan.internal.utils.SecuritySupport.getResourceAsStream;
 import static spark.Spark.*;
 
 public class Router {
@@ -14,7 +23,6 @@ public class Router {
         port(8080);
         swaggerConfig = new SwaggerConfig();
         Router.config();
-        swaggerConfig.configureSwagger();
 
     }
 
@@ -31,8 +39,8 @@ public class Router {
         });
 
 
-        options("/auth/login",LoginController::getOptions);
-        post("/auth/login",LoginController::login);
+        //options("/auth/login",LoginController::getOptions);
+        //post("/auth/login",LoginController::login);
 
         options("/v2/auth/login",LoginController::getOptions);
         post("/v2/auth/login",LoginController::loginJWT);
@@ -44,18 +52,21 @@ public class Router {
 
         get("/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)
 
-        options("/events",EventController::getEventsOptions);
-        post("/events",EventController::newEvent); // crea un evento
+        //options("/events",EventController::getEventsOptions);
+        //post("/events",EventController::newEvent); // crea un evento
         options("/v2/events",EventController::getEventsOptions);
         post("/v2/events",EventController::createEventJWT);
-        get("/events/:id", EventController::getEvent); // trae un evento en especifico, con todas sus opciones  y votos
+        get("/v2/events",EventController::getEvents);
+        get("/v2/events/:id", EventController::getEvent); // trae un evento en especifico, con todas sus opciones  y votos
 
-        options("/events/:id",EventController::getEventOptions);
-        put("/events/:id",EventController::updateEvent); //  cerrar evento
-        delete("/events/:id",EventController::deleteEvent); // eliminar un evento
-        put("/events/:id/vote", EventController::updateVote); // agregar o remover el voto de una opcion
+        options("/v2/events/:id",EventController::getEventOptions);
+        put("/v2/events/:id",EventController::updateEvent); //  cerrar evento
+        delete("/v2/events/:id",EventController::deleteEvent); // eliminar un evento
+        options("/v2/events/:id/vote", EventController::soloPut);
+        put("/v2/events/:id/vote", EventController::updateVote); // agregar o remover el voto de una opcion
         get("/monitoring", EventController::monitoring); // monitoring ()
-        put("/events/:id/participant", EventController::updateParticipant);//anotarse y desanotarse
+        options("/v2/events/:id/participant",EventController::soloPut);
+        put("/v2/events/:id/participant", EventController::updateParticipant);//anotarse y desanotarse
 
         get("/swagger.json", (request, response) -> {
             try {
@@ -63,8 +74,9 @@ public class Router {
                 response.type("application/json");
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
                 String json = mapper.writeValueAsString(swaggerConfig.getSwagger());
-                //System.out.println(json);
+                //json = "{\"swagger\":\"2.0\",\"info\":{\"description\":\"A sample RESTful API built with Spark Java and Swagger\",\"version\":\"1.0.0\",\"title\":\"TACS-1C-2023\"},\"securityDefinitions\":{\"JWT\":{\"type\":\"apiKey\",\"name\":\"Authorization\",\"in\":\"header\",\"description\":\"Enter JWT token\"}},\"tags\":[{\"name\":\"login\",\"description\":\"Operaciones de autenticación\"},{\"name\":\"users\",\"description\":\"Operaciones con cuentas de usuario\"},{\"name\":\"events\",\"description\":\"Operaciones con eventos\"},{\"name\":\"monitoring\",\"description\":\"Muestra datos de marketing\"}],\"paths\":{\"/v2/auth/login\":{\"post\":{\"tags\":[\"login\"],\"summary\":\"Generate JWT token for user\",\"description\":\"Generate JWT token for an existing user\",\"parameters\":[{\"in\":\"body\",\"name\":\"credentials\",\"description\":\"Credenciales de autenticación\",\"required\":false,\"schema\":{\"properties\":{\"email\":{\"type\":\"string\",\"description\":\"User email\"},\"password\":{\"type\":\"string\",\"description\":\"User password\"}},\"description\":\"Login information\",\"example\":\"{ \\\"email\\\": \\\"b@hotmail.com\\\", \\\"password\\\": \\\"2\\\" }\"}}],\"responses\":{\"200\":{\"description\":\"Autenticación exitosa\",\"headers\":{\"Authorization\":{\"type\":\"string\",\"description\":\"JWT token\"}}},\"401\":{\"description\":\"Credenciales inválidas\"}}}},\"/users\":{\"post\":{\"tags\":[\"users\"],\"summary\":\"Crear una cuenta de usuario\",\"description\":\"Crea una cuenta de usuario nueva\",\"parameters\":[{\"in\":\"body\",\"name\":\"user\",\"description\":\"Datos del usuario a crear\",\"required\":false,\"schema\":{\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"User name\"},\"lastname\":{\"type\":\"string\",\"description\":\"User lastname\"},\"email\":{\"type\":\"string\",\"description\":\"User email\"},\"password\":{\"type\":\"string\",\"description\":\"User password\"}},\"description\":\"User object\",\"example\":\"{ \\\"name\\\": \\\"Bob\\\",\\\"lastname\\\":\\\"Esponja\\\",\\\"email\\\": \\\"bobesponja@proton.me\\\",\\\"password\\\": \\\"abcd1234\\\"}\"}}],\"responses\":{\"201\":{\"description\":\"Usuario creado satisfactoriamente\"}}}},\"/v2/events\":{\"get\":{\"tags\":[\"events\"],\"summary\":\"Obtener todos los eventos\",\"description\":\"Obtiene una lista con todos los eventos registrados\",\"parameters\":[],\"responses\":{\"200\":{\"description\":\"Lista de eventos\"}}},\"post\":{\"tags\":[\"events\"],\"summary\":\"Crear un nuevo evento\",\"description\":\"El usuario crea un nuevo evento con un numero de opciones\",\"parameters\":[{\"in\":\"body\",\"name\":\"event\",\"description\":\"Datos del evento a crear\",\"required\":false,\"schema\":{\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"Event name\"},\"createdBy\":{\"type\":\"integer\",\"format\":\"int64\",\"description\":\"Created by user\"},\"options\":{\"type\":\"array\",\"description\":\"Possible Event time segments\",\"items\":{\"type\":\"object\",\"properties\":{\"end\":{\"type\":\"string\",\"format\":\"date-time\",\"description\":\"End time\"},\"start\":{\"type\":\"string\",\"format\":\"date-time\",\"description\":\"Start time\"}}}},\"participants\":{\"type\":\"array\",\"description\":\"Participant List\",\"items\":{\"type\":\"object\",\"properties\":{\"participantId\":{\"type\":\"string\",\"description\":\"ObjectId of users subscribed to this event\"}}}}},\"description\":\"Event object\",\"example\":\"{ \\\"name\\\": \\\"Evento Aburrido\\\",\\\"desc\\\":\\\"Un evento que no es divertido\\\",\\\"participants\\\": [],\\\"options\\\":[{\\\"start\\\": \\\"2022-01-01T12:00:00Z\\\",\\\"end\\\": \\\"2022-01-01T14:00:00Z\\\",\\\"votes\\\": []},{\\\"start\\\": \\\"2022-01-01T15:00:00Z\\\",\\\"end\\\": \\\"2022-01-01T17:00:00Z\\\",\\\"votes\\\": []}]}\"}}],\"security\":[{\"JWT\":[]}],\"responses\":{\"201\":{\"description\":\"Evento creado satisfactoriamente\"},\"401\":{\"description\":\"BOOM!\"}}}},\"/v2/events/{id}\":{\"get\":{\"tags\":[\"events\"],\"summary\":\"Obtener un evento por ID\",\"description\":\"Obtiene un evento registrado por ID\",\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"description\":\"ID del evento a buscar\",\"required\":true,\"type\":\"string\",\"format\":\"ObjectId\"}],\"responses\":{\"200\":{\"description\":\"Evento encontrado\"},\"404\":{\"description\":\"Evento no encontrado\"}}}},\"/v2/events/{id}/vote\":{\"put\":{\"tags\":[\"events\"],\"summary\":\"Votar una opcion de evento\",\"description\":\"A partir del id del evento el usuario vota una opcion\",\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"description\":\"Id del evento a buscar\",\"required\":true,\"type\":\"string\",\"format\":\"ObjectId\"},{\"in\":\"body\",\"name\":\"EventOption\",\"required\":false,\"schema\":{\"properties\":{\"optionId\":{\"type\":\"string\",\"description\":\"ObjectId of an EventOption\"}},\"description\":\"Un JSON con el option id\",\"example\":\"{\\\"_id\\\": \\\"1\\\"}\"}}],\"security\":[{\"JWT\":[]}],\"responses\":{\"201\":{\"description\":\"Se voto correctamente\"},\"404\":{\"description\":\"No se encontro el evento o su opcion a votar\"}}}},\"/v2/events/{id}/participant\":{\"put\":{\"tags\":[\"events\"],\"summary\":\"Permite subscribirse a un evento\",\"description\":\"Un usuario logeado puede subscribirse a un evento\",\"parameters\":[{\"name\":\"id\",\"in\":\"path\",\"description\":\"Id del evento a buscar\",\"required\":true,\"type\":\"string\",\"format\":\"ObjectId\"}],\"security\":[{\"JWT\":[]}],\"responses\":{\"201\":{\"description\":\"El usuario se subscribio correctamente\"},\"404\":{\"description\":\"No se encontro el evento\"}}}},\"/monitoring\":{\"get\":{\"tags\":[\"monitoring\"],\"summary\":\"Trae datos relevantes a marketing en un JSON\",\"description\":\"Trae datos relevantes a marketing en un JSON, cantidad de opciones de eventos votadas en las ultimas dos horas\",\"parameters\":[],\"responses\":{\"200\":{\"description\":\"ok\"}}}}},\"definitions\":{\"User\":{\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"User name\"},\"lastname\":{\"type\":\"string\",\"description\":\"User lastname\"},\"email\":{\"type\":\"string\",\"description\":\"User email\"},\"password\":{\"type\":\"string\",\"description\":\"User password\"}},\"description\":\"User object\",\"example\":\"{ \\\"name\\\": \\\"Bob\\\",\\\"lastname\\\":\\\"Esponja\\\",\\\"email\\\": \\\"bobesponja@proton.me\\\",\\\"password\\\": \\\"abcd1234\\\"}\"},\"Event\":{\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"Event name\"},\"createdBy\":{\"type\":\"integer\",\"format\":\"int64\",\"description\":\"Created by user\"},\"options\":{\"type\":\"array\",\"description\":\"Possible Event time segments\",\"items\":{\"type\":\"object\",\"properties\":{\"end\":{\"type\":\"string\",\"format\":\"date-time\",\"description\":\"End time\"},\"start\":{\"type\":\"string\",\"format\":\"date-time\",\"description\":\"Start time\"}}}},\"participants\":{\"type\":\"array\",\"description\":\"Participant List\",\"items\":{\"type\":\"object\",\"properties\":{\"participantId\":{\"type\":\"string\",\"description\":\"ObjectId of users subscribed to this event\"}}}}},\"description\":\"Event object\",\"example\":\"{ \\\"name\\\": \\\"Evento Aburrido\\\",\\\"desc\\\":\\\"Un evento que no es divertido\\\",\\\"options\\\":[{\\\"start\\\": \\\"2022-01-01T12:00:00Z\\\",\\\"end\\\": \\\"2022-01-01T14:00:00Z\\\"},{\\\"start\\\": \\\"2022-01-01T15:00:00Z\\\",\\\"end\\\": \\\"2022-01-01T17:00:00Z\\\"}]}\"},\"EventOption\":{\"properties\":{\"optionId\":{\"type\":\"string\",\"description\":\"ObjectId of an EventOption\"}},\"description\":\"Un JSON con el option id\",\"example\":\"{\\\"_id\\\": \\\"1\\\"}\"}}}";
                 return json;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -72,6 +84,61 @@ public class Router {
                 return "Error generating Swagger JSON";
             }
         });
+
+        //Este tira duplicated mapping key
+        /*get("/swagger.json", (request, response) -> {
+            try {
+                response.status(200);
+                response.type("application/json");
+                ObjectMapper mapper = new ObjectMapper();
+                SimpleModule module = new SimpleModule();
+                SerializerProvider provider = new DefaultSerializerProvider.Impl();
+                provider.setNullKeySerializer(new MyNullKeySerializer());
+                module.addKeySerializer(Object.class, new MyNullKeySerializer());
+                mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+                mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                mapper.getSerializerProvider().setNullKeySerializer(new MyNullKeySerializer());
+                mapper.registerModule(module);
+                String json = mapper.writeValueAsString(swaggerConfig.getSwagger());
+                return json;
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.status(500);
+                return "Error generating Swagger JSON";
+            }
+        });*/
+
+        //TODO ver que onda con las cosas que no reconoce de Swagger
+        /*get("/swagger.yaml", (request, response) -> {
+            try {
+                response.status(200);
+                response.type("application/yaml");
+
+                //Elimino Nulls
+                Representer representer = new Representer();
+                representer.setPropertyUtils(new PropertyUtils() {
+                    @Override
+                    public Property getProperty(Class<?> type, String name) {
+                        Property property = super.getProperty(type, name);
+                        if (property == null || property.get(type) == null) {
+                            return null;
+                        }
+                        return property;
+                    }
+                });
+
+                Yaml yaml = new Yaml(representer);
+                yaml.setBeanAccess(BeanAccess.FIELD);
+
+                String yamlString = yaml.dump(swaggerConfig.getSwagger());
+                return yamlString;
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.status(500);
+                return "Error generating Swagger YAML";
+            }
+        });*/
+
         //Los que se van:
 
         /* options("/users",UserController::getUsersOptions);
