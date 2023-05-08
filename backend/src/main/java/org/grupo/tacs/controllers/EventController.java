@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import java.lang.Number;
 
 import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
 
@@ -140,7 +142,7 @@ public class EventController {
         return gson.toJson(data);
     }
 
-    public static Object updateVote(Request request, Response response) {
+    public static Object updateVoteWithOutId(Request request, Response response) {
         /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
         response.status(200);
         Gson gson = new Gson();
@@ -153,12 +155,37 @@ public class EventController {
         }
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
+
+        Gson gson = new Gson();
+        //User user = getUserFromSession(request,response);
+        User user =  getVerifiedUserFromToken(request); //JWT
+        EventOption OptionIndex = gson.fromJson(request.body(), EventOption.class);
+        Event event = EventRepository.instance.findById(request.params(":id"));
+        EventRepository.instance.updateVoteWithOutId(event,OptionIndex.getId(),user);
+        response.status(200);
+        return "voto realizado o retirado";
+    }
+
+    public static Object updateVoteWithId(Request request, Response response) {
+        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
+        response.status(200);
+        Gson gson = new Gson();
+        User user = new User("","","");
+        User array[] =  new User[10];
+        Event event = new Event("",true, user,array);
+        event = gson.fromJson(request.body(),Event.class);
+        if (!event.getName().equals("")) {
+            old.setName(event.getName());
+        }
+        String eventJson = gson.toJson(old);*/
+        //return gson.toJson(eventJson);
+
         Gson gson = new Gson();
         //User user = getUserFromSession(request,response);
         User user =  getVerifiedUserFromToken(request); //JWT
         EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
         Event event = EventRepository.instance.findById(request.params(":id"));
-        EventRepository.instance.updateVote(event,eventOption,user);
+        EventRepository.instance.updateVoteWithId(event,eventOption,user);
         response.status(200);
         return "voto realizado o retirado";
     }
