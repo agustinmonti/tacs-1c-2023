@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -159,9 +160,10 @@ public class EventController {
         Gson gson = new Gson();
         //User user = getUserFromSession(request,response);
         User user =  getVerifiedUserFromToken(request); //JWT
-        EventOption OptionIndex = gson.fromJson(request.body(), EventOption.class);
+        JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
+        Integer optionIndex = jsonObject.get("_id").getAsInt();
         Event event = EventRepository.instance.findById(request.params(":id"));
-        EventRepository.instance.updateVoteWithOutId(event,OptionIndex.getId(),user);
+        EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
         response.status(200);
         return "voto realizado o retirado";
     }

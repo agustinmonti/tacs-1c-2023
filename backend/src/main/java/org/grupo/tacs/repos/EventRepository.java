@@ -105,7 +105,7 @@ public class EventRepository implements Repository<Event>{
         */
     }
 
-    public void updateVoteWithOutId(Event event, Long OptionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
+    public void updateVoteWithOutId(Event event, Integer OptionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
         mongoClient = MongoDB.getMongoClient();
         try {
@@ -113,7 +113,7 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
 
-            EventOption option = event.getOptions().get(OptionIndex.intValue());
+            EventOption option = event.getOptions().get(OptionIndex);
 
             if (option == null){
                 throw new NoSuchElementException();
