@@ -7,11 +7,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.UnauthorizedException;
+import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
@@ -30,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import java.lang.Number;
 
 import static org.grupo.tacs.controllers.LoginController.getUserSession;
 import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
@@ -139,7 +143,7 @@ public class EventController {
         return gson.toJson(data);
     }
 
-    public static Object updateVote(Request request, Response response) {
+    public static Object updateVoteWithOutId(Request request, Response response) {
         /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
         response.status(200);
         Gson gson = new Gson();
@@ -156,12 +160,13 @@ public class EventController {
             Gson gson = new Gson();
             //User user = getUserFromSession(request,response);
             User user =  getVerifiedUserFromToken(request); //JWT
-            EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
+            JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
+            Integer optionIndex = jsonObject.get("_id").getAsInt();
             Event event = EventRepository.instance.findById(request.params(":id"));
-            EventRepository.instance.updateVote(event,eventOption,user);
+            EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
             response.status(201);
             return "voto realizado o retirado";
-        }catch(UnauthorizedException | JWTVerificationException e){
+        }catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
             return "Unauthorized";
         } catch (Exception e) {
@@ -169,6 +174,30 @@ public class EventController {
             System.out.println(e);
             return "Error updating vote";
         }
+    }
+
+    public static Object updateVoteWithId(Request request, Response response) {
+        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
+        response.status(200);
+        Gson gson = new Gson();
+        User user = new User("","","");
+        User array[] =  new User[10];
+        Event event = new Event("",true, user,array);
+        event = gson.fromJson(request.body(),Event.class);
+        if (!event.getName().equals("")) {
+            old.setName(event.getName());
+        }
+        String eventJson = gson.toJson(old);*/
+        //return gson.toJson(eventJson);
+
+        Gson gson = new Gson();
+        //User user = getUserFromSession(request,response);
+        User user =  getVerifiedUserFromToken(request); //JWT
+        EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
+        Event event = EventRepository.instance.findById(request.params(":id"));
+        EventRepository.instance.updateVoteWithId(event,eventOption,user);
+        response.status(201);
+        return "voto realizado o retirado";
     }
 
     public static Object updateParticipant(Request request, Response response) {
@@ -191,7 +220,7 @@ public class EventController {
             EventRepository.instance.updateParticipant(event,user);
             response.status(201);
             return "participación actualizada";
-        }catch(UnauthorizedException | JWTVerificationException e){
+        }catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
             return "Unauthorized";
         } catch (Exception e) {
@@ -262,7 +291,7 @@ public class EventController {
             EventRepository.instance.save(newEvent);
             System.out.println("Event Saved");
             return "Event created";
-        } catch (UnauthorizedException | JWTVerificationException e) {
+        } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);
             return "Unauthorized";
         } catch (Exception e) {

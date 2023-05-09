@@ -105,13 +105,58 @@ public class EventRepository implements Repository<Event>{
         */
     }
 
-    public void updateVote(Event event, EventOption eventOption, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
+    public void updateVoteWithOutId(Event event, Integer OptionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
         mongoClient = MongoDB.getMongoClient();
         try {
 
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+
+            EventOption option = event.getOptions().get(OptionIndex);
+
+            if (option == null){
+                throw new NoSuchElementException();
+            }
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            if (votes.isEmpty()){
+                option.addVote(new Vote(user));
+            } else{
+                option.rmvVote(votes.get(0));
+            }
+            collection.replaceOne(condition,event);
+
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally{
+            mongoClient.close(); //cerras el cliente
+        }
+    }
+
+    public void updateVoteWithId(Event event, EventOption eventOption, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
+
+        mongoClient = MongoDB.getMongoClient();
+        try {
+
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+
+            EventOption option = event.getOption(eventOption);
+
+            if (option == null){
+                throw new NoSuchElementException();
+            }
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
+            if (votes.isEmpty()){
+                collection.updateOne(condition,Updates.push("options.$[filter].votes", new Vote(user)),options);
+            } else{
+                collection.updateOne(condition,Updates.pull("options.$[filter].votes", votes.get(0)),options);
+            }
 
             /*
             Bson conditionExistOption = Filters.and(Filters.eq("_id", event.getId()), Filters.elemMatch("options", Filters.eq("_id", eventOption.getId())));
@@ -129,24 +174,10 @@ public class EventRepository implements Repository<Event>{
             }
             */
 
-            EventOption option = event.getOptions().get(eventOption.getId().intValue());
-            if (option == null){
-                throw new NoSuchElementException();
-            }
-            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
-            Bson condition = Filters.eq("_id", event.getId());
-            if (votes.isEmpty()){
-                UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
-                collection.updateOne(condition,Updates.push("options.$[filter].votes", new Vote(user)),options);
-            } else{
-                UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
-                collection.updateOne(condition,Updates.pull("options.$[filter].votes", votes.get(0)),options);
-            }
-
 
         } catch (MongoException e) {
             e.printStackTrace();
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally{
             mongoClient.close(); //cerras el cliente

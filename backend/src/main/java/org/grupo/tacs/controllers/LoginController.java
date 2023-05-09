@@ -166,6 +166,9 @@ public class LoginController {
 
         DecodedJWT jwt = verifier.verify(token);
         String userId = jwt.getSubject();
-        return UserRepository.instance.findById(userId);
+        User user = UserRepository.instance.findById(userId);
+        if(user == null)
+            throw new UnauthorizedException("Invalid Token");
+        return user;
     }
 }

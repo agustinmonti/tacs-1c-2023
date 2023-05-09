@@ -63,7 +63,7 @@ public class Router {
         put("/v2/events/:id",EventController::updateEvent); //  cerrar evento
         delete("/v2/events/:id",EventController::deleteEvent); // eliminar un evento
         options("/v2/events/:id/vote", EventController::soloPut);
-        put("/v2/events/:id/vote", EventController::updateVote); // agregar o remover el voto de una opcion
+        put("/v2/events/:id/vote", EventController::updateVoteWithOutId); // agregar o remover el voto de una opcion
         get("/monitoring", EventController::monitoring); // monitoring ()
         options("/v2/events/:id/participant",EventController::soloPut);
         put("/v2/events/:id/participant", EventController::updateParticipant);//anotarse y desanotarse

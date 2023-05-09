@@ -80,6 +80,15 @@ public class Event {
 
     public void addOption(EventOption option) {this.options.add(option);}
 
+    public EventOption getOption(EventOption option) {
+        for(EventOption eventOption : options) {
+            if(eventOption.getId().equals(option.getId())){
+                return eventOption;
+            }
+        }
+        return null;
+    }
+
     public void setParticipants(List<User> participants) {this.participants = participants;}
 
 
