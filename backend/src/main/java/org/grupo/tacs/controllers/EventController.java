@@ -1,10 +1,6 @@
 package org.grupo.tacs.controllers;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -19,7 +15,6 @@ import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventRepository;
-import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
 import spark.Response;
 
@@ -32,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
-import java.lang.Number;
 
 import static org.grupo.tacs.controllers.LoginController.getUserSession;
 import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;

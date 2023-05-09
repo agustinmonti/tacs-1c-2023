@@ -1,21 +1,14 @@
 package org.grupo.tacs.extras;
 
-import io.swagger.annotations.*;
-import io.swagger.jaxrs.config.*;
+import io.swagger.annotations.Api;
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.config.DefaultJaxrsConfig;
 import io.swagger.models.*;
-import io.swagger.models.Info;
-import io.swagger.models.Tag;
-import io.swagger.models.auth.*;
-import io.swagger.models.auth.ApiKeyAuthDefinition;
-import io.swagger.models.auth.OAuth2Definition;
-import io.swagger.models.parameters.*;
+import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.properties.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 
 @Api(tags={"login","users"})
 public class SwaggerConfig extends DefaultJaxrsConfig {

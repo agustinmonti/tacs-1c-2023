@@ -1,9 +1,6 @@
 package org.grupo.tacs.model;
 
-import org.grupo.tacs.extras.Helper;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class EventOption {

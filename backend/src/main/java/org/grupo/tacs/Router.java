@@ -1,19 +1,13 @@
 package org.grupo.tacs;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.grupo.tacs.controllers.*;
+import org.grupo.tacs.controllers.EventController;
+import org.grupo.tacs.controllers.LoginController;
+import org.grupo.tacs.controllers.UserController;
 import org.grupo.tacs.extras.SwaggerConfig;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Scanner;
-
-import static com.sun.org.apache.xalan.internal.utils.SecuritySupport.getResourceAsStream;
 import static spark.Spark.*;
 
 public class Router {

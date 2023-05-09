@@ -1,8 +1,6 @@
 package org.grupo.tacs.model;
 
-import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;

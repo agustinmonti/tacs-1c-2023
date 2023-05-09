@@ -1,7 +1,5 @@
 package org.grupo.tacs.model;
 
-import org.grupo.tacs.extras.Helper;
-
 import java.time.LocalDateTime;
 
 public class Vote {
