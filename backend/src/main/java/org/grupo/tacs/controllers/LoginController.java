@@ -134,8 +134,8 @@ public class LoginController {
                 throw new WrongPasswordException();
             }
         } catch (WrongPasswordException | UserDoesNotExistException e) {
-            response.cookie("error", "Wrong Credentials", 1);
-            response.redirect("/");
+            response.status(401);
+            return e;
         } catch (Exception e) {
             response.status(500);
         } finally {

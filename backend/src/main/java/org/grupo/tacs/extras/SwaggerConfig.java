@@ -51,63 +51,40 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .name("Event")
                 .description("Event object")
                 .property("name", new StringProperty().description("Event name"))
+                .property("desc", new StringProperty().description("Event description"))
                 .property("createdBy", new LongProperty().description("Created by user"))
                 .property("options",new ArrayProperty().description("Possible Event time segments")
                     .items(new ObjectProperty()
                             .property("start", new DateTimeProperty().description("Start time"))
-                            .property("end", new DateTimeProperty().description("End time"))))
+                            .property("end", new DateTimeProperty().description("End time"))
+                            .property("votes", new ArrayProperty().description("Votes by users")
+                                    .items(new ObjectProperty()
+                                            .property("user", new ObjectProperty().description("User that voted this option"))
+                                            .property("votingDate",new DateTimeProperty().description("Time of Vote"))))))
                 .property("participants", new ArrayProperty().description("Participant List")
                         .items(new ObjectProperty()
-                                .property("participantId", new StringProperty().description("ObjectId of users subscribed to this event"))))
-                //.example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\"},{\"start\": \"2022-01-01T15:00:00Z\",\"end\": \"2022-01-01T17:00:00Z\"}], \"participants\": [\"64517fead086c42a7d2acc73\", \"64517fead086c42a7d2acc75\", \"64517fead086c42a7d2acc77\"] }");
-                        .example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\"},{\"start\": \"2022-01-01T15:00:00Z\",\"end\": \"2022-01-01T17:00:00Z\"}]}");
+                                .property("User", new ObjectProperty().description("A participant"))))
+                .example("{ \"name\": \"Evento Aburrido\",\"desc\":\"Un evento que no es divertido\",\"participants\": [],\"options\":[{\"start\": \"2022-01-01T12:00:00Z\",\"end\": \"2022-01-01T14:00:00Z\",\"votes\": []},{\"start\": \"2022-01-01T15:00:00Z\",\"end\": \"2022-01-01T17:00:00Z\",\"votes\": []}]}");
         swagger.addDefinition("Event",event);
 
         Model eventOption = new ModelImpl()
                 .name("EventOption")
-                .description("Un JSON con el option id")
-                .property("optionId",new StringProperty().description("ObjectId of an EventOption"))
+                .description("EventOption id or index")
+                .property("_id",new StringProperty().description("Used to identify the EventOption to vote"))
                 .example("{\"_id\": \"1\"}");
         swagger.addDefinition("EventOption",eventOption);
-
-        //String exampleJson = "{ \"name\": \"Evento Aburrido\", \"createdBy\": 1, \"guests\": [\"Julia\", \"Bernardo\", \"Bob Esponja\"] }";
 
         swagger.info(new Info()
                 .title("TACS-1C-2023")
                 .version("1.0.0")
                 .description("A sample RESTful API built with Spark Java and Swagger"));
 
-        /*ApiKeyAuthDefinition securityScheme = new ApiKeyAuthDefinition();
-        securityScheme.setType("apiKey");
-        securityScheme.setIn(In.HEADER);
-        securityScheme.setName("Authorization");
-        securityScheme.setDescription("Enter the token with the `Bearer: ` prefix, e.g. \"Bearer abcde12345\".");
-
-        swagger.securityDefinition("Bearer", securityScheme);
-        SecurityRequirement securityRequirement = new SecurityRequirement();
-        securityRequirement.requirement("Bearer", new ArrayList<>());*/
-
-        swagger.securityDefinition("jwt", new ApiKeyAuthDefinition("Authorization", In.HEADER));
+        /*swagger.securityDefinition("jwt", new ApiKeyAuthDefinition("Authorization", In.HEADER));*/
 
         swagger.tag(new Tag().name("login").description("Operaciones de autenticación"));
         swagger.tag(new Tag().name("users").description("Operaciones con cuentas de usuario"));
         swagger.tag(new Tag().name("events").description("Operaciones con eventos"));
         swagger.tag(new Tag().name("monitoring").description("Muestra datos de marketing"));
-
-        /*swagger.path("/auth/login", new Path()
-                .post(new Operation()
-                        .tags(Arrays.asList("login"))
-                        .summary("Autenticar un usuario")
-                        .description("Autenticar a un usuario existente")
-                        .parameter(new BodyParameter()
-                                .name("credentials")
-                                .description("Credenciales de autenticación")
-                                .schema(credentials))
-                        .response(200, new Response()
-                                .description("Autenticación exitosa"))
-                        .response(401, new Response()
-                                .description("Credenciales inválidas"))));*/
-
 
         swagger.path("/v2/auth/login", new Path()
                 .post(new Operation()
@@ -134,7 +111,9 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Datos del usuario a crear")
                                 .schema(user))
                         .response(201, new Response()
-                                .description("Usuario creado satisfactoriamente"))));
+                                .description("User successfully created"))
+                        .response(409,new Response()
+                                .description("This email is already in use"))));
 
         swagger.path("/v2/events", new Path()
                 .get(new Operation()
@@ -154,7 +133,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         //.security(new SecurityRequirement().requirement("jwt", Arrays.asList("read","write")))
                         .response(201, new Response()
                                 .description("Evento creado satisfactoriamente"))
-                        .response(401, new Response().description("BOOM!"))));
+                        .response(401, new Response()
+                                .description("Unauthorized"))));
 
         swagger.path("/events/{id}", new Path()
                 .get(new Operation()
@@ -187,9 +167,11 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .name("EventOption")
                                 .schema(eventOption))
                         .response(201, new Response()
-                                .description("Se voto correctamente"))
+                                .description("voto realizado o retirado"))
                         .response(404, new Response()
-                                .description("No se encontro el evento o su opcion a votar"))));
+                                .description("No se encontro el evento o su opcion a votar"))
+                        .response(401, new Response()
+                                .description("Unauthorized"))));
 
         swagger.path("/v2/events/{id}/participant",new Path()
                 .put(new Operation()
@@ -203,9 +185,11 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .type("string")
                                 .format("ObjectId"))
                         .response(201,new Response()
-                                .description("El usuario se subscribio correctamente"))
+                                .description("participación actualizada"))
                         .response(404, new Response()
-                                .description("No se encontro el evento"))));
+                                .description("No se encontro el evento"))
+                        .response(401, new Response()
+                                .description("Unauthorized"))));
 
         swagger.path("/monitoring", new Path()
                 .get(new Operation()

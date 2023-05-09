@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import static org.grupo.tacs.controllers.LoginController.getUserSession;
 import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
 
 public class EventController {
@@ -73,8 +74,7 @@ public class EventController {
      * @param request contiene los datos del event a crear en el Body.
      * @param response no se usa.
      */
-    public static Object newEvent(Request request, Response response){
-        System.out.println("nuevo evento!!");
+    public static Object newEvent(Request request, Response response){//Deprecado ya no usamos Spark session
         try{
             response.status(201);
             System.out.println(request.body().toString());
@@ -82,22 +82,19 @@ public class EventController {
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                     .create();
             Event newEvent = gson.fromJson(request.body(),Event.class);
-            newEvent.setCreatedBy(getUserFromSession(request,response));
+            newEvent.setCreatedBy(getUserSession(request,response));
             EventRepository.instance.save(newEvent);
             return gson.toJson(newEvent);
         }catch(Exception e){
-            System.out.println(e);
-            return "";
+            response.status(500);
+            return e;
         }
-
-
-        //return request.body().toString();
     }
 
-    public static User getUserFromSession(Request request, Response response){
+    /*public static User getUserFromSession(Request request, Response response){
         ObjectId objectId = request.session().attribute("id");
         return UserRepository.instance.findById(objectId.toHexString());
-    }
+    }*/
 
     public static Object updateEvent(Request request, Response response) {
         /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
@@ -112,6 +109,7 @@ public class EventController {
         }
         String eventJson = gson.toJson(old);
         return gson.toJson(eventJson);*/
+        response.status(201);
         Gson gson = new Gson();
         Event event = gson.fromJson(request.body(),Event.class);
         event.setId(new ObjectId(request.params(":id")));
@@ -133,6 +131,7 @@ public class EventController {
 
     public static Object monitoring(Request request, Response response) {
         List<Integer> result = EventRepository.instance.monitoring();
+        response.status(200);
         Map<String, Object> data = new HashMap<>();
         data.put("events",result.get(0));
         data.put("votes",result.get(1));
@@ -153,14 +152,23 @@ public class EventController {
         }
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
-        Gson gson = new Gson();
-        //User user = getUserFromSession(request,response);
-        User user =  getVerifiedUserFromToken(request); //JWT
-        EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
-        Event event = EventRepository.instance.findById(request.params(":id"));
-        EventRepository.instance.updateVote(event,eventOption,user);
-        response.status(200);
-        return "voto realizado o retirado";
+        try{
+            Gson gson = new Gson();
+            //User user = getUserFromSession(request,response);
+            User user =  getVerifiedUserFromToken(request); //JWT
+            EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            EventRepository.instance.updateVote(event,eventOption,user);
+            response.status(201);
+            return "voto realizado o retirado";
+        }catch(UnauthorizedException | JWTVerificationException e){
+            response.status(401);
+            return "Unauthorized";
+        } catch (Exception e) {
+            response.status(500);
+            System.out.println(e);
+            return "Error updating vote";
+        }
     }
 
     public static Object updateParticipant(Request request, Response response) {
@@ -177,11 +185,20 @@ public class EventController {
         String eventJson = gson.toJson(old);*/
         //return gson.toJson(eventJson);
         //User user = getUserFromSession(request,response); //Spark java Session
-        User user = getVerifiedUserFromToken(request); //JWT
-        Event event = EventRepository.instance.findById(request.params(":id"));
-        EventRepository.instance.updateParticipant(event,user);
-        response.status(200);
-        return "participación actualizada";
+        try{
+            User user = getVerifiedUserFromToken(request); //JWT
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            EventRepository.instance.updateParticipant(event,user);
+            response.status(201);
+            return "participación actualizada";
+        }catch(UnauthorizedException | JWTVerificationException e){
+            response.status(401);
+            return "Unauthorized";
+        } catch (Exception e) {
+            response.status(500);
+            System.out.println(e);
+            return "Error updating participant";
+        }
     }
 
 
