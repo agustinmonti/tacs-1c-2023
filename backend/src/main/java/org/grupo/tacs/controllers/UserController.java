@@ -80,7 +80,7 @@ public class UserController {
             Gson gson = new Gson();
             User nuevo = gson.fromJson(request.body(),User.class);
             UserRepository.instance.save(nuevo);
-            return gson.toJson(nuevo);
+            return gson.toJson(nuevo.getId().toHexString());
         }catch(ThisEmailIsAlreadyInUseException e){
             response.status(409);//Email already taken
             response.type("text/plain");
