@@ -16,11 +16,12 @@ export const useAuthStore = () => {
     const startCreatingUser = async( newUser ) => {
 
         try {
-            //const { status, data } = await api.post('/users', newUser); 
+            const { status, data } = await api.post('/users', newUser); 
             
+            /*
             const status = 201;
             const data = { msg: 'Registrado correctamente'}
-
+            */
             if( status === 201 ){
                 Swal.fire('Registrado', data.msg, 'success');
                 return true;

@@ -39,12 +39,12 @@ public class Router {
         options("/v2/auth/login",LoginController::getOptions);
         post("/v2/auth/login",LoginController::loginJWT);
 
-        options("/users",UserController::getUsersOptions);
-        post("/users",UserController::newUser);
-        get("/users", UserController::getUsers);
+        options("/v2/users",UserController::getUsersOptions);
+        post("/v2/users",UserController::newUser);
+        get("/v2/users", UserController::getUsers);
         //Defino Rutas
 
-        get("/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)
+        get("/v2/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)
 
         //options("/events",EventController::getEventsOptions);
         //post("/events",EventController::newEvent); // crea un evento
