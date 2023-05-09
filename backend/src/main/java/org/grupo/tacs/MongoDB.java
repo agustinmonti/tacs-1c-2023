@@ -19,7 +19,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDB {
-    /*public static MongoDatabase mongodb() {
+    public static MongoDatabase mongodb() {
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         //String connectionString = "mongodb+srv://gciruzzi:123@mongo.xebsbis.mongodb.net/?retryWrites=true&w=majority";
@@ -30,7 +30,7 @@ public class MongoDB {
                 .build();
 
         MongoClient mongoClient = MongoClients.create(settings);
-        return mongoClient.getDatabase("mydb");}*/
+        return mongoClient.getDatabase("mydb");}
 /*try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 MongoDatabase database = mongoClient.getDatabase("mydb");
@@ -45,7 +45,7 @@ public class MongoDB {
             }
         }*/
 
-    static String CONNECTION_STRING = "mongodb://0.0.0.0:27017";
+    static String CONNECTION_STRING = "mongodb://127.0.0.1:27017";
     public static MongoClient getMongoClient(){
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));

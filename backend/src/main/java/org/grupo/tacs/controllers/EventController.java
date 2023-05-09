@@ -277,13 +277,9 @@ public class EventController {
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                     .create();
             Event newEvent = gson.fromJson(request.body(),Event.class);
-            System.out.println("user id:"+user.getId());
-            System.out.println("user:"+user.getName());
             newEvent.setCreatedBy(user);
-            System.out.println("Event Created");
             EventRepository.instance.save(newEvent);
-            System.out.println("Event Saved");
-            return "Event created";
+            return gson.toJson(newEvent);
         } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);
             return "Unauthorized";

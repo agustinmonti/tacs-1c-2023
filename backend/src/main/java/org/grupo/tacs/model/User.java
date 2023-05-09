@@ -39,6 +39,7 @@ public class User {
     }
 
     public User() {
+        this.createdDate = LocalDateTime.now();
     }
 
     public ObjectId getId() {

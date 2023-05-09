@@ -68,8 +68,10 @@ public class UserRepository implements Repository<User>{
     @Override
     public void save(User user) {
         mongoClient = MongoDB.getMongoClient();
+        System.out.println("tengo client");
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            System.out.println("db");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
             User existingUser = collection.find(Filters.eq("email", user.getEmail())).first();
             if (existingUser != null) {

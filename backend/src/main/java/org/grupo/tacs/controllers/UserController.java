@@ -85,6 +85,11 @@ public class UserController {
             response.status(409);//Email already taken
             response.type("text/plain");
             return "This email is already in use";
+        }catch(Exception e){
+            response.status(500);
+            System.out.println(e);
+            response.type("text/plain");
+            return "Time OUT?";
         }
     }
 
