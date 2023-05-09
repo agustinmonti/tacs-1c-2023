@@ -154,7 +154,7 @@ public class EventController {
             //User user = getUserFromSession(request,response);
             User user =  getVerifiedUserFromToken(request); //JWT
             JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
-            Integer optionIndex = jsonObject.get("_id").getAsInt();
+            Integer optionIndex = jsonObject.get("optionIndex").getAsInt();
             Event event = EventRepository.instance.findById(request.params(":id"));
             EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
             response.status(201);
@@ -236,13 +236,18 @@ public class EventController {
     }
 
     public static Object getEvents(Request request, Response response) {
-    Map<String,Object> param = new HashMap<>();
-    response.status(200);
-    Gson gson = new Gson();
-    //filtrar por user
-    String events = gson.toJson( EventRepository.instance.findAll());
-    //return events;
-    return gson.toJson( "eventos");
+        try{
+            Map<String,Object> param = new HashMap<>();
+            response.status(200);
+            Gson gson = new Gson();
+            String events = gson.toJson( EventRepository.instance.findAll());
+            return gson.toJson(events);
+        }catch (Exception e) {
+            response.status(500);
+            System.out.println(e);
+            return "";
+        }
+
     }
 
     private static Response getResponse(Response response, String allowedMethods) {
@@ -279,7 +284,7 @@ public class EventController {
             Event newEvent = gson.fromJson(request.body(),Event.class);
             newEvent.setCreatedBy(user);
             EventRepository.instance.save(newEvent);
-            return gson.toJson(newEvent);
+            return gson.toJson(newEvent.getId().toHexString());
         } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);
             return "Unauthorized";

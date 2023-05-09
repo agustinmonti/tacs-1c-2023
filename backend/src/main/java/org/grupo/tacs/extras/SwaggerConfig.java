@@ -63,8 +63,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
         Model eventOption = new ModelImpl()
                 .name("EventOption")
                 .description("EventOption id or index")
-                .property("_id",new StringProperty().description("Used to identify the EventOption to vote"))
-                .example("{\"_id\": \"1\"}");
+                .property("optionIndex",new StringProperty().description("Used to identify the EventOption to vote"))
+                .example("{\"optionIndex\": \"1\"}");
         swagger.addDefinition("EventOption",eventOption);
 
         swagger.info(new Info()
@@ -74,10 +74,25 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
 
         /*swagger.securityDefinition("jwt", new ApiKeyAuthDefinition("Authorization", In.HEADER));*/
 
-        swagger.tag(new Tag().name("login").description("Operaciones de autenticación"));
         swagger.tag(new Tag().name("users").description("Operaciones con cuentas de usuario"));
+        swagger.tag(new Tag().name("login").description("Operaciones de autenticación"));
         swagger.tag(new Tag().name("events").description("Operaciones con eventos"));
         swagger.tag(new Tag().name("monitoring").description("Muestra datos de marketing"));
+
+        swagger.path("/users", new Path()
+                .post(new Operation()
+                        .tags(Arrays.asList("users"))
+                        .summary("Crear una cuenta de usuario")
+                        .description("Crea una cuenta de usuario nueva")
+                        .parameter(new BodyParameter()
+                                .name("user")
+                                .description("Datos del usuario a crear")
+                                .schema(user))
+                        .response(201, new Response()
+                                .description("User successfully created"))
+                        .response(409,new Response()
+                                .description("This email is already in use"))
+                        .response(500, new Response())));
 
         swagger.path("/v2/auth/login", new Path()
                 .post(new Operation()
@@ -92,29 +107,10 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Autenticación exitosa")
                                 .header("Authorization", new StringProperty().description("JWT token")))
                         .response(401, new Response()
-                                .description("Credenciales inválidas"))));
-
-        swagger.path("/users", new Path()
-                .post(new Operation()
-                        .tags(Arrays.asList("users"))
-                        .summary("Crear una cuenta de usuario")
-                        .description("Crea una cuenta de usuario nueva")
-                        .parameter(new BodyParameter()
-                                .name("user")
-                                .description("Datos del usuario a crear")
-                                .schema(user))
-                        .response(201, new Response()
-                                .description("User successfully created"))
-                        .response(409,new Response()
-                                .description("This email is already in use"))));
+                                .description("Credenciales inválidas"))
+                        .response(500, new Response())));
 
         swagger.path("/v2/events", new Path()
-                .get(new Operation()
-                        .tags(Arrays.asList("events"))
-                        .summary("Obtener todos los eventos")
-                        .description("Obtiene una lista con todos los eventos registrados")
-                        .response(200, new Response()
-                                .description("Lista de eventos")))
                 .post(new Operation()
                         .tags(Arrays.asList("events"))
                         .summary("Crear un nuevo evento")
@@ -127,7 +123,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(201, new Response()
                                 .description("Evento creado satisfactoriamente"))
                         .response(401, new Response()
-                                .description("Unauthorized"))));
+                                .description("Unauthorized"))
+                        .response(500, new Response())));
 
         swagger.path("/events/{id}", new Path()
                 .get(new Operation()
@@ -143,7 +140,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(200, new Response()
                                 .description("Evento encontrado"))
                         .response(404, new Response()
-                                .description("Evento no encontrado"))));
+                                .description("Evento no encontrado"))
+                        .response(500, new Response())));
 
         swagger.path("/v2/events/{id}/vote",new Path()
                 .put(new Operation()
@@ -164,7 +162,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(404, new Response()
                                 .description("No se encontro el evento o su opcion a votar"))
                         .response(401, new Response()
-                                .description("Unauthorized"))));
+                                .description("Unauthorized"))
+                        .response(500, new Response())));
 
         swagger.path("/v2/events/{id}/participant",new Path()
                 .put(new Operation()
@@ -182,7 +181,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .response(404, new Response()
                                 .description("No se encontro el evento"))
                         .response(401, new Response()
-                                .description("Unauthorized"))));
+                                .description("Unauthorized"))
+                        .response(500, new Response())));
 
         swagger.path("/monitoring", new Path()
                 .get(new Operation()
@@ -190,7 +190,8 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                         .summary("Trae datos relevantes a marketing en un JSON")
                         .description("Trae datos relevantes a marketing en un JSON, cantidad de opciones de eventos votadas en las ultimas dos horas")
                         .response(200, new Response()
-                                .description("ok"))));
+                                .description("ok"))
+                        .response(500, new Response())));
 
         return swagger;
 
