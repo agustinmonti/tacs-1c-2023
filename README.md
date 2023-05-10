@@ -19,7 +19,7 @@ http://localhost:8080/swagger-auth.json
 ```
 ## mongo ##
 ```
-mongo://localhost:27017
+mongodb://localhost:27017
 ```
 
 ## Links ##
