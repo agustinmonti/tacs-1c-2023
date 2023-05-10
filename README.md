@@ -7,14 +7,19 @@ Abren un cmd o powershell en el directorio `tacs-1c-2023` y ejecutan este comand
 ```
 docker compose up
 ```
-
+## Frontend ##
 Frontend
 ```
 http://localhost:5173
 ```
+## Backend ##
 Backend swagger json
 ```
 http://localhost:8080/swagger-auth.json
+```
+## mongo ##
+```
+mongo://localhost:27017
 ```
 
 ## Links ##
