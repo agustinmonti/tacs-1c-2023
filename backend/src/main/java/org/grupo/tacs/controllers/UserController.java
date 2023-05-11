@@ -57,29 +57,12 @@ public class UserController {
      * @param response no se usa.
      */
     public static Object newUser(Request request, Response response){
-        // deberia usar un try catch()
-        //obtengo los datos del request
-        /* Ejemplo
-        String nombre          = request.queryParams("nombre del User")
-        String password     = request.queryParams("password");
-        String email     = request.queryParams("email");
-         */
-        /*
-        Me fijaria que no exista el usuario con ese nombre:
-        List<User> usuarios = RepositorioUsuarios.instancia.listar()
-        if(usuarios.stream().anyMatch(user->user.getNombre()==nombre)){
-            tiro alguna exepcion ej: throw new Exception("Ya existe un usuario con ese nombre")
-        }
-         */
-        /*
-        Comienzo a crear el usuario
-        User nuevo = new User(nombre,password,email)
-         */
+
         try{
-            response.status(201);
             Gson gson = new Gson();
             User nuevo = gson.fromJson(request.body(),User.class);
             UserRepository.instance.save(nuevo);
+            response.status(201);
             return gson.toJson(nuevo.getId().toHexString());
         }catch(ThisEmailIsAlreadyInUseException e){
             response.status(409);//Email already taken

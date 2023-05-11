@@ -30,10 +30,10 @@ public class Event {
      * @param createdBy Es el usuario creador del evento.
 
      */
-    public Event(String name, String desc, Boolean isActive, List<EventOption> options, User createdBy, List<User> participants) {
+    public Event(String name, String desc, List<EventOption> options, User createdBy, List<User> participants) {
         this.name = name;
         this.desc = desc;
-        this.isActive = isActive;
+        this.isActive = true;
         this.options = options;
         this.createdDate = LocalDateTime.now();
         this.createdBy = createdBy;

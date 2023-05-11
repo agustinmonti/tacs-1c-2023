@@ -20,6 +20,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDB {
     static String CONNECTION_STRING = "mongodb://host.docker.internal:27017";
+    //static String CONNECTION_STRING = "mongodb://localhost:27017";
     public static MongoClient getMongoClient(){
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));

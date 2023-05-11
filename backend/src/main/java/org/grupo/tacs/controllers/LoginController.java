@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mongodb.client.model.Filters;
 import io.swagger.annotations.*;
 import org.bson.conversions.Bson;
@@ -114,24 +115,20 @@ public class LoginController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public static Object loginJWT(Request request, Response response) {
-        List<User> usuarios = UserRepository.instance.findAll();
-        Map<String, ObjectId> myMap = new HashMap<String, ObjectId>();
+        List<User> users = UserRepository.instance.findAll();
         Gson gson = new Gson();
         String token = null;
         try {
-            //String email = request.queryParams("email");
-            //String password = request.queryParams("password");
-            String requestBody = request.body();
-            Map<String, Object> jsonMap = gson.fromJson(requestBody, Map.class);
-            String email = (String) jsonMap.get("email");
-            String password = (String) jsonMap.get("password");
-            Bson condition = Filters.eq("email", email);
-            User usuario = usuarios.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
-            token = generateToken(usuario);
+            JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
+            String email = jsonObject.get("email").getAsString();
+            String password = jsonObject.get("password").getAsString();
+            User user = users.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
+            token = generateToken(user);
             response.header("Authorization", "Bearer " + token);
-            if (!usuario.getPassword().equals(password)) {
+            if (!user.getPassword().equals(password)) {
                 throw new WrongPasswordException();
             }
+            response.status(200);
         } catch (WrongPasswordException | UserDoesNotExistException e) {
             response.status(401);
             return e;

@@ -8,13 +8,16 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.types.ObjectId;
+import org.grupo.tacs.excepciones.EventDoesNotExistException;
 import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
+import org.grupo.tacs.excepciones.WrongPasswordException;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventRepository;
+import org.w3c.dom.events.EventException;
 import spark.Request;
 import spark.Response;
 
@@ -58,9 +61,12 @@ public class EventController {
             }
             response.status(200);
             eventJson = gson.toJson(event);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e){
             response.status(404);
-            eventJson = gson.toJson("No lo encontre!");
+            eventJson = gson.toJson("Event does not exist");
+        } catch (Exception e) {
+            response.status(500);
+            eventJson = gson.toJson("Error getting vote");
         }
         return eventJson;
     }
@@ -132,10 +138,16 @@ public class EventController {
             JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
             Integer optionIndex = jsonObject.get("optionIndex").getAsInt();
             Event event = EventRepository.instance.findById(request.params(":id"));
+            if (event == null){
+                throw new EventDoesNotExistException();
+            }
             EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
             response.status(201);
             return "voto realizado o retirado";
-        }catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+        } catch(EventDoesNotExistException | NoSuchElementException e){
+            response.status(404);
+            return "Event or Option does not exist";
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
             return "Unauthorized";
         } catch (Exception e) {
@@ -160,10 +172,16 @@ public class EventController {
         try{
             User user = getVerifiedUserFromToken(request); //JWT
             Event event = EventRepository.instance.findById(request.params(":id"));
+            if (event == null){
+                throw new EventDoesNotExistException();
+            }
             EventRepository.instance.updateParticipant(event,user);
             response.status(201);
             return "participación actualizada";
-        }catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+        } catch(EventDoesNotExistException e){
+            response.status(404);
+            return "Event does not exist";
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
             return "Unauthorized";
         } catch (Exception e) {
@@ -227,13 +245,13 @@ public class EventController {
     public static Object createEventJWT(Request request, Response response) {
         try {
             User user =  getVerifiedUserFromToken(request);
-            response.status(201);
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                     .create();
             Event newEvent = gson.fromJson(request.body(),Event.class);
             newEvent.setCreatedBy(user);
             EventRepository.instance.save(newEvent);
+            response.status(201);
             return gson.toJson(newEvent.getId().toHexString());
         } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);

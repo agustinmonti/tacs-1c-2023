@@ -45,7 +45,6 @@ public class EventRepository implements Repository<Event>{
             mongoClient.close(); //cerras el cliente
         }
 
-        //return events.stream().filter(event -> event.getId() == id).findFirst().get();
     }
 
     @Override
@@ -63,21 +62,15 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
-
-            //POR SI QUERES HARDCODEARLO
-            //MongoCollection<User> users_collection = mongodb.getCollection("Users", User.class);
-            //List<User> users = users_collection.find().into(new ArrayList<>()); //SI USERS ESTA VACIO ROMPE, PROCURA QUE HAYA USERS PARA HACER ESTO
-            //List<EventOption> options = new ArrayList<>();
-            //Event event1 = new Event("Marcha", "Aumento de salario", true,options, users.get(0), users);
-
+            event.setIsActive(true);
             event.setCreatedDate(LocalDateTime.now());
             collection.insertOne(event);
+        } catch (MongoException e) {
+            e.printStackTrace();
         } finally {
             mongoClient.close(); //cerras el cliente
         }
 
-        //event.setId(events.stream().count());
-        //events.add(event);
     }
 
     @Override //SOLO SE USA PARA EL ESTADO POR AHORA
@@ -115,9 +108,6 @@ public class EventRepository implements Repository<Event>{
 
             EventOption option = event.getOptions().get(OptionIndex);
 
-            if (option == null){
-                throw new NoSuchElementException();
-            }
             List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             if (votes.isEmpty()){
@@ -127,6 +117,8 @@ public class EventRepository implements Repository<Event>{
             }
             collection.replaceOne(condition,event);
 
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
         } catch (MongoException e) {
             e.printStackTrace();
         } catch (Exception e) {
