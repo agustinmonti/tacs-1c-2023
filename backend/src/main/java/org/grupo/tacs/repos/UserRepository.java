@@ -40,17 +40,6 @@ public class UserRepository implements Repository<User>{
         }  finally {
             mongoClient.close(); //cerras el cliente
         }
-
-        /*
-        List<User> allUsers = this.findAll();
-        if(id<0 || id >= allUsers.stream().count()) {
-            return null;
-        }
-        return allUsers.get(Math.toIntExact(id));
-        */
-
-
-        //return users.stream().filter(user -> user.getId() == id).findFirst().get();
     }
 
     @Override
@@ -87,7 +76,7 @@ public class UserRepository implements Repository<User>{
 
     @Override //NO SE USA
     public void update(User entidad) {
-        /*
+
         mongoClient = MongoDB.getMongoClient();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
@@ -97,27 +86,23 @@ public class UserRepository implements Repository<User>{
         } finally {
             mongoClient.close(); //cerras el cliente
         }
-        */
-
-
-        User unUser = users.stream().filter(user -> user.getId() == entidad.getId()).findFirst().get();
-        unUser.setEmail(entidad.getEmail());
-        unUser.setName(entidad.getName());
-        unUser.setPassword(entidad.getPassword());
 
     }
 
     @Override //NO SE USA
     public void delete(User entidad) {
 
-        /*MongoCollection<User> collection = mongodb().getCollection("Users", User.class);
-        Bson condition = Filters.eq("_id", entidad.getId());
-
+        mongoClient = MongoDB.getMongoClient();
         try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
+            Bson condition = Filters.eq("_id", entidad.getId());
             collection.deleteOne(condition);
         } catch (MongoException e) {
-                e.printStackTrace();
-        }*/
+            e.printStackTrace();
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
     }
 
     @Override //NO SE USA

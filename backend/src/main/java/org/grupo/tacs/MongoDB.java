@@ -19,32 +19,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDB {
-    public static MongoDatabase mongodb() {
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-        //String connectionString = "mongodb+srv://gciruzzi:123@mongo.xebsbis.mongodb.net/?retryWrites=true&w=majority";
-        String connectionString = "mongodb://localhost:27017";
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .codecRegistry(pojoCodecRegistry)
-                .build();
-
-        MongoClient mongoClient = MongoClients.create(settings);
-        return mongoClient.getDatabase("mydb");}
-/*try (MongoClient mongoClient = MongoClients.create(settings)) {
-            try {
-                MongoDatabase database = mongoClient.getDatabase("mydb");
-                MongoCollection<User> collection = database.getCollection("Users", User.class);
-                User pepe = new User("pepe", "pepe@gmail.com", "pepeHash").setId(54L);
-                //Bson condition = Filters.eq("_id", 1L);
-                //collection.findOneAndUpdate(condition, Updates.set("name","ivana"));
-                collection.insertOne(pepe);
-                mongoClient.close();
-            } catch (MongoException e) {
-                e.printStackTrace();
-            }
-        }*/
-
     static String CONNECTION_STRING = "mongodb://host.docker.internal:27017";
     public static MongoClient getMongoClient(){
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),

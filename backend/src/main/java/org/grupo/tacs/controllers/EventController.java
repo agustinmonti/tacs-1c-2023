@@ -94,18 +94,6 @@ public class EventController {
     }*/
 
     public static Object updateEvent(Request request, Response response) {
-        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
-        response.status(200);
-        Gson gson = new Gson();
-        User user = new User("","","");
-        User array[] =  new User[10];
-        Event event = new Event("",true, user,array);
-        event = gson.fromJson(request.body(),Event.class);
-        if (!event.getName().equals("")) {
-            old.setName(event.getName());
-        }
-        String eventJson = gson.toJson(old);
-        return gson.toJson(eventJson);*/
         response.status(201);
         Gson gson = new Gson();
         Event event = gson.fromJson(request.body(),Event.class);
@@ -116,7 +104,7 @@ public class EventController {
 
     public static Object deleteEvent(Request request, Response response) {
         try {
-            EventRepository.instance.deleteById(/*Long.parseLong*/(request.params(":id")));
+            EventRepository.instance.deleteById((request.params(":id")));
             response.status(200);
         }catch(NoSuchElementException e){
             response.status(404);
@@ -137,18 +125,6 @@ public class EventController {
     }
 
     public static Object updateVoteWithOutId(Request request, Response response) {
-        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
-        response.status(200);
-        Gson gson = new Gson();
-        User user = new User("","","");
-        User array[] =  new User[10];
-        Event event = new Event("",true, user,array);
-        event = gson.fromJson(request.body(),Event.class);
-        if (!event.getName().equals("")) {
-            old.setName(event.getName());
-        }
-        String eventJson = gson.toJson(old);*/
-        //return gson.toJson(eventJson);
         try{
             Gson gson = new Gson();
             //User user = getUserFromSession(request,response);
@@ -170,19 +146,6 @@ public class EventController {
     }
 
     public static Object updateVoteWithId(Request request, Response response) {
-        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
-        response.status(200);
-        Gson gson = new Gson();
-        User user = new User("","","");
-        User array[] =  new User[10];
-        Event event = new Event("",true, user,array);
-        event = gson.fromJson(request.body(),Event.class);
-        if (!event.getName().equals("")) {
-            old.setName(event.getName());
-        }
-        String eventJson = gson.toJson(old);*/
-        //return gson.toJson(eventJson);
-
         Gson gson = new Gson();
         //User user = getUserFromSession(request,response);
         User user =  getVerifiedUserFromToken(request); //JWT
@@ -194,19 +157,6 @@ public class EventController {
     }
 
     public static Object updateParticipant(Request request, Response response) {
-        /*Event old = EventRepository.instance.findById(Long.parseLong(request.params(":id")));
-        response.status(200);
-        Gson gson = new Gson();
-        User user = new User("","","");
-        User array[] =  new User[10];
-        Event event = new Event("",true, user,array);
-        event = gson.fromJson(request.body(),Event.class);
-        if (!event.getName().equals("")) {
-            old.setName(event.getName());
-        }
-        String eventJson = gson.toJson(old);*/
-        //return gson.toJson(eventJson);
-        //User user = getUserFromSession(request,response); //Spark java Session
         try{
             User user = getVerifiedUserFromToken(request); //JWT
             Event event = EventRepository.instance.findById(request.params(":id"));
