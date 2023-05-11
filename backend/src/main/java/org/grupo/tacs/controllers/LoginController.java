@@ -102,6 +102,7 @@ public class LoginController {
     public static Object getOptions(Request request, Response response) {
         String allowedMethods = "OPTIONS, GET, POST";
         response.status(200);
+        response.header("Allow", allowedMethods);
         return response;
     }
     @ApiOperation(value = "Generate JWT token for user")

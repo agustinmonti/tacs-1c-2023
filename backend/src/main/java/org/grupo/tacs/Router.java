@@ -53,7 +53,7 @@ public class Router {
         get("/v2/events",EventController::getEvents);
         get("/v2/events/:id", EventController::getEvent); // trae un evento en especifico, con todas sus opciones  y votos
 
-        options("/v2/events/:id",EventController::getEventOptions);
+        //options("/v2/events/:id",EventController::getEventOptions);
         put("/v2/events/:id",EventController::updateEvent); //  cerrar evento
         delete("/v2/events/:id",EventController::deleteEvent); // eliminar un evento
         options("/v2/events/:id/vote", EventController::soloPut);
