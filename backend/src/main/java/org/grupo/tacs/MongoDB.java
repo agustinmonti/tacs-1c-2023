@@ -45,7 +45,7 @@ public class MongoDB {
             }
         }*/
 
-    static String CONNECTION_STRING = "mongodb://127.0.0.1:27017";
+    static String CONNECTION_STRING = "mongodb://host.docker.internal:27017";
     public static MongoClient getMongoClient(){
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
