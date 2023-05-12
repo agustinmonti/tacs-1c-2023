@@ -17,6 +17,10 @@ Backend swagger json
 ```
 http://localhost:8080/swagger-auth.json
 ```
+Backend Postman
+
+[Postman](https://github.com/agustinmonti/tacs-1c-2023/blob/main/Documentacion/TEST.postman_collection.json)
+
 ## mongo ##
 ```
 mongodb://localhost:27017
