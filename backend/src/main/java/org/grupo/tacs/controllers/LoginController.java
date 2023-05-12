@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mongodb.client.model.Filters;
 import io.swagger.annotations.*;
@@ -13,6 +14,8 @@ import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.excepciones.WrongPasswordException;
+import org.grupo.tacs.extras.LocalDateTimeSerializer;
+import org.grupo.tacs.extras.ObjectIdSerializer;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.UserRepository;
 import spark.Request;
@@ -24,6 +27,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Api(tags = {"login"})
@@ -118,7 +122,12 @@ public class LoginController {
     public static Object loginJWT(Request request, Response response) {
         List<User> users = UserRepository.instance.findAll();
         Map<Object, Object> myMap = new HashMap<Object, Object>();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(ObjectId.class, new ObjectIdSerializer())
+                .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeSerializer())
+                .create();
+
         String token = null;
         try {
             JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
@@ -135,9 +144,11 @@ public class LoginController {
             response.status(200);
         } catch (WrongPasswordException | UserDoesNotExistException e) {
             myMap.put("msg","Usuario y/o contraseña incorrectos.");
+            e.printStackTrace();
             response.status(401);
         } catch (Exception e) {
             response.status(500);
+            e.printStackTrace();
             myMap.put("msg","Server error: contacte al administrador.");
         } finally {
             response.type("application/json");

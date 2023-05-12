@@ -1,5 +1,6 @@
 package org.grupo.tacs.model;
 
+import com.google.gson.annotations.Expose;
 import org.bson.Document;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
@@ -7,21 +8,28 @@ import org.bson.types.ObjectId;
 import java.time.LocalDateTime;
 
 public class User {
+    @Expose(serialize = true)
     @BsonProperty("id")
     ObjectId _id;
+    @Expose(serialize = true)
     @BsonProperty(value = "name")
     String name;
+    @Expose(serialize = true)
     @BsonProperty(value = "lastname")
     String lastname;
+    @Expose(serialize = true)
     @BsonProperty(value = "email")
     String email;
+    @Expose(serialize = false)
     @BsonProperty(value = "password")
     String password;
+    @Expose(serialize = true)
     @BsonProperty(value = "isAdmin")
     Boolean isAdmin;
+    @Expose(serialize = true)
     @BsonProperty(value = "createdDate")
     LocalDateTime createdDate;
-
+    @Expose(serialize = false)
     String confirmPassword;
 
 

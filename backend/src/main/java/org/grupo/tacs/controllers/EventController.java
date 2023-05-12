@@ -14,6 +14,7 @@ import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.extras.EventData;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
+import org.grupo.tacs.extras.LocalDateTimeSerializer;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
@@ -49,7 +50,9 @@ public class EventController {
     @Produces(MediaType.APPLICATION_JSON)
     public static Object getEvent(Request request, Response response) {
         Map<Object, Object> myMap = new HashMap<Object, Object>();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .create();
         String eventJson = "";
         try {
             Event event = EventRepository.instance.findById(request.params(":id"));

@@ -51,7 +51,6 @@ public class UserController {
                 if(currentUser.getId().equals(user.getId())){
                     myMap.put("name",user.getName());
                     myMap.put("lastname",user.getLastName());
-                    myMap.put("password",user.getPassword());
                 }
             }
             myMap.put("email",user.getEmail());
