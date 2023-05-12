@@ -2,6 +2,7 @@ package org.grupo.tacs.controllers;
 
 import com.google.gson.Gson;
 import io.swagger.annotations.Api;
+import org.grupo.tacs.excepciones.ThePasswordsDontMatchException;
 import org.grupo.tacs.excepciones.ThisEmailIsAlreadyInUseException;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.UserRepository;
@@ -56,7 +57,8 @@ public class UserController {
             resp = gson.toJson(myMap);
         }catch (NoSuchElementException e){
             response.status(404);
-            resp = gson.toJson("User not Found!");
+            myMap.put("msg","Usuario no encontrado");
+            resp = gson.toJson(myMap);
         }
         return resp;
         //return new ModelAndView(parametros, "usuarios/usuario.html");
@@ -69,21 +71,25 @@ public class UserController {
      * @param response no se usa.
      */
     public static Object newUser(Request request, Response response){
-
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
+        Gson gson = new Gson();
         try{
-            Gson gson = new Gson();
             User nuevo = gson.fromJson(request.body(),User.class);
             UserRepository.instance.save(nuevo);
             response.status(201);
             return gson.toJson(nuevo.getId().toHexString());
         }catch(ThisEmailIsAlreadyInUseException e){
             response.status(409);//Email already taken
-            response.type("text/plain");
-            return "This email is already in use";
+            myMap.put("msg","Email ya registrado");
+            return gson.toJson(myMap);
+        }catch(ThePasswordsDontMatchException e){
+            response.status(409);//Las contraseñas no coinciden
+            myMap.put("msg","Las contraseñas no coinciden");
+            return gson.toJson(myMap);
         }catch(Exception e){
             response.status(500);
+            myMap.put("msg","Usuario no encontrado");
             System.out.println(e);
-            response.type("text/plain");
             return "Time OUT?";
         }
     }

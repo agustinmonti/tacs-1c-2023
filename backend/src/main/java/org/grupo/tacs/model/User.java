@@ -22,6 +22,8 @@ public class User {
     @BsonProperty(value = "createdDate")
     LocalDateTime createdDate;
 
+    String confirmPassword;
+
 
     /**
      * El método {@code Usuario} es el constructor de la clase {@code Usuario}.
@@ -94,4 +96,8 @@ public class User {
     public LocalDateTime getCreatedDate() {return createdDate;}
 
     public void setCreatedDate(LocalDateTime createdDate) {this.createdDate = createdDate;}
+
+    public Boolean passwordIguales(){
+        return this.getPassword().equals(this.confirmPassword);
+    }
 }

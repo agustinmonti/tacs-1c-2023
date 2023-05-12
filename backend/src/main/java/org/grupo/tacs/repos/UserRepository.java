@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
+import org.grupo.tacs.excepciones.ThePasswordsDontMatchException;
 import org.grupo.tacs.excepciones.ThisEmailIsAlreadyInUseException;
 import org.grupo.tacs.model.User;
 
@@ -65,9 +66,11 @@ public class UserRepository implements Repository<User>{
             User existingUser = collection.find(Filters.eq("email", user.getEmail())).first();
             if (existingUser != null) {
                 throw new ThisEmailIsAlreadyInUseException(user.getEmail());
-            }else{
+            }else if(user.passwordIguales()){
                 user.setCreatedDate(LocalDateTime.now());
                 collection.insertOne(user);
+            }else {
+                throw new ThePasswordsDontMatchException();
             }
         } finally {
             mongoClient.close(); //cerras el cliente

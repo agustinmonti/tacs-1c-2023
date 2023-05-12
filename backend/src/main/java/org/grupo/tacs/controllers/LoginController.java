@@ -134,10 +134,12 @@ public class LoginController {
             myMap.put("token","Bearer "+token);
             response.status(200);
         } catch (WrongPasswordException | UserDoesNotExistException e) {
+            myMap.put("msg","Usuario y/o contraseña incorrectos.");
             response.status(401);
             return e;
         } catch (Exception e) {
             response.status(500);
+            myMap.put("msg","Server error: contacte al administrador.");
         } finally {
             response.type("application/json");
             return gson.toJson(myMap);
@@ -184,7 +186,8 @@ public class LoginController {
             return gson.toJson(myMap);
         } catch (Exception e) {
             response.status(401);
-            return "Unauthorized";
+            myMap.put("msg","JWT no válido");
+            return gson.toJson(myMap);
         }
     }
 }

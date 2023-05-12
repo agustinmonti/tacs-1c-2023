@@ -6,6 +6,7 @@ import io.swagger.jaxrs.config.DefaultJaxrsConfig;
 import io.swagger.models.*;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.PathParameter;
+import io.swagger.models.parameters.QueryParameter;
 import io.swagger.models.properties.*;
 
 import java.util.Arrays;
@@ -94,6 +95,20 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("This email is already in use"))
                         .response(500, new Response())));
 
+        swagger.path("/v2/users/:id", new Path()
+                .get(new Operation()
+                        .tag("users")
+                        .summary("Trae informacion del usuario")
+                        .description("Trae informacion del usuario, con informacion adicional si tiene autorizacion")
+                        .parameter(new PathParameter()
+                                .name("id")
+                                .description("ID del usuario a buscar")
+                                .required(true)
+                                .type("string")
+                                .format("ObjectId"))
+                        .response(200,new Response().description("Ok"))
+                        .response(404,new Response().description("Usuario no encontrado!"))));
+
         swagger.path("/v2/auth/login", new Path()
                 .post(new Operation()
                         .tags(Arrays.asList("login"))
@@ -110,6 +125,18 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Credenciales inválidas"))
                         .response(500, new Response())));
 
+        swagger.path("/v2/auth/renew", new Path()
+                .post(new Operation()
+                        .tag("login")
+                        .summary("Regenrate JWT token for user")
+                        .description("regenerate JWT token for an existing user")
+                        .response(200,new Response()
+                                .description("Ok"))
+                        .response(401,new Response()
+                                .description("Unauthorized"))
+                        .response(500,new Response().description("Server Error")))
+        );
+
         swagger.path("/v2/events", new Path()
                 .post(new Operation()
                         .tags(Arrays.asList("events"))
@@ -124,7 +151,19 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Evento creado satisfactoriamente"))
                         .response(401, new Response()
                                 .description("Unauthorized"))
-                        .response(500, new Response())));
+                        .response(500, new Response()))
+                .get(new Operation()
+                        .tag("events")
+                        .summary("Retorna los eventos que creo un usuario o en los que esta participando")
+                        .description("Retorna todos los eventos que creo un usuario o en los que esta participando")
+                        .parameter(new QueryParameter()
+                                .name("userId")
+                                .description("ObjectId of a User"))
+                        .response(200,new Response()
+                                .description("ok"))
+                        .response(400,new Response()
+                                .description("Invalid userId parameter"))));
+
 
         swagger.path("/events/{id}", new Path()
                 .get(new Operation()
@@ -141,7 +180,19 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Evento encontrado"))
                         .response(404, new Response()
                                 .description("Evento no encontrado"))
-                        .response(500, new Response())));
+                        .response(500, new Response()))
+                .put(new Operation()
+                        .tag("events")
+                        .summary("Actualiza el estado del Evento")
+                        .description("Cambia el estado de un evento entre Abierto y Cerrado")
+                        .parameter(new PathParameter()
+                                .name("id")
+                                .description("ID del evento a buscar")
+                                .required(true)
+                                .type("string")
+                                .format("ObjectId"))
+                        .response(201,new Response().description("Evento actualizado"))
+                        .response(404,new Response().description("Evento no encontrado"))));
 
         swagger.path("/v2/events/{id}/vote",new Path()
                 .put(new Operation()
