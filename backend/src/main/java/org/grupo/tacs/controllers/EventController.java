@@ -322,46 +322,4 @@ public class EventController {
             return gson.toJson(myMap);
         }
     }
-    public static Map<String, Object> transformEventData(Map<String, Object> eventData) {
-        Map<String, Object> result = new HashMap<>();
-        Map<String, Object> event = new HashMap<>();
-        List<String> optionsVoted = new ArrayList<>();
-
-        event.put("id", new ObjectId().toString()); // generate new ObjectId
-        event.put("name", eventData.get("name"));
-        event.put("description", eventData.get("desc"));
-
-        List<Map<String, Object>> options = new ArrayList<>();
-        List<Map<String, Object>> eventDataOptions = (List<Map<String, Object>>) eventData.get("options");
-        for (Map<String, Object> eventDataOption : eventDataOptions) {
-            Map<String, Object> option = new HashMap<>();
-            option.put("id", new ObjectId().toString()); // generate new ObjectId
-            option.put("start", eventDataOption.get("start"));
-            option.put("end", eventDataOption.get("end"));
-            option.put("votes", ((List<Map<String, Object>>) eventDataOption.get("votes")).size());
-            options.add(option);
-
-            // add voted options to optionsVoted list
-            for (Map<String, Object> vote : (List<Map<String, Object>>) eventDataOption.get("votes")) {
-                Map<String, Object> user = (Map<String, Object>) vote.get("user");
-                if (user.get("_id").equals(eventData.get("createdBy"))) {
-                    optionsVoted.add(option.get("id").toString());
-                }
-            }
-        }
-
-        event.put("options", options);
-        event.put("status", eventData.get("isActive"));
-        event.put("createdDate", eventData.get("createdDate"));
-
-        Map<String, Object> owner = new HashMap<>();
-        owner.put("id", ((Map<String, Object>) eventData.get("createdBy")).get("_id"));
-        owner.put("email", ((Map<String, Object>) eventData.get("createdBy")).get("email"));
-        event.put("owner", owner);
-
-        result.put("event", event);
-        result.put("optionsVoted", optionsVoted);
-
-        return result;
-    }
 }

@@ -2,6 +2,7 @@ package org.grupo.tacs.extras;
 
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
+import org.grupo.tacs.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class EventData{
     String name;
     String description;
     List<EventOptionData> options;
+    List<UserData> participants;
     // participants: [ { id, email } ]
     String status;
     LocalDateTime createdDate;
@@ -47,10 +49,18 @@ public class EventData{
         this.status = "Cerrado";
         if(event.getIsActive())
             this.status = "Active";
+        this.participants = transformParticipants(event.getParticipants());
         this.owner = new UserData(event.getCreatedBy().getEmail(),event.getCreatedBy().getId().toHexString());
         this.createdDate=event.getCreatedDate();
         this.options=transformEventOptions(event.getOptions());
     }
+
+    private List<UserData> transformParticipants(List<User> participants) {
+        List<UserData> myParticipants = new ArrayList<>();
+        participants.forEach(p->myParticipants.add(new UserData(p.getId().toHexString(),p.getEmail())));
+        return myParticipants;
+    }
+
     private List<EventOptionData> transformEventOptions(List<EventOption> options){
         List<EventOptionData> result=new ArrayList<>();
         options.forEach(o->result.add(new EventOptionData(o)));
