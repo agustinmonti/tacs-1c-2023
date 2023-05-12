@@ -79,7 +79,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
         swagger.tag(new Tag().name("events").description("Operaciones con eventos"));
         swagger.tag(new Tag().name("monitoring").description("Muestra datos de marketing"));
 
-        swagger.path("/users", new Path()
+        swagger.path("/v2/users", new Path()
                 .post(new Operation()
                         .tags(Arrays.asList("users"))
                         .summary("Crear una cuenta de usuario")
