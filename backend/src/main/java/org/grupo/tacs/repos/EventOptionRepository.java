@@ -28,11 +28,6 @@ public class EventOptionRepository implements Repository<EventOption>{
 
     @Override
     public void save(EventOption entidad) {
-        if (entidad.getId() == null) {
-            entidad.setId(nextId);
-            nextId++;
-        }
-        eventOptions.add(entidad);
     }
 
     @Override

@@ -11,6 +11,9 @@ import spark.Response;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
+
 @Api(tags = {"user"})
 public class UserController {
     /* Como obtener el User a partir de una session creada con login
@@ -33,15 +36,24 @@ public class UserController {
      */
     public static Object getUser(Request request, Response response) {
         //aca le pegaria a un RepositorioUsuarios y un usuario en particular
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
         String resp = "";
         try {
+            User currentUser = getVerifiedUserFromToken(request);
             User user = UserRepository.instance.findById(request.params(":id"));
             if(user == null){
                 throw new NoSuchElementException();
             }
             response.status(200);
-            resp = gson.toJson(user);
+            if(currentUser.getId().equals(user.getId())){
+                myMap.put("name",user.getName());
+                myMap.put("lastname",user.getLastName());
+                myMap.put("password",user.getPassword());
+            }
+
+            myMap.put("email",user.getEmail());
+            resp = gson.toJson(myMap);
         }catch (NoSuchElementException e){
             response.status(404);
             resp = gson.toJson("User not Found!");

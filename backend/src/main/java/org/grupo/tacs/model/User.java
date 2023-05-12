@@ -1,5 +1,6 @@
 package org.grupo.tacs.model;
 
+import org.bson.Document;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
@@ -40,6 +41,10 @@ public class User {
 
     public User() {
         this.createdDate = LocalDateTime.now();
+    }
+
+    public User(Document doc) {
+        this._id = doc.getObjectId("_id");
     }
 
     public ObjectId getId() {

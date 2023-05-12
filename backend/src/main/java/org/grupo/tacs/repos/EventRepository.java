@@ -3,10 +3,7 @@ package org.grupo.tacs.repos;
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
@@ -263,4 +260,57 @@ public class EventRepository implements Repository<Event>{
         }
         */
     }
+    public Document getEventsByUser(ObjectId userId) {
+        mongoClient = MongoDB.getMongoClient();
+        Document result = null;
+        try {
+            List<Document> myEvents = new ArrayList<>();
+            List<Document> participantEvents = new ArrayList<>();
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCursor<Document> cursor = mongodb.getCollection("Events").find(
+                    Filters.or(
+                            Filters.eq("createdBy._id", userId),
+                            Filters.elemMatch("participants", Filters.eq("_id", userId))
+                    )
+            ).iterator();
+
+            try {
+                while (cursor.hasNext()) {
+                    Document event = cursor.next();
+                    User createdByUser = new User((Document) event.get("createdBy"));
+                    List<User> participants = new ArrayList<>();
+                    for (Document participantDoc : (List<Document>) event.get("participants")) {
+                        participants.add(new User(participantDoc));
+                    }
+                    if (createdByUser.getId().equals(userId)) {
+                        myEvents.add(new Document()
+                                .append("id", event.getObjectId("_id").toString())
+                                .append("name", event.getString("name"))
+                                .append("description", event.getString("desc"))
+                                .append("status", event.getString("status"))
+                                .append("totalParticipants", participants.size()));
+                    }
+                    if (participants.stream().anyMatch(user -> user.getId().equals(userId))) {
+                        participantEvents.add(new Document()
+                                .append("id", event.getObjectId("_id").toString())
+                                .append("name", event.getString("name"))
+                                .append("description", event.getString("desc"))
+                                .append("status", event.getString("status"))
+                                .append("totalParticipants", participants.size()));
+                    }
+                }
+            } finally {
+                cursor.close();
+            }
+            result = new Document();
+            result.append("myEvents", myEvents);
+            result.append("participants", participantEvents);
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } finally {
+            mongoClient.close();
+        }
+        return result;
+    }
+
 }

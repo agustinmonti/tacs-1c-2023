@@ -4,14 +4,19 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Filters;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.EventDoesNotExistException;
 import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.excepciones.WrongPasswordException;
+import org.grupo.tacs.extras.EventData;
+import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
@@ -26,10 +31,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.grupo.tacs.controllers.LoginController.getUserSession;
 import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
@@ -51,7 +53,7 @@ public class EventController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public static Object getEvent(Request request, Response response) {
-        //aca le pegaria a un EventRepository y un event en particular
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
         String eventJson = "";
         try {
@@ -60,13 +62,17 @@ public class EventController {
                 throw new NoSuchElementException();
             }
             response.status(200);
-            eventJson = gson.toJson(event);
+            EventData data = new EventData(event);
+            myMap.put("event",data);
+            myMap.put("optionsVoted",data.getVotados());
+            eventJson = gson.toJson(myMap);
         } catch (NoSuchElementException e){
             response.status(404);
             eventJson = gson.toJson("Event does not exist");
         } catch (Exception e) {
             response.status(500);
-            eventJson = gson.toJson("Error getting vote");
+            e.printStackTrace();
+            eventJson = gson.toJson("Error getting event");
         }
         return eventJson;
     }
@@ -205,6 +211,7 @@ public class EventController {
 
     public static Object getEvents(Request request, Response response) {
         try{
+            request.queryParams("user");
             Map<String,Object> param = new HashMap<>();
             response.status(200);
             Gson gson = new Gson();
@@ -243,6 +250,7 @@ public class EventController {
     }
 
     public static Object createEventJWT(Request request, Response response) {
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
         try {
             User user =  getVerifiedUserFromToken(request);
             Gson gson = new GsonBuilder()
@@ -252,7 +260,9 @@ public class EventController {
             newEvent.setCreatedBy(user);
             EventRepository.instance.save(newEvent);
             response.status(201);
-            return gson.toJson(newEvent.getId().toHexString());
+            myMap.put("msg","Evento creado.");
+            myMap.put("id",newEvent.getId().toHexString());
+            return gson.toJson(myMap);
         } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);
             return "Unauthorized";
@@ -267,5 +277,60 @@ public class EventController {
     public static Object soloPut(Request request, Response response) {
         String allowedMethods = "PUT";
         return getResponse(response, allowedMethods);
+    }
+
+    public static Object getEventsByUser(Request request, Response response){
+        try{
+            String userIdString = request.queryParams("userId");
+            ObjectId userId = new ObjectId(userIdString);
+            Document events = EventRepository.instance.getEventsByUser(userId);
+            return events.toJson();
+        }catch (Exception e){
+            e.printStackTrace();
+            response.status(400); // Bad Request
+            return "Invalid userId parameter";
+        }
+    }
+    public static Map<String, Object> transformEventData(Map<String, Object> eventData) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> event = new HashMap<>();
+        List<String> optionsVoted = new ArrayList<>();
+
+        event.put("id", new ObjectId().toString()); // generate new ObjectId
+        event.put("name", eventData.get("name"));
+        event.put("description", eventData.get("desc"));
+
+        List<Map<String, Object>> options = new ArrayList<>();
+        List<Map<String, Object>> eventDataOptions = (List<Map<String, Object>>) eventData.get("options");
+        for (Map<String, Object> eventDataOption : eventDataOptions) {
+            Map<String, Object> option = new HashMap<>();
+            option.put("id", new ObjectId().toString()); // generate new ObjectId
+            option.put("start", eventDataOption.get("start"));
+            option.put("end", eventDataOption.get("end"));
+            option.put("votes", ((List<Map<String, Object>>) eventDataOption.get("votes")).size());
+            options.add(option);
+
+            // add voted options to optionsVoted list
+            for (Map<String, Object> vote : (List<Map<String, Object>>) eventDataOption.get("votes")) {
+                Map<String, Object> user = (Map<String, Object>) vote.get("user");
+                if (user.get("_id").equals(eventData.get("createdBy"))) {
+                    optionsVoted.add(option.get("id").toString());
+                }
+            }
+        }
+
+        event.put("options", options);
+        event.put("status", eventData.get("isActive"));
+        event.put("createdDate", eventData.get("createdDate"));
+
+        Map<String, Object> owner = new HashMap<>();
+        owner.put("id", ((Map<String, Object>) eventData.get("createdBy")).get("_id"));
+        owner.put("email", ((Map<String, Object>) eventData.get("createdBy")).get("email"));
+        event.put("owner", owner);
+
+        result.put("event", event);
+        result.put("optionsVoted", optionsVoted);
+
+        return result;
     }
 }

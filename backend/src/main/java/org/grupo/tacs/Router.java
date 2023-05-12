@@ -38,10 +38,12 @@ public class Router {
 
         options("/v2/auth/login",LoginController::getOptions);
         post("/v2/auth/login",LoginController::loginJWT);
+        post("/v2/auth/renew",LoginController::renew);
 
         options("/v2/users",UserController::getUsersOptions);
         post("/v2/users",UserController::newUser);
         get("/v2/users", UserController::getUsers);
+        get("/v2/users/:id",UserController::getUser);
         //Defino Rutas
 
         get("/v2/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)
@@ -50,7 +52,7 @@ public class Router {
         //post("/events",EventController::newEvent); // crea un evento
         options("/v2/events",EventController::getEventsOptions);
         post("/v2/events",EventController::createEventJWT);
-        get("/v2/events",EventController::getEvents);
+        get("/v2/events",EventController::getEventsByUser); // get /v2/events?userId=
         get("/v2/events/:id", EventController::getEvent); // trae un evento en especifico, con todas sus opciones  y votos
 
         //options("/v2/events/:id",EventController::getEventOptions);
@@ -58,7 +60,7 @@ public class Router {
         delete("/v2/events/:id",EventController::deleteEvent); // eliminar un evento
         options("/v2/events/:id/vote", EventController::soloPut);
         put("/v2/events/:id/vote", EventController::updateVoteWithOutId); // agregar o remover el voto de una opcion
-        get("/monitoring", EventController::monitoring); // monitoring ()
+        get("/v2/monitoring", EventController::monitoring); // monitoring ()
         options("/v2/events/:id/participant",EventController::soloPut);
         put("/v2/events/:id/participant", EventController::updateParticipant);//anotarse y desanotarse
 

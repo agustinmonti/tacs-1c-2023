@@ -117,6 +117,7 @@ public class LoginController {
     @Consumes(MediaType.APPLICATION_JSON)
     public static Object loginJWT(Request request, Response response) {
         List<User> users = UserRepository.instance.findAll();
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
         String token = null;
         try {
@@ -129,6 +130,8 @@ public class LoginController {
             if (!user.getPassword().equals(password)) {
                 throw new WrongPasswordException();
             }
+            myMap.put("user",user);
+            myMap.put("token","Bearer "+token);
             response.status(200);
         } catch (WrongPasswordException | UserDoesNotExistException e) {
             response.status(401);
@@ -136,8 +139,8 @@ public class LoginController {
         } catch (Exception e) {
             response.status(500);
         } finally {
-            response.type("text/plain");
-            return "Bearer "+token;
+            response.type("application/json");
+            return gson.toJson(myMap);
         }
     }
 
@@ -167,5 +170,21 @@ public class LoginController {
         if(user == null)
             throw new UnauthorizedException("Invalid Token");
         return user;
+    }
+
+    public static Object renew(Request request, Response response) {
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
+        Gson gson = new Gson();
+        try {
+            User user = getVerifiedUserFromToken(request);
+            String newToken = generateToken(user);
+            response.type("application/json");
+            myMap.put("token","Bearer "+newToken);
+            myMap.put("user",user);
+            return gson.toJson(myMap);
+        } catch (Exception e) {
+            response.status(401);
+            return "Unauthorized";
+        }
     }
 }

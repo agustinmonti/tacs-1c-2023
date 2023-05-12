@@ -1,10 +1,12 @@
 package org.grupo.tacs.model;
 
+import org.bson.types.ObjectId;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class EventOption {
-    Long _id;
+    ObjectId _id;
     //Long eventOptionParentId;
     LocalDateTime start;
     //String readAbleStart;
@@ -25,11 +27,11 @@ public class EventOption {
 
     }
 
-    public Long getId() {
+    public ObjectId getId() {
         return _id;
     }
 
-    public void setId(Long id) {
+    public void setId(ObjectId id) {
         this._id = id;
     }
 
