@@ -25,7 +25,7 @@ export const EventsList = ({ events = [] }) => {
                                 className="fs-6 m-0 text-nowrap" 
                                 style={{boxSizing:'border-box',textOverflow:'ellipsis', overflow:'hidden'}}
                             >
-                                { ev.description }
+                                { ev.desc }
                             </p>
                             <span className={statusClass(ev)}>{ ev.status }</span>
                             { ev.totalParticipants !== undefined && <span className="badge text-bg-secondary ms-2"><i className="fa-solid fa-user"></i>  {ev.totalParticipants}</span> }

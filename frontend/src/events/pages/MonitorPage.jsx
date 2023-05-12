@@ -5,7 +5,7 @@ import { Navbar } from "../components/Navbar"
 export const MonitorPage = () => {
 
     const [monitorValues, setMonitorValues] = useState({});
-    const { events2hs, votes2hs } = monitorValues;
+    const { events, votes } = monitorValues;
 
     const [isLoading, setIsLoading] = useState( true );
 
@@ -56,7 +56,7 @@ export const MonitorPage = () => {
                                         <span className="visually-hidden">Loading...</span>
                                     </div>
                                 :
-                                    <p className="fs-2 fw-bold">{events2hs}</p>
+                                    <p className="fs-2 fw-bold">{events}</p>
                             }
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export const MonitorPage = () => {
                                         <span className="visually-hidden">Loading...</span>
                                     </div>
                                 :
-                                    <p className="fs-2 fw-bold">{votes2hs}</p>
+                                    <p className="fs-2 fw-bold">{votes}</p>
                             }
                         </div>
                     </div>

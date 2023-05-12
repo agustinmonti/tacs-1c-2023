@@ -12,7 +12,7 @@ export const EventsPage = () => {
 
     useEffect(() => {
         startGettingEvents();
-    }, [])
+    }, [ user ])
     
 
     return (

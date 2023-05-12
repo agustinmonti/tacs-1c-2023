@@ -12,14 +12,16 @@ const api = axios.create({
 
 configure JWT 
 
+*/
+
 api.interceptors.request.use( config => {
     
     config.headers = {
         ...config.headers,
-        'x-token': localStorage.getItem('token'),
+        'Authorization': localStorage.getItem('token'),
     }
     
     return config;
 })
-*/
+
 export default api;

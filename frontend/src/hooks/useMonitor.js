@@ -7,14 +7,7 @@ export const useMonitor = () => {
         
         try {
             
-            //const { status, data } = api.get('/monitoring')
-            const { status, data } = {
-                status: 200,
-                data: {
-                    events2hs: 45,
-                    votes2hs: 10
-                }
-            }
+            const {data, status } = await api.get('/monitoring')
 
             if( status === 200 ){
                 return data;

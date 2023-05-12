@@ -8,12 +8,13 @@ export const CreateEventForm = () => {
     const [ formValues, setFormValues] = useState({
         name: '',
         description: '',
-        options: []
+        options: [],
+        participants: []
     });
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const { name, description, options } = formValues;
+    const { name, desc, options } = formValues;
 
     const { startCreatingEvent } = useEventsStore();
 
@@ -32,6 +33,7 @@ export const CreateEventForm = () => {
         if( options.some(op => op === newOption)) return;
 
         newOption.id = Math.floor(Math.random() * (0 + 99999) + 0);
+        newOption.votes = [];
 
         setFormValues({
             ...formValues,
@@ -70,14 +72,14 @@ export const CreateEventForm = () => {
                 />
             </div>
             <div className="mb-3">
-                <label htmlFor="eventDescription" className="form-label">Descripción</label>
+                <label htmlFor="eventdesc" className="form-label">Descripción</label>
                 <input 
                     type="text" 
                     className="form-control form-control-sm" 
-                    id="description"
-                    value={ description }
+                    id="desc"
+                    value={ desc }
                     onChange={ onChange }
-                    name="description"
+                    name="desc"
                 />
             </div>
 
