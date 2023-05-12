@@ -209,7 +209,7 @@ public class EventRepository implements Repository<Event>{
             }
             List<Integer> totalEventsAndVotes = new ArrayList<>();
             totalEventsAndVotes.add(eventList.size());
-            totalEventsAndVotes.add(voteList.size());
+            totalEventsAndVotes.add(voteList.size());//agregations TODO
             return totalEventsAndVotes;
         } finally {
             mongoClient.close(); //cerras el cliente
