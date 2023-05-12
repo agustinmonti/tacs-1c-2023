@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
+import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromTokenInRequest;
 
 @Api(tags = {"user"})
 public class UserController {
@@ -36,33 +36,36 @@ public class UserController {
      * @param response nada importante.
      */
     public static Object getUser(Request request, Response response) {
-        //aca le pegaria a un RepositorioUsuarios y un usuario en particular
         Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
         String resp = "";
         try {
-            User currentUser = getVerifiedUserFromToken(request);
             User user = UserRepository.instance.findById(request.params(":id"));
             if(user == null){
                 throw new NoSuchElementException();
             }
             response.status(200);
-            if(currentUser.getId().equals(user.getId())){
-                myMap.put("name",user.getName());
-                myMap.put("lastname",user.getLastName());
-                myMap.put("password",user.getPassword());
+            String token = request.headers("Authorization");
+            if(token != null) {
+                User currentUser = getVerifiedUserFromTokenInRequest(request);
+                if(currentUser.getId().equals(user.getId())){
+                    myMap.put("name",user.getName());
+                    myMap.put("lastname",user.getLastName());
+                    myMap.put("password",user.getPassword());
+                }
             }
-
             myMap.put("email",user.getEmail());
             resp = gson.toJson(myMap);
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e){
             response.status(404);
             myMap.put("msg","Usuario no encontrado");
             resp = gson.toJson(myMap);
+        } catch (Exception e){
+            e.printStackTrace();
         }
         return resp;
-        //return new ModelAndView(parametros, "usuarios/usuario.html");
     }
+
 
     /**
      * El método {@code newUser} crea un User apartir del Body en request.
@@ -77,20 +80,24 @@ public class UserController {
             User nuevo = gson.fromJson(request.body(),User.class);
             UserRepository.instance.save(nuevo);
             response.status(201);
-            return gson.toJson(nuevo.getId().toHexString());
+            myMap.put("msg","Registrado correctamente");
+            myMap.put("id",nuevo.getId().toHexString());
+            return gson.toJson(myMap);
         }catch(ThisEmailIsAlreadyInUseException e){
+            e.printStackTrace();
             response.status(409);//Email already taken
             myMap.put("msg","Email ya registrado");
             return gson.toJson(myMap);
         }catch(ThePasswordsDontMatchException e){
+            e.printStackTrace();
             response.status(409);//Las contraseñas no coinciden
             myMap.put("msg","Las contraseñas no coinciden");
             return gson.toJson(myMap);
         }catch(Exception e){
             response.status(500);
             myMap.put("msg","Usuario no encontrado");
-            System.out.println(e);
-            return "Time OUT?";
+            e.printStackTrace();
+            return gson.toJson(myMap);
         }
     }
 

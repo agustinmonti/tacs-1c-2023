@@ -136,7 +136,6 @@ public class LoginController {
         } catch (WrongPasswordException | UserDoesNotExistException e) {
             myMap.put("msg","Usuario y/o contraseña incorrectos.");
             response.status(401);
-            return e;
         } catch (Exception e) {
             response.status(500);
             myMap.put("msg","Server error: contacte al administrador.");
@@ -156,10 +155,11 @@ public class LoginController {
         //System.out.println("Login:"+token);
         return token;
     }
-    static User getVerifiedUserFromToken(Request request) {
-        String token = request.headers("Authorization").replace("Bearer ", "");
+    static User getVerifiedUserFromTokenInRequest(Request request) {
+        String token = request.headers("Authorization");
         if(token == null)
             throw new UnauthorizedException("Unauthorized, No Token");
+        token = request.headers("Authorization").replace("Bearer ", "");
         //System.out.println("Verify:"+token);
         Algorithm algorithm = Algorithm.HMAC256(JWT_H256_SECRET_PHRASE);
         JWTVerifier verifier = JWT.require(algorithm)
@@ -178,7 +178,7 @@ public class LoginController {
         Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
         try {
-            User user = getVerifiedUserFromToken(request);
+            User user = getVerifiedUserFromTokenInRequest(request);
             String newToken = generateToken(user);
             response.type("application/json");
             myMap.put("token","Bearer "+newToken);

@@ -4,6 +4,8 @@ import io.swagger.annotations.Api;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.config.DefaultJaxrsConfig;
 import io.swagger.models.*;
+import io.swagger.models.auth.ApiKeyAuthDefinition;
+import io.swagger.models.auth.In;
 import io.swagger.models.parameters.BodyParameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
@@ -30,7 +32,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .property("lastname", new StringProperty().description("User lastname"))
                 .property("email", new StringProperty().description("User email"))
                 .property("password", new StringProperty().description("User password"))
-                .example("{ \"name\": \"Bob\",\"lastname\":\"Esponja\",\"email\": \"bobesponja@proton.me\",\"password\": \"abcd1234\"}");
+                .example("{ \"name\": \"Bob\",\"lastname\":\"Esponja\",\"email\": \"bobesponja@proton.me\",\"password\": \"abcd1234\",\"confirmPassword\": \"abcd1234\"}");
         swagger.addDefinition("User", user);
 
         Model credentials = new ModelImpl()
@@ -73,7 +75,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                 .version("1.0.0")
                 .description("A sample RESTful API built with Spark Java and Swagger"));
 
-        /*swagger.securityDefinition("jwt", new ApiKeyAuthDefinition("Authorization", In.HEADER));*/
+        swagger.securityDefinition("JWT", new ApiKeyAuthDefinition("Authorization", In.HEADER));
 
         swagger.tag(new Tag().name("users").description("Operaciones con cuentas de usuario"));
         swagger.tag(new Tag().name("login").description("Operaciones de autenticación"));
@@ -95,7 +97,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("This email is already in use"))
                         .response(500, new Response())));
 
-        swagger.path("/v2/users/:id", new Path()
+        swagger.path("/v2/users/{id}", new Path()
                 .get(new Operation()
                         .tag("users")
                         .summary("Trae informacion del usuario")

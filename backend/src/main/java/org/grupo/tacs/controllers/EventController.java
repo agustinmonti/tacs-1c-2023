@@ -4,8 +4,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Filters;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -14,15 +12,12 @@ import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.EventDoesNotExistException;
 import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
-import org.grupo.tacs.excepciones.WrongPasswordException;
 import org.grupo.tacs.extras.EventData;
-import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.repos.EventRepository;
-import org.w3c.dom.events.EventException;
 import spark.Request;
 import spark.Response;
 
@@ -34,7 +29,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.grupo.tacs.controllers.LoginController.getUserSession;
-import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromToken;
+import static org.grupo.tacs.controllers.LoginController.getVerifiedUserFromTokenInRequest;
 
 public class EventController {
 
@@ -68,11 +63,13 @@ public class EventController {
             eventJson = gson.toJson(myMap);
         } catch (NoSuchElementException e){
             response.status(404);
-            eventJson = gson.toJson("Event does not exist");
+            myMap.put("msg","Evento no encontrado.");
+            eventJson = gson.toJson(myMap);
         } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
-            eventJson = gson.toJson("Error getting event");
+            myMap.put("msg","Error getting event");
+            eventJson = gson.toJson(myMap);
         }
         return eventJson;
     }
@@ -106,12 +103,33 @@ public class EventController {
     }*/
 
     public static Object updateEvent(Request request, Response response) {
-        response.status(201);
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
-        Event event = gson.fromJson(request.body(),Event.class);
-        event.setId(new ObjectId(request.params(":id")));
-        EventRepository.instance.update(event);
-        return "evento modificado";
+        try{
+            response.status(201);
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            User owner = getVerifiedUserFromTokenInRequest(request);
+            if(!owner.getId().equals(event.getCreatedBy().getId()))
+                throw new UnauthorizedException("No posee autorización para editar este evento");
+            event.setId(new ObjectId(request.params(":id")));
+            EventRepository.instance.update(event);
+            myMap.put("msg","evento modificado");
+            return gson.toJson(myMap);
+        }catch (UnauthorizedException e){
+            response.status(401);
+            myMap.put("msg",e.getMessage());
+            e.printStackTrace();
+            return gson.toJson(myMap);
+        }catch (NoSuchElementException e){
+            response.status(404);
+            e.printStackTrace();
+            myMap.put("msg",e.getMessage());
+            return gson.toJson(myMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            myMap.put("msg",e.getMessage());
+            return gson.toJson(myMap);
+        }
     }
 
     public static Object deleteEvent(Request request, Response response) {
@@ -137,10 +155,12 @@ public class EventController {
     }
 
     public static Object updateVoteWithOutId(Request request, Response response) {
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
+        Gson gson = new Gson();
         try{
-            Gson gson = new Gson();
+
             //User user = getUserFromSession(request,response);
-            User user =  getVerifiedUserFromToken(request); //JWT
+            User user =  getVerifiedUserFromTokenInRequest(request); //JWT
             JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
             Integer optionIndex = jsonObject.get("optionIndex").getAsInt();
             Event event = EventRepository.instance.findById(request.params(":id"));
@@ -149,24 +169,28 @@ public class EventController {
             }
             EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
             response.status(201);
-            return "voto realizado o retirado";
+            myMap.put("msg","Votos registrados correctamente.");
+            return gson.toJson(myMap);
         } catch(EventDoesNotExistException | NoSuchElementException e){
             response.status(404);
-            return "Event or Option does not exist";
+            myMap.put("msg","No encontrado.");
+            return gson.toJson(myMap);
         } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
-            return "Unauthorized";
+            myMap.put("msg","Errores de validación.");
+            return gson.toJson(myMap);
         } catch (Exception e) {
             response.status(500);
-            System.out.println(e);
-            return "Error updating vote";
+            e.printStackTrace();
+            myMap.put("msg","Error al registrar el voto.");
+            return gson.toJson(myMap);
         }
     }
 
     public static Object updateVoteWithId(Request request, Response response) {
         Gson gson = new Gson();
         //User user = getUserFromSession(request,response);
-        User user =  getVerifiedUserFromToken(request); //JWT
+        User user =  getVerifiedUserFromTokenInRequest(request); //JWT
         EventOption eventOption = gson.fromJson(request.body(),EventOption.class);
         Event event = EventRepository.instance.findById(request.params(":id"));
         EventRepository.instance.updateVoteWithId(event,eventOption,user);
@@ -176,7 +200,7 @@ public class EventController {
 
     public static Object updateParticipant(Request request, Response response) {
         try{
-            User user = getVerifiedUserFromToken(request); //JWT
+            User user = getVerifiedUserFromTokenInRequest(request); //JWT
             Event event = EventRepository.instance.findById(request.params(":id"));
             if (event == null){
                 throw new EventDoesNotExistException();
@@ -251,11 +275,11 @@ public class EventController {
 
     public static Object createEventJWT(Request request, Response response) {
         Map<Object, Object> myMap = new HashMap<Object, Object>();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                .create();
         try {
-            User user =  getVerifiedUserFromToken(request);
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-                    .create();
+            User user =  getVerifiedUserFromTokenInRequest(request);
             Event newEvent = gson.fromJson(request.body(),Event.class);
             newEvent.setCreatedBy(user);
             EventRepository.instance.save(newEvent);
@@ -265,7 +289,8 @@ public class EventController {
             return gson.toJson(myMap);
         } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);
-            return "Unauthorized";
+            myMap.put("msg","Unauthorized");
+            return gson.toJson(myMap);
         } catch (Exception e) {
             response.status(500);
             System.out.println(e);
@@ -280,6 +305,8 @@ public class EventController {
     }
 
     public static Object getEventsByUser(Request request, Response response){
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
+        Gson gson = new Gson();
         try{
             String userIdString = request.queryParams("userId");
             ObjectId userId = new ObjectId(userIdString);
@@ -288,7 +315,8 @@ public class EventController {
         }catch (Exception e){
             e.printStackTrace();
             response.status(400); // Bad Request
-            return "Invalid userId parameter";
+            myMap.put("msg","Usuario no encontrado");
+            return gson.toJson(myMap);
         }
     }
     public static Map<String, Object> transformEventData(Map<String, Object> eventData) {
