@@ -36,12 +36,13 @@ export const useAuthStore = () => {
 
     const startLogin = async( user ) => {
         try {
-            //const { status, data } = await api.post('/auth/login', user); 
-            
+            const { status, data } = await api.post('/auth/login', user); 
+            console.log(data);
+            /*
             const { status, data } = {
                 status: 200,
                 data: { user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com', isAdmin: true }, token: '123abc' }
-            }
+            }*/
 
             if( status === 200 ){
                 localStorage.setItem('token', data.token);
@@ -63,15 +64,7 @@ export const useAuthStore = () => {
 
         try{
 
-            //const { status, data } = await api.get('/auth/renew');
-
-            const { status, data } = {
-                status: 200,
-                data: {
-                    token: '123abc',
-                    user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com', isAdmin: true }
-                }
-            }
+            const { status, data } = await api.get('/auth/renew');
 
             if( status === 200 ){
 

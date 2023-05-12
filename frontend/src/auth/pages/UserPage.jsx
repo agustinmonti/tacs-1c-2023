@@ -11,7 +11,7 @@ export const UserPage = () => {
     const navigate = useNavigate();
 
     const getUser =() => {
-      const response = fetch(`http://localhost:8080/users/${id}`,{})
+      const response = fetch(`http://localhost:8080/v2/users/${id}`,{})
         .then(response => {
           if (response.ok){
             return response.json();

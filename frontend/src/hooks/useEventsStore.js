@@ -16,7 +16,7 @@ export const useEventsStore = () => {
     const { user } = useSelector( state => state.auth );
 
     const isOwner = useMemo(() => {
-        return currentEvent.owner?.id === user?.id;
+        return currentEvent.owner?._id === user?._id;
     }, [ currentEvent ]);
 
     const isParticipating = useMemo (() => {
@@ -31,7 +31,7 @@ export const useEventsStore = () => {
 
             if( status === 201 ){
                 dispatch(onCloseCreateEventModal());
-                navigate(`/event/${ data.id }`);
+                navigate(`/v2/event/${ data.id }`);
             }else{
                 console.error( data.msg );
             }
@@ -46,11 +46,12 @@ export const useEventsStore = () => {
 
         try {
 
-            //const { status, data } = await api.post(`/events/${currentEvent.id}/vote`, optionId );
+            const { status, data } = await api.put(`/events/${currentEvent.id}/vote`, optionId );
+            /*
             const { status, data } = {
                 status: 201,
                 data: {}
-            };
+            };*/
 
             if( status === 201 ){
                 dispatch(onToggleVote(optionId));
@@ -71,8 +72,8 @@ export const useEventsStore = () => {
         try {
 
             dispatch(onStartLoading());
-            //const { status, data } = await api.get(`/events?user=${ user.id }`);
-
+            const { status, data } = await api.get(`/events?userId=${ user._id }`);
+            /*
             const { status, data } = {
                 status: 200,
                 data: {
@@ -114,7 +115,7 @@ export const useEventsStore = () => {
                         }
                     ]
                 }
-            }
+            }*/
             dispatch(onStopLoading());
             if( status === 200 ){
                 dispatch(onSetEvents( {
@@ -136,8 +137,8 @@ export const useEventsStore = () => {
         try {
 
             dispatch(onStartLoading());
-            //const { status, data } = await api.get(`/events/${ id }`);
-
+            const { status, data } = await api.get(`/events/${ id }`);
+            /*
             const { status, data } = {
                 status: 200,
                 data: {
@@ -167,7 +168,7 @@ export const useEventsStore = () => {
                             createdDate: new Date(),
                         }
                 }
-            }
+            }*/
             dispatch(onStopLoading());
             if( status === 200 ){
                 dispatch(onSetCurrentEvent( data.event ));
@@ -183,20 +184,21 @@ export const useEventsStore = () => {
 
     const startToggleSignUpForCurrentEvent = async () => {
         const newParticipant = {
-            id: user.id,
+            id: user._id,
             fullname: `${user.name} ${user.lastname}`,
             email: user.email
         }
 
         try {
 
-            //const { status2, data2 } = await api.post(`/events/${ currentEvent.id }/signup`);
+            const { status2, data2 } = await api.put(`/events/${ currentEvent.id }/participate`);
+            /*
             const { status, data } = {
                 status: 201,
                 data: {
                     msg: 'Hola'
                 }
-            };
+            };*/
 
             if( isParticipating ){
                 dispatch( onRemoveParticipant( user.id ));

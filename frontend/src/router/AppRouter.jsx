@@ -12,7 +12,7 @@ export const AppRouter = () => {
     const { isLoadingUI } = useUiStore();
 
     useEffect(() => {
-        checkAuthToken();
+        //checkAuthToken();
     }, []);
     
     if( status === 'checking' || isLoadingUI ){

@@ -7,7 +7,7 @@ export const useMonitor = () => {
         
         try {
             
-            //const { status, data } = api.get('/monitor')
+            //const { status, data } = api.get('/monitoring')
             const { status, data } = {
                 status: 200,
                 data: {
