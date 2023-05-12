@@ -80,7 +80,7 @@ public class EventRepository implements Repository<Event>{
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
             Bson condition = Filters.eq("_id", event.getId());
             //collection.replaceOne(condition,event); //CON ESTO PODES MODIFICARLO COMPLETO
-            UpdateResult result =collection.updateOne(condition,Updates.set("isActive",event.getIsActive())); //CON ESTO UPDATEAS SOLO EL ESTADO
+            UpdateResult result = collection.updateOne(condition,Updates.set("isActive",event.getIsActive())); //CON ESTO UPDATEAS SOLO EL ESTADO
             if (result.getModifiedCount() == 0) {
                 throw new NoSuchElementException();
             }
