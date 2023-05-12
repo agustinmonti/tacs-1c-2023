@@ -89,13 +89,6 @@ public class EventRepository implements Repository<Event>{
             mongoClient.close(); //cerras el cliente
         }
 
-        /*
-        Event unEvent = events.stream().filter(event -> event.getId() == entidad.getId()).findFirst().get();
-        unEvent.setIsPublic(entidad.getIsPublic());
-        unEvent.setName(entidad.getName());
-        unEvent.setCreatedBy(entidad.getCreatedBy());
-        unEvent.setGuests(entidad.getGuests());
-        */
     }
 
     public void updateVoteWithOutId(Event event, Integer OptionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
@@ -138,9 +131,6 @@ public class EventRepository implements Repository<Event>{
 
             EventOption option = event.getOption(eventOption);
 
-            if (option == null){
-                throw new NoSuchElementException();
-            }
             List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
@@ -167,6 +157,8 @@ public class EventRepository implements Repository<Event>{
             */
 
 
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
         } catch (MongoException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -199,24 +191,7 @@ public class EventRepository implements Repository<Event>{
     public List<Integer> monitoring() { //FUNCION SOLO DE ADMINS
 
         mongoClient = MongoDB.getMongoClient();
-        /* //ESTO LO HICE PARA PROBAR LOS FILTER DE UPDATEVOTE()
-        try{
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
-            Bson conditionExistOption = Filters.and(Filters.eq("_id", new ObjectId("6453f46e8151ab556a37db12")), Filters.elemMatch("options", Filters.eq("_id", 2L)));
-            Bson conditionExistVoteOfUserInOption = Filters.and(Filters.eq("_id", new ObjectId("6453f46e8151ab556a37db12")), Filters.elemMatch("options", Filters.and(Filters.eq("_id", 2L), Filters.elemMatch("votes", Filters.eq("user.name", "pepe")))));
-            for (Event event : collection.find(conditionExistVoteOfUserInOption)) {
-                System.out.println(event.getId());
-                User user = new User("Celeste","Ailen","3",false,"c@yahoo.com");
-                Bson update = Updates.pull("options.$.votes", new Vote(user));
-                collection.updateOne(conditionExistVoteOfUserInOption,update);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            mongoClient.close(); //cerras el cliente
-        }
-        */
+
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
