@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "4aa0149f-c2dc-4bfb-80e3-dd3d7c202618",
+		"name": "TEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/events?userId=",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/events?userId=645eb29e8fb2603857d8e021",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "645eb29e8fb2603857d8e021"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"645eb3438fb2603857d8e027"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id/vote",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"optionIndex\": \"1\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027/vote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"645eb3438fb2603857d8e027",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id/participant",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027/participant",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"645eb3438fb2603857d8e027",
+						"participant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"645eb3438fb2603857d8e027"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"645eb3438fb2603857d8e027"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Bob\",\r\n  \"lastname\": \"Marley\",\r\n  \"email\": \"bobmarley@proton.me\",\r\n  \"password\": \"abcd1234\",\r\n  \"confirmPassword\": \"abcd1234\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/users/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/users/645eb9528fb2603857d8e045",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"users",
+						"645eb9528fb2603857d8e045"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"bobmarley@proton.me\",\r\n  \"password\": \"abcd1234\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auth/renew",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjk1MjhmYjI2MDM4NTdkOGUwNDUiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUyMjI1M30.tf7SnFB5YRzF10g_KjdldsSikBwtWP8RVrsDvUzmRtY",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/auth/renew",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"auth",
+						"renew"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjk1MjhmYjI2MDM4NTdkOGUwNDUiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUyMjI1M30.tf7SnFB5YRzF10g_KjdldsSikBwtWP8RVrsDvUzmRtY",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Evento Aburrido\",\r\n  \"desc\": \"Un evento que no es divertido\",\r\n  \"participants\": [],\r\n  \"options\": [\r\n    {\r\n      \"start\": \"2022-01-01T12:00:00Z\",\r\n      \"end\": \"2022-01-01T14:00:00Z\",\r\n      \"votes\": []\r\n    },\r\n    {\r\n      \"start\": \"2022-01-01T15:00:00Z\",\r\n      \"end\": \"2022-01-01T17:00:00Z\",\r\n      \"votes\": []\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/monitoring",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/monitoring",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"monitoring"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
