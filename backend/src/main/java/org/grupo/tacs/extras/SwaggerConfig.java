@@ -167,7 +167,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Invalid userId parameter"))));
 
 
-        swagger.path("/events/{id}", new Path()
+        swagger.path("/v2/events/{id}", new Path()
                 .get(new Operation()
                         .tags(Arrays.asList("events"))
                         .summary("Obtener un evento por ID")
@@ -237,7 +237,7 @@ public class SwaggerConfig extends DefaultJaxrsConfig {
                                 .description("Unauthorized"))
                         .response(500, new Response())));
 
-        swagger.path("/monitoring", new Path()
+        swagger.path("/v2/monitoring", new Path()
                 .get(new Operation()
                         .tag("monitoring")
                         .summary("Trae datos relevantes a marketing en un JSON")

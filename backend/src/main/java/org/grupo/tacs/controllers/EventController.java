@@ -169,10 +169,14 @@ public class EventController {
             Event event = EventRepository.instance.findById(request.params(":id"));
             if (event == null){
                 throw new EventDoesNotExistException();
+            }else if (event.getIsActive()){
+                EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
+                response.status(201);
+                myMap.put("msg","Votos registrados correctamente.");
+                return gson.toJson(myMap);
             }
-            EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
-            response.status(201);
-            myMap.put("msg","Votos registrados correctamente.");
+            response.status(401);
+            myMap.put("msg","Votacion Cerrada.");
             return gson.toJson(myMap);
         } catch(EventDoesNotExistException | NoSuchElementException e){
             response.status(404);
