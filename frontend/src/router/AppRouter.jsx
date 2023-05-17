@@ -24,7 +24,7 @@ export const AppRouter = () => {
             </div>
         )
     }
-
+    
 	return (
 		<Routes>
             {

@@ -18,42 +18,31 @@ export const useAuthStore = () => {
         try {
             const { status, data } = await api.post('/users', newUser); 
             
-            /*
-            const status = 201;
-            const data = { msg: 'Registrado correctamente'}
-            */
             if( status === 201 ){
                 Swal.fire('Registrado', data.msg, 'success');
                 return true;
             }else{
-
+                Swal.fire('Error en el registro', data.msg, 'error');
             }
         } catch (error) {
             console.log(error);
-            Swal.fire('Error en el registro', 'El registro falló exitosamente', 'error');
+            Swal.fire('Error en el registro', error.response.data.msg, 'error');
         }
     }
 
     const startLogin = async( user ) => {
         try {
-            const { status, data } = await api.post('/auth/login', user); 
-            console.log(data);
-            /*
-            const { status, data } = {
-                status: 200,
-                data: { user: { id: 2, name: 'Carlos', lastname: 'Alberto', email: 'carlos@alberto.com', isAdmin: true }, token: '123abc' }
-            }*/
+            const { status, data } = await api.post('/auth/login', user);
 
             if( status === 200 ){
                 localStorage.setItem('token', data.token);
                 dispatch(onLogin(data.user));
                 return true;
             }else{
-                console.error(data.msg);
+                Swal.fire('Error', data.msg, 'error');
             }
         } catch (error) {
-            console.log(error);
-            Swal.fire('Error', 'El ingreso falló exitosamente', 'error');
+            Swal.fire('Error', error.response.data.msg, 'error');
         }
     }
 
@@ -64,7 +53,7 @@ export const useAuthStore = () => {
 
         try{
 
-            const { status, data } = await api.get('/auth/renew');
+            const { status, data } = await api.post('/auth/renew');
 
             if( status === 200 ){
 
@@ -78,6 +67,7 @@ export const useAuthStore = () => {
             }
 
         }catch(error){
+            console.log(error);
             localStorage.clear();
             dispatch( onLogout() )
         }

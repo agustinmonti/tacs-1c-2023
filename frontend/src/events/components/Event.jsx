@@ -6,14 +6,14 @@ import { UserActions } from "./UserActions";
 
 export const Event = ({ event }) => {
 
-    const { name, desc, options = [], owner = {}, participants = [], createdDate } = event;
+    const { name, description, options = [], owner = {}, participants = [], createdDate } = event;
 
     const { isOwner } = useEventsStore();
-    console.log(isOwner)
+
     const hasParticipants = () => {
         return participants.length > 0
     }
-
+    console.log(window.location.href)
     return (
         <div className="row">
             <div className="col-12 mb-3">
@@ -44,7 +44,7 @@ export const Event = ({ event }) => {
                     <div className="event-body p-3">
                         <div className="p-3">
                             <p className="fs-4 fw-semibold mb-2">Descripción:</p>
-                            <p className="m-0">{ desc }</p>
+                            <p className="m-0">{ description }</p>
                         </div>
                         <div className="p-3">
                             <p className="fs-4 fw-semibold mb-2">Opciones:</p>

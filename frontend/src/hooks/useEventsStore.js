@@ -16,8 +16,7 @@ export const useEventsStore = () => {
     const { user } = useSelector( state => state.auth );
 
     const isOwner = useMemo(() => {
-        return false;
-        //return currentEvent.owner?.id === user?._id;
+        return currentEvent.owner?.id === user?._id;
     }, [ currentEvent ]);
 
     const isParticipating = useMemo (() => {
@@ -34,7 +33,7 @@ export const useEventsStore = () => {
                 end: format(option.end,"yyyy-MM-dd'T'HH:mm:ss'Z'")
             }
         })
-        console.log(newEvent)
+
         try {
 
             const { status, data } = await api.post('/events', newEvent); 
@@ -76,11 +75,8 @@ export const useEventsStore = () => {
     const startGettingEvents = async () => {
         
         try {
-
-            //dispatch(onStartLoading());
             const { status, data } = await api.get(`/events?userId=${ user._id }`);
 
-            //dispatch(onStopLoading());
             if( status === 200 ){
                 dispatch(onSetEvents( {
                     myEvents: data.myEvents,
@@ -92,18 +88,14 @@ export const useEventsStore = () => {
             
         } catch (error) {
             console.error(error);
-            //dispatch(onStopLoading());
         }
     }
 
     const startGettingEvent = async ( id ) => {
         
         try {
-
-            //dispatch(onStartLoading());
             const { status, data } = await api.get(`/events/${ id }`);
             
-            //dispatch(onStopLoading());
             if( status === 200 ){
                 dispatch(onSetCurrentEvent( data.event ));
             }else{
@@ -111,7 +103,6 @@ export const useEventsStore = () => {
             }
             
         } catch (error) {
-            dispatch(onStopLoading());
             console.error(error);
         }
     }

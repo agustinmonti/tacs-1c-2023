@@ -23,8 +23,9 @@ export const eventsSlice = createSlice({
             state.myEvents = [];
         },
         onLogoutEvents: (state) => {
-            state.events = [],
-            state.currentEvent = {}
+            state.myEvents = [];
+            state.participantEvents = [];
+            state.currentEvent = {};
         },
         onToggleVote: (state, { payload }) => {
             state.currentEvent.options = state.currentEvent.options.map( option => {

@@ -75,7 +75,7 @@ export const LoginForm = ({ setShowRegister }) => {
                     <span className="d-block my-1">Ingresar</span>
                 }
             </button>
-            <small style={{float:'right',marginTop:'10px'}}>
+            <small style={{float:'right',marginTop:'10px', color:'white'}}>
                 ¿No tienes cuenta cuenta?
                 <Link className="ms-1" to={'/register'} onClick={handleGoToRegister}>Registrate aquí </Link>
             </small>
