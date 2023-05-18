@@ -122,11 +122,7 @@ public class LoginController {
     public static Object loginJWT(Request request, Response response) {
         List<User> users = UserRepository.instance.findAll();
         Map<Object, Object> myMap = new HashMap<Object, Object>();
-        Gson gson = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .registerTypeAdapter(ObjectId.class, new ObjectIdSerializer())
-                .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeSerializer())
-                .create();
+        Gson gson = getGsonForUser();
 
         String token = null;
         try {
@@ -187,7 +183,7 @@ public class LoginController {
 
     public static Object renew(Request request, Response response) {
         Map<Object, Object> myMap = new HashMap<Object, Object>();
-        Gson gson = new Gson();
+        Gson gson = getGsonForUser();
         try {
             User user = getVerifiedUserFromTokenInRequest(request);
             String newToken = generateToken(user);
@@ -200,5 +196,13 @@ public class LoginController {
             myMap.put("msg","JWT no válido");
             return gson.toJson(myMap);
         }
+    }
+
+    private static Gson getGsonForUser() {
+        return new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(ObjectId.class, new ObjectIdSerializer())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .create();
     }
 }
