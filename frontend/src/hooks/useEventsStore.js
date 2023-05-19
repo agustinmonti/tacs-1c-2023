@@ -95,7 +95,7 @@ export const useEventsStore = () => {
         
         try {
             const { status, data } = await api.get(`/events/${ id }`);
-            console.log(data.optionsVoted)
+
             data.event.options = data.event.options.map( (option, index) => (
                 {
                     ...option,
