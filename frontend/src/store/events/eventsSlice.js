@@ -10,7 +10,6 @@ export const eventsSlice = createSlice({
     reducers: {
         onSetCurrentEvent: (state, { payload } ) => {
             state.currentEvent = payload;
-            state.currentEvent.participants = [];
         },
         onRemoveCurrentEvent: (state) => {
             state.currentEvent = {};
@@ -46,7 +45,7 @@ export const eventsSlice = createSlice({
             })
         },
         onRemoveParticipant: (state, { payload }) => {
-            state.currentEvent.participants = state.currentEvent.participants.filter( participant => participant._id !== payload )
+            state.currentEvent.participants = state.currentEvent.participants.filter( participant => participant.id !== payload )
         },
         onAddParticipant: (state, { payload }) => {
             state.currentEvent.participants.push( payload );

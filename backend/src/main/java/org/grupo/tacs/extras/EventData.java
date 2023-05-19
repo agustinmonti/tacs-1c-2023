@@ -57,7 +57,7 @@ public class EventData{
 
     private List<UserData> transformParticipants(List<User> participants) {
         List<UserData> myParticipants = new ArrayList<>();
-        participants.forEach(p->myParticipants.add(new UserData(p.getId().toHexString(),p.getEmail())));
+        participants.forEach(p->myParticipants.add(new UserData(p.getEmail(),p.getId().toHexString())));
         return myParticipants;
     }
 

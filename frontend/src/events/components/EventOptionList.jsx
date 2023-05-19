@@ -7,7 +7,7 @@ export const EventOptionList = ({ options = [] }) => {
         <>
             {
                 options.map( (option) => (
-                    <EventOption key={option.id} option={ option } />
+                    <EventOption key={ option.id } option={ option } />
                 ))
             }
         </>

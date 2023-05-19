@@ -13,7 +13,7 @@ export const Event = ({ event }) => {
     const hasParticipants = () => {
         return participants.length > 0
     }
-    console.log(window.location.href)
+
     return (
         <div className="row">
             <div className="col-12 mb-3">

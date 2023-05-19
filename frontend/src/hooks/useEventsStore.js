@@ -20,7 +20,7 @@ export const useEventsStore = () => {
     }, [ currentEvent ]);
 
     const isParticipating = useMemo (() => {
-        return currentEvent.participants?.some( participant => participant._id === user._id );
+        return currentEvent.participants?.some( participant => participant.id === user._id );
     }, [ currentEvent ])
 
     const startCreatingEvent = async( newEvent ) => {
@@ -95,7 +95,15 @@ export const useEventsStore = () => {
         
         try {
             const { status, data } = await api.get(`/events/${ id }`);
-            
+            console.log(data.optionsVoted)
+            data.event.options = data.event.options.map( (option, index) => (
+                {
+                    ...option,
+                    id: index,
+                    selected: data.optionsVoted.some( optionVotedId => optionVotedId === index )
+                }
+            ))
+
             if( status === 200 ){
                 dispatch(onSetCurrentEvent( data.event ));
             }else{
@@ -109,8 +117,7 @@ export const useEventsStore = () => {
 
     const startToggleSignUpForCurrentEvent = async () => {
         const newParticipant = {
-            _id: user._id,
-            fullname: `${user.name} ${user.lastname}`,
+            id: user._id,
             email: user.email
         }
 
