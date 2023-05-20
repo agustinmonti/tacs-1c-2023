@@ -44,10 +44,14 @@ export const Event = ({ event }) => {
                 <div className="col-12 col-lg-8">
                     <div className="border rounded shadow-sm bg-white mb-3 animate__animated animate__fadeIn">
                         <div className="event-body">
-                            <div className="p-3">
-                                <p className="fs-4 fw-semibold mb-2">Descripción:</p>
-                                <p className="m-0">{ description }</p>
-                            </div>
+                            {
+                                description
+                                &&
+                                <div className="p-3">
+                                    <p className="fs-4 fw-semibold mb-2">Descripción:</p>
+                                    <p className="m-0">{ description }</p>
+                                </div>
+                            }
                             <div className="p-3">
                                 <p className="fs-4 fw-semibold mb-2">Opciones:</p>
                                 <EventOptionList options={ options } />

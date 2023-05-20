@@ -55,8 +55,7 @@ export const useEventsStore = () => {
 
         try {
 
-            //const { status, data } = await api.put(`/events/${currentEvent.id}/vote`, { optionIndex: optionId } );
-            const { status, data } = await api.put(`/events/${currentEvent.id}/vote`, { optionIndex: 0 } );
+            const { status, data } = await api.put(`/events/${currentEvent.id}/vote`, { optionIndex: optionId } );
 
             if( status === 201 ){
                 dispatch(onToggleVote(optionId));
