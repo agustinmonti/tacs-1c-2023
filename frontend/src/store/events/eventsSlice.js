@@ -49,7 +49,7 @@ export const eventsSlice = createSlice({
         },
         onAddParticipant: (state, { payload }) => {
             state.currentEvent.participants.push( payload );
-        }
+        },
     }
 });
 

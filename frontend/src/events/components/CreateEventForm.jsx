@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { useEventsStore } from '../../hooks'
 import { CreateEventOptionsForm } from "./CreateEventOptionsForm";
+import { CreateEventError } from "./CreateEventError";
 
 export const CreateEventForm = () => {
 
@@ -12,7 +13,11 @@ export const CreateEventForm = () => {
         participants: []
     });
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [state, setState] = useState({
+        isLoading: false,
+        errorMessage: ''
+    });
+    const { isLoading, errorMessage } = state;
 
     const { name, desc, options } = formValues;
 
@@ -26,6 +31,33 @@ export const CreateEventForm = () => {
                 [e.target.name] : e.target.value || e.target.checked
             }
         })
+    }
+
+    const setErrorMessage = ( message ) => {
+        setState( prev => ({
+            ...prev,
+            errorMessage: message
+        }));
+    }
+
+    const setIsLoading = ( value ) => {
+        setState( prev => ({
+            ...prev,
+            isLoading: value
+        }));
+    }
+
+    const isEventValid = () => {
+        if( name.length < 1 ){
+            setErrorMessage('El evento debe tener un nombre');
+            return false;
+        }
+        if( options.length < 1 ){
+            setErrorMessage('El evento debe tener al menos una opción');
+            return false;
+        }
+
+        return true;
     }
 
     const handleAddOption = ( newOption ) => {
@@ -50,18 +82,22 @@ export const CreateEventForm = () => {
 
     const onSubmit = async(e) => {
         e.preventDefault();
+        setErrorMessage('');
+        if( !isEventValid() ) return;
+
         setIsLoading( true );
-
-        console.log(formValues)
         await startCreatingEvent(formValues);
-
         setIsLoading(false);
     }
 
     return (
         <form onSubmit={ onSubmit }>
+            {
+                errorMessage.length > 0
+                && <CreateEventError errorMessage={ errorMessage }/>
+            }
             <div className="mb-3">
-                <label htmlFor="eventName" className="form-label">Nombre</label>
+                <label htmlFor="eventName" className="form-label">Nombre <span className="fw-bold text-danger">*</span></label>
                 <input 
                     type="text" 
                     className="form-control form-control-sm" 
@@ -69,6 +105,7 @@ export const CreateEventForm = () => {
                     value={ name }
                     onChange={ onChange }
                     name="name"
+                    required
                 />
             </div>
             <div className="mb-3">

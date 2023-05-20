@@ -131,7 +131,6 @@ export const useEventsStore = () => {
                 dispatch( onAddParticipant( newParticipant ));
             }
 
-
         } catch (error) {
             console.error(error);
         }
