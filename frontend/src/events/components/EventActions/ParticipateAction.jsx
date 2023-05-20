@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from 'react'
-import { useEventsStore } from '../../hooks'
+import { useMemo, useState } from 'react'
+import { useEventsStore } from '../../../hooks';
 
-export const UserActions = () => {
-
+export const ParticipateAction = () => {
     const { isParticipating, startToggleSignUpForCurrentEvent } = useEventsStore();
 
     const [isLoading, setIsLoading] = useState( false );

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 import Swal from 'sweetalert2'
 import { api } from "../api";
-import { onAddParticipant, onCloseCreateEventModal, onRemoveParticipant, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading, onToggleVote } from "../store";
+import { onAddParticipant, onChangeCurrentEventStatus, onCloseCreateEventModal, onRemoveParticipant, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading, onToggleVote } from "../store";
 import { useNavigate } from "react-router-dom";
 import { addHours, format } from "date-fns";
 import { useMemo } from "react";
@@ -17,11 +17,15 @@ export const useEventsStore = () => {
 
     const isOwner = useMemo(() => {
         return currentEvent.owner?.id === user?._id;
-    }, [ currentEvent ]);
+    }, [ currentEvent.owner ]);
 
     const isParticipating = useMemo (() => {
         return currentEvent.participants?.some( participant => participant.id === user._id );
-    }, [ currentEvent ])
+    }, [ currentEvent.participants ]);
+
+    const isActive = useMemo(() => {
+        return currentEvent.status === 'Active'
+    }, [ currentEvent.status ]);
 
     const startCreatingEvent = async( newEvent ) => {
 
@@ -79,7 +83,7 @@ export const useEventsStore = () => {
             if( status === 200 ){
                 dispatch(onSetEvents( {
                     myEvents: data.myEvents,
-                    participantEvents: data.participantEvents
+                    participantEvents: data.participants
                 } ));
             }else{
                 console.error(data.msg);
@@ -135,6 +139,25 @@ export const useEventsStore = () => {
         }
     }
 
+    const startChangingEventStatus = async ( newStatus ) => {
+        try {
+
+            const { status, data } = await api.put(`/events/${ currentEvent.id }`, newStatus);
+
+            if( status === 201 ){
+                dispatch( onChangeCurrentEventStatus('Cerrado') );
+                Swal.fire('Cambio de estado', data.msg, 'success');
+            }else{
+                console.error(error);
+                Swal.fire('Error al cambiar el estado', data.msg, 'error');
+            }
+
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error al cambiar el estado', data.msg, 'error');
+        }
+    }
+
 
     return {
         currentEvent,
@@ -142,11 +165,13 @@ export const useEventsStore = () => {
         participantEvents,
         isOwner,
         isParticipating,
+        isActive,
 
         startCreatingEvent,
         startVoting,
         startGettingEvents,
         startGettingEvent,
         startToggleSignUpForCurrentEvent,
+        startChangingEventStatus
     }
 }

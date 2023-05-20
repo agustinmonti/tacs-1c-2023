@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import { EventOptionList } from "./EventOptionList";
 import { useEventsStore } from "../../hooks";
-import { OwnerActions } from "./OwnerActions";
-import { UserActions } from "./UserActions";
+import { OwnerActions, UserActions } from "./EventActions";
 import { EventUrl } from "./EventUrl";
 
 export const Event = ({ event }) => {
