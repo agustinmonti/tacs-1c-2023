@@ -31,47 +31,52 @@ export const EventOptionInput = ({ handleAddOption }) => {
 
     return (
         <>
-            <div className="container-fluid p-0">
+            <div className="container-fluid border rounded p-2 animate__animated animate__fadeIn">
                 <div className="row">
-                    <div className="col-6">
-                        <div className="mb-3">
-                            <label className="form-label">Inicio</label>
-                            <DatePicker 
-                                selected={ start }
-                                onChange={ (event) => onDateChange( event, 'start') }
-                                className="form-control form-control-sm"
-                                dateFormat="Pp"
-                                showTimeSelect
-                                locale="es"
-                                timeCaption="Hora"
-                            />
+                    <div className="col-11">
+                        <div className="container-fluid p-0">
+                            <div className="row">
+                                <div className="col-6">
+                                    <label className="form-label mb-0">Inicio:</label>
+                                    <DatePicker 
+                                        selected={ start }
+                                        onChange={ (event) => onDateChange( event, 'start') }
+                                        className="form-control form-control-sm"
+                                        dateFormat="Pp"
+                                        showTimeSelect
+                                        locale="es"
+                                        timeCaption="Hora"
+                                    />
+                                </div>
+                                <div className="col-6">
+                                    <label className="form-label mb-0">Fin:</label>
+                                    <DatePicker 
+                                        minDate={ start }
+                                        selected={ end }
+                                        onChange={ (event) => onDateChange( event, 'end') }
+                                        className="form-control form-control-sm"
+                                        dateFormat="Pp"
+                                        showTimeSelect
+                                        locale="es"
+                                        timeCaption="Hora"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="col-6">
-                        <div className="mb-3">
-                            <label className="form-label">Fin</label>
-                            <DatePicker 
-                                minDate={ start }
-                                selected={ end }
-                                onChange={ (event) => onDateChange( event, 'end') }
-                                className="form-control form-control-sm"
-                                dateFormat="Pp"
-                                showTimeSelect
-                                locale="es"
-                                timeCaption="Hora"
-                            />
-                        </div> 
+                    
+                    <div className="col-1 d-flex justify-content-end align-items-center">
+                        <button 
+                            type='button' 
+                            className='btn btn-primary btn-sm'
+                            onClick={ handleSubmit }
+                        >
+                            <i className="fa-solid fa-plus"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <button 
-                type='button' 
-                className='btn btn-primary btn-sm w-100'
-                onClick={ handleSubmit }
-            >
-                Agregar opción
-            </button>
         </>
     )
 }

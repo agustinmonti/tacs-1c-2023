@@ -7,15 +7,7 @@ export const CreateEventOption = ({ option, handleRemoveOption }) => {
     }
 
     return (
-        <div style={{
-            display:'flex',
-            justifyContent:'space-between',
-            alignItems:'center',
-            padding:'5px',
-            marginBottom:'5px',
-            border: '1px solid #ccc',
-            borderRadius:'5px'
-        }}>
+        <div className="d-flex justify-content-between align-items-center border rounded p-2 mb-2  animate__animated animate__fadeIn">
 
             <p style={{margin:0}}>
                 Inicio: { option.start.toLocaleString() }

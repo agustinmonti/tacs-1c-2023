@@ -4,6 +4,8 @@ import { useEventsStore } from '../../hooks'
 import { CreateEventOptionsForm } from "./CreateEventOptionsForm";
 import { CreateEventError } from "./CreateEventError";
 
+const MAX_OPTIONS_LENGTH = 5;
+
 export const CreateEventForm = () => {
 
     const [ formValues, setFormValues] = useState({
@@ -62,7 +64,16 @@ export const CreateEventForm = () => {
 
     const handleAddOption = ( newOption ) => {
 
-        if( options.some(op => op === newOption)) return;
+        setErrorMessage('');
+        if( options.some(op => op === newOption)){
+            setErrorMessage('Esta opción ya está agregada');
+            return;
+        }
+
+        if( options.length >= MAX_OPTIONS_LENGTH ){
+            setErrorMessage(`No se permiten más de ${MAX_OPTIONS_LENGTH} opciones`);
+            return;
+        }
 
         newOption.id = Math.floor(Math.random() * (0 + 99999) + 0);
         newOption.votes = [];

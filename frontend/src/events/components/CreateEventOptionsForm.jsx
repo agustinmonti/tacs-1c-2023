@@ -5,7 +5,7 @@ export const CreateEventOptionsForm = ({ options = [], handleAddOption, handleRe
 
     return (
         <>
-            <h4>Opciones</h4>
+            <p className='mb-2'>Opciones</p>
 
             {
                 options.map( (option) => (
