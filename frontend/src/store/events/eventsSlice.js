@@ -53,6 +53,9 @@ export const eventsSlice = createSlice({
         onChangeCurrentEventStatus: (state, { payload }) => {
             state.currentEvent.status = payload;
         },
+        onDeleteCurrentEvent: (state, { payload }) => {
+            state.currentEvent = {};
+        },
     }
 });
 
@@ -67,5 +70,6 @@ export const {
     onToggleVote,
     onRemoveParticipant,
     onAddParticipant,
-    onChangeCurrentEventStatus
+    onChangeCurrentEventStatus,
+    onDeleteCurrentEvent
 } = eventsSlice.actions;

@@ -146,7 +146,7 @@ export const useEventsStore = () => {
 
             if( status === 201 ){
                 dispatch( onChangeCurrentEventStatus('Cerrado') );
-                Swal.fire('Cambio de estado', data.msg, 'success');
+                Swal.fire('Votación cerrada', data.msg, 'success');
             }else{
                 console.error(error);
                 Swal.fire('Error al cambiar el estado', data.msg, 'error');
@@ -155,6 +155,28 @@ export const useEventsStore = () => {
         } catch (error) {
             console.error(error);
             Swal.fire('Error al cambiar el estado', data.msg, 'error');
+        }
+    }
+
+    const startDeletingEvent = async () => {
+
+        if( !isOwner ) return;
+
+        try {
+
+            const { status, data } = await api.delete(`/events/${ currentEvent.id }`);
+
+            if( status === 200 ){
+                Swal.fire('Evento eliminado', data.msg, 'success');
+                navigate(`/`);
+            }else{
+                console.error(error);
+                Swal.fire('Error al eliminar', data.msg, 'error');
+            }
+
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error al eliminar', data.msg, 'error');
         }
     }
 
@@ -172,6 +194,7 @@ export const useEventsStore = () => {
         startGettingEvents,
         startGettingEvent,
         startToggleSignUpForCurrentEvent,
-        startChangingEventStatus
+        startChangingEventStatus,
+        startDeletingEvent
     }
 }

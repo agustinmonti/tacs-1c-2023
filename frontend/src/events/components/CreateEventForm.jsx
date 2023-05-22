@@ -10,7 +10,7 @@ export const CreateEventForm = () => {
 
     const [ formValues, setFormValues] = useState({
         name: '',
-        description: '',
+        desc: '',
         options: [],
         participants: []
     });

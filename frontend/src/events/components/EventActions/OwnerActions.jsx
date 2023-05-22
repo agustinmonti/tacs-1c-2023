@@ -1,12 +1,18 @@
+import { useEventsStore } from "../../../hooks"
 import { CloseEventAction } from "./CloseEventAction"
+import { DeleteEventAction } from "./DeleteEventAction";
 
 export const OwnerActions = () => {
+
+    const { isActive } = useEventsStore();
+
     return (
         <div className="btn-group">
-            <CloseEventAction />
-            <button className="btn btn-danger">
-                Eliminar
-            </button>
+            {
+                isActive
+                && <CloseEventAction />
+            }
+            <DeleteEventAction />
         </div>
     )
 }

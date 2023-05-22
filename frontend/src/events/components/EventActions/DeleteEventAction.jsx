@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useEventsStore } from "../../../hooks"
+import { useEventsStore } from "../../../hooks";
 import Swal from "sweetalert2";
 
-export const CloseEventAction = () => {
-
-    const { startChangingEventStatus } = useEventsStore();
+export const DeleteEventAction = () => {
+    
+    const { startDeletingEvent } = useEventsStore();
     const [ isLoading, setIsLoading ] = useState(false);
 
     const handleSubmit = async() => {
@@ -13,10 +13,10 @@ export const CloseEventAction = () => {
 
         Swal.fire({
             title: 'Seguro?',
-            text: "La votación no se podrá volver a abrir",
+            text: "El evento no se podrá recuperar",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Cerrar votación',
+            confirmButtonText: 'Eliminar',
             cancelButtonText: 'Cancelar',
             buttonsStyling: false,
             customClass:{
@@ -24,7 +24,7 @@ export const CloseEventAction = () => {
                 confirmButton:'btn btn-danger me-3'
             }}).then(async(result) => {
                 if (result.isConfirmed) {
-                await startChangingEventStatus('Closed');
+                    await startDeletingEvent();
                 }
             })
 
@@ -33,7 +33,7 @@ export const CloseEventAction = () => {
 
     return (
         <button 
-            className="btn btn-secondary"
+            className="btn btn-danger"
             onClick={ handleSubmit }
             disabled={ isLoading }
         >
@@ -44,7 +44,7 @@ export const CloseEventAction = () => {
                         <span className="visually-hidden">Loading...</span>
                     </div>
                 :
-                'Cerrar votación'
+                'Eliminar'
             }
         </button>
     )
