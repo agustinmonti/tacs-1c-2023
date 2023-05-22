@@ -12,7 +12,7 @@ export const EventUrl = () => {
     }
 
     return (
-        <div className="alert alert-primary animate__animated animate__fadeIn mb-3" role="alert">
+        <div className="alert alert-primary shadow-sm animate__animated animate__fadeIn mb-3" role="alert">
             <p>Comparte este link con quien quieras que participe en esta votación</p>
             <div className="bg-white rounded d-flex justify-content-between align-items-center ps-3 fw-bold">
                 { eventUrl }
