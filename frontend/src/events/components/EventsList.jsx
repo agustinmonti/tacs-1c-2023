@@ -14,7 +14,8 @@ export const EventsList = ({ events = [] }) => {
     return (
         <div className="mt-3">
             {
-                events.map( ev => (
+                (events.length > 0)
+                ? events.map( ev => (
                     <div key={ ev.id } 
                         className="border rounded mb-2 d-flex justify-content-between align-items-center mw-100"
                         style={{height:'115px'}}
@@ -41,6 +42,7 @@ export const EventsList = ({ events = [] }) => {
                         </div>
                     </div>
                 ))
+                : <p className="text-center">No hay eventos</p>
             }
         </div>
         

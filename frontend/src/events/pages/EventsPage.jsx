@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Navbar } from '../components/Navbar'
-import { CreateEventModal } from '../'
+import { CreateEventModal } from '../components/CreateEvent'
 import { useUiStore, useAuthStore, useEventsStore } from '../../hooks'
 import { EventsList } from '../components/EventsList'
 

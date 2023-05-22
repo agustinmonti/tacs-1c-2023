@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { EventOption } from './EventOption'
 
 export const EventOptionList = ({ options = [] }) => {

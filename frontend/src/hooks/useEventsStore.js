@@ -63,7 +63,6 @@ export const useEventsStore = () => {
 
             if( status === 201 ){
                 dispatch(onToggleVote(optionId));
-                console.log('Votado con exito');
             }else{
                 console.error(data.msg);
             }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useEventsStore } from '../../hooks'
+import { useEventsStore } from '../../../hooks'
 import { CreateEventOptionsForm } from "./CreateEventOptionsForm";
 import { CreateEventError } from "./CreateEventError";
 

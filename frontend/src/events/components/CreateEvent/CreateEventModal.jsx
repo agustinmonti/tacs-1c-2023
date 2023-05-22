@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import { CreateEventForm } from "./CreateEventForm";
-import { useUiStore } from "../../hooks/useUiStore";
+import { useUiStore } from "../../../hooks/useUiStore";
 
 const customStyles = {
 	content: {
