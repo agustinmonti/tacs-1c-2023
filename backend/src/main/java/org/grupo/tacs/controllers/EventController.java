@@ -15,10 +15,9 @@ import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.extras.EventData;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.extras.LocalDateTimeSerializer;
-import org.grupo.tacs.model.Event;
-import org.grupo.tacs.model.EventOption;
-import org.grupo.tacs.model.User;
+import org.grupo.tacs.model.*;
 import org.grupo.tacs.repos.EventRepository;
+import org.grupo.tacs.repos.InteractionRepository;
 import spark.Request;
 import spark.Response;
 
@@ -52,6 +51,7 @@ public class EventController {
         Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
+                .excludeFieldsWithoutExposeAnnotation()
                 .create();
         String eventJson = "";
         try {
@@ -59,17 +59,27 @@ public class EventController {
             if(event == null){
                 throw new NoSuchElementException();
             }
+            User user = getVerifiedUserFromTokenInRequest(request);
             response.status(200);
             EventData data = new EventData(event);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get Event",200));
             myMap.put("event",data);
-            myMap.put("optionsVoted",data.getVotados());
+            myMap.put("optionsVoted",data.getVotados(user));
             eventJson = gson.toJson(myMap);
         } catch (NoSuchElementException e){
             response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get Event",404));
             myMap.put("msg","Evento no encontrado.");
             eventJson = gson.toJson(myMap);
+        }catch (UnauthorizedException e){
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get Event",401));
+            myMap.put("msg",e.getMessage());
+            e.printStackTrace();
+            return gson.toJson(myMap);
         } catch (Exception e) {
             response.status(500);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get Event",500));
             e.printStackTrace();
             myMap.put("msg","Error getting event");
             eventJson = gson.toJson(myMap);
@@ -115,21 +125,25 @@ public class EventController {
             if(!owner.getId().equals(event.getCreatedBy().getId()))
                 throw new UnauthorizedException("No posee autorización para editar este evento");
             event.setId(new ObjectId(request.params(":id")));
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Close Event",201));
             EventRepository.instance.update(event);
             myMap.put("msg","evento modificado");
             return gson.toJson(myMap);
         }catch (UnauthorizedException e){
             response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Close Event",401));
             myMap.put("msg",e.getMessage());
             e.printStackTrace();
             return gson.toJson(myMap);
         }catch (NoSuchElementException e){
             response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Close Event",404));
             e.printStackTrace();
             myMap.put("msg",e.getMessage());
             return gson.toJson(myMap);
         }catch (Exception e){
             e.printStackTrace();
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Close Event",500));
             myMap.put("msg",e.getMessage());
             return gson.toJson(myMap);
         }
@@ -151,6 +165,7 @@ public class EventController {
         List<Integer> result = EventRepository.instance.monitoring();
         response.status(200);
         Map<String, Object> data = new HashMap<>();
+        InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Monitoring",200));
         data.put("events",result.get(0));
         data.put("votes",result.get(1));
         Gson gson = new Gson();
@@ -172,23 +187,28 @@ public class EventController {
             }else if (event.getIsActive()){
                 EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
                 response.status(201);
+                InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote",201));
                 myMap.put("msg","Votos registrados correctamente.");
                 return gson.toJson(myMap);
             }
             response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, but Event was closed",401));
             myMap.put("msg","Votacion Cerrada.");
             return gson.toJson(myMap);
         } catch(EventDoesNotExistException | NoSuchElementException e){
             response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, Event not found",404));
             myMap.put("msg","No encontrado.");
             return gson.toJson(myMap);
         } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, bad Credentials",401));
             myMap.put("msg","Errores de validación.");
             return gson.toJson(myMap);
         } catch (Exception e) {
             response.status(500);
             e.printStackTrace();
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, server error",500));
             myMap.put("msg","Error al registrar el voto.");
             return gson.toJson(myMap);
         }
@@ -214,15 +234,19 @@ public class EventController {
             }
             EventRepository.instance.updateParticipant(event,user);
             response.status(201);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add/remove Participant",201));
             return "participación actualizada";
         } catch(EventDoesNotExistException e){
             response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add/remove Participant",404));
             return "Event does not exist";
         } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
             response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add/remove Participant",401));
             return "Unauthorized";
         } catch (Exception e) {
             response.status(500);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add/remove Participant",500));
             System.out.println(e);
             return "Error updating participant";
         }
@@ -291,15 +315,18 @@ public class EventController {
             newEvent.setCreatedBy(user);
             EventRepository.instance.save(newEvent);
             response.status(201);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.POST,request.url(),"Create an Event",201));
             myMap.put("msg","Evento creado.");
             myMap.put("id",newEvent.getId().toHexString());
             return gson.toJson(myMap);
         } catch (UserDoesNotExistException | UnauthorizedException | JWTVerificationException e) {
             response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.POST,request.url(),"Create an Event",401));
             myMap.put("msg","Unauthorized");
             return gson.toJson(myMap);
         } catch (Exception e) {
             response.status(500);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.POST,request.url(),"Create an Event",500));
             System.out.println(e);
             return "Error creating event";
         }
@@ -318,10 +345,12 @@ public class EventController {
             String userIdString = request.queryParams("userId");
             ObjectId userId = new ObjectId(userIdString);
             Document events = EventRepository.instance.getEventsByUser(userId);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get User's events",200));
             return events.toJson();
         }catch (Exception e){
             e.printStackTrace();
             response.status(400); // Bad Request
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get User's events",400));
             myMap.put("msg","Usuario no encontrado");
             return gson.toJson(myMap);
         }

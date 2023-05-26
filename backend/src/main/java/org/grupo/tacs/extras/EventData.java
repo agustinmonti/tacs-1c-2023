@@ -1,15 +1,19 @@
 package org.grupo.tacs.extras;
 
+import com.google.gson.annotations.Expose;
 import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
+import org.grupo.tacs.model.Vote;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 class UserData{
+    @Expose(serialize = true)
     String email;
+    @Expose(serialize = true)
     String id;
     public UserData(String s, String hexString) {
         this.id = hexString;
@@ -18,29 +22,47 @@ class UserData{
 }
 class EventOptionData {
     //String id;
+    @Expose(serialize = true)
     LocalDateTime start;
+    @Expose(serialize = true)
     LocalDateTime end;
+    @Expose(serialize = true)
     int votes;
+    @Expose(serialize = false)
+    List <Vote> votesCollection;
     public EventOptionData(EventOption o) {
         //this.id=o.getId().toHexString(); Quedamos en usar la posicion como indice.
         this.start=o.getStart();
         this.end=o.getEnd();
         this.votes=o.getVotes().size();
+        this.votesCollection = o.getVotes();
     }
 
     public int getVotes() {
         return votes;
     }
+
+    public boolean voted(User user) {
+        return this.votesCollection.stream().anyMatch(vote -> vote.getUser().getId().equals(user.getId()));
+    }
 }
 public class EventData{
+    @Expose(serialize = true)
     String id;
+    @Expose(serialize = true)
     String name;
+    @Expose(serialize = true)
     String description;
+    @Expose(serialize = true)
     List<EventOptionData> options;
+    @Expose(serialize = true)
     List<UserData> participants;
     // participants: [ { id, email } ]
+    @Expose(serialize = true)
     String status;
+    @Expose(serialize = true)
     LocalDateTime createdDate;
+    @Expose(serialize = true)
     UserData owner;
     public EventData(Event event) {
         this.id=event.getId().toHexString();
@@ -71,11 +93,12 @@ public class EventData{
         return options;
     }
 
-    public List<Integer> getVotados(){
+    public List<Integer> getVotados(User user){
         List<Integer> votados = new ArrayList<>();
         int index = -1;
         for (int i = 0; i < this.options.size(); i++) {
-            if(this.options.get(i).votes > 0)
+            EventOptionData option = this.options.get(i);
+            if(option.votes > 0 && option.voted(user))
                 votados.add(i);
         }
         return votados;
