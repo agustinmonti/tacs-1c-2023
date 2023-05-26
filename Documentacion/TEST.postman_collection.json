@@ -35,9 +35,15 @@
 			"name": "/events/:id",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDcwYWU2NThlMmY4MjFkNTkzOWJiODQiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NzY5ODI5OH0.WUHyp1VfMDTkeUebGcDoigzE_MuPIvl9pN6QEGf8XgU",
+						"type": "default"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027",
+					"raw": "http://localhost:8080/v2/events/6470ae9b8e2f821d5939bb88",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -46,7 +52,7 @@
 					"path": [
 						"v2",
 						"events",
-						"645eb3438fb2603857d8e027"
+						"6470ae9b8e2f821d5939bb88"
 					]
 				}
 			},

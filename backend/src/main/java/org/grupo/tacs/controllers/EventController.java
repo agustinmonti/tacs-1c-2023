@@ -341,16 +341,17 @@ public class EventController {
     public static Object getEventsByUser(Request request, Response response){
         Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
+        String modifiedUrl = request.url() + "?userId=" + request.queryParams("userId");
         try{
             String userIdString = request.queryParams("userId");
             ObjectId userId = new ObjectId(userIdString);
             Document events = EventRepository.instance.getEventsByUser(userId);
-            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get User's events",200));
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,modifiedUrl,"Get User's events",200));
             return events.toJson();
         }catch (Exception e){
             e.printStackTrace();
             response.status(400); // Bad Request
-            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Get User's events",400));
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,modifiedUrl,"Get User's events",400));
             myMap.put("msg","Usuario no encontrado");
             return gson.toJson(myMap);
         }
