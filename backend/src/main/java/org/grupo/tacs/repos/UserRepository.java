@@ -13,6 +13,7 @@ import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
 import org.grupo.tacs.excepciones.ThePasswordsDontMatchException;
 import org.grupo.tacs.excepciones.ThisEmailIsAlreadyInUseException;
+import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.model.User;
 
 import java.time.LocalDateTime;
@@ -67,6 +68,8 @@ public class UserRepository implements Repository<User>{
             if (existingUser != null) {
                 throw new ThisEmailIsAlreadyInUseException(user.getEmail());
             }else if(user.passwordIguales()){
+                user.setPassword(Helper.obtenerHash(user.getPassword()));
+                user.setConfirmPassword(user.getPassword());
                 user.setCreatedDate(LocalDateTime.now());
                 collection.insertOne(user);
             }else {

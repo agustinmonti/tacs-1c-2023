@@ -67,7 +67,9 @@ public class EventOption {
 
     public List<Vote> getVotes() {return votes;}
 
-    public void addVote(Vote vote) {this.votes.add(vote);}
+    public void addVote(Vote vote) {
+        this.votes.add(vote);
+    }
 
     public void rmvVote(Vote vote) {this.votes.remove(vote);}
 

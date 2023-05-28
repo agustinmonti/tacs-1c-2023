@@ -4,6 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
@@ -76,7 +77,11 @@ public class Event {
 
     public void setOptions(List<EventOption> options) {this.options = options;}
 
-    public void addOption(EventOption option) {this.options.add(option);}
+    public void addOption(EventOption option) {
+        if(this.options==null)
+            this.options= new ArrayList<>();
+        this.options.add(option);
+    }
 
     public EventOption getOption(EventOption option) {
         for(EventOption eventOption : options) {

@@ -108,4 +108,17 @@ public class User {
     public Boolean passwordIguales(){
         return this.getPassword().equals(this.confirmPassword);
     }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
 }

@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserDoesNotExistException;
 import org.grupo.tacs.excepciones.WrongPasswordException;
+import org.grupo.tacs.extras.Helper;
 import org.grupo.tacs.extras.LocalDateTimeSerializer;
 import org.grupo.tacs.extras.ObjectIdSerializer;
 import org.grupo.tacs.model.User;
@@ -132,7 +133,7 @@ public class LoginController {
             User user = users.stream().filter(u -> u.getEmail().equals(email)).findFirst().orElseThrow(UserDoesNotExistException::new);
             token = generateToken(user);
             response.header("Authorization", "Bearer " + token);
-            if (!user.getPassword().equals(password)) {
+            if (!user.getPassword().equals(Helper.obtenerHash(password))) {
                 throw new WrongPasswordException();
             }
             myMap.put("user",user);
