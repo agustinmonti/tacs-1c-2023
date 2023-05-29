@@ -6,6 +6,7 @@ import { onAddParticipant, onChangeCurrentEventStatus, onCloseCreateEventModal, 
 import { useNavigate } from "react-router-dom";
 import { addHours, format } from "date-fns";
 import { useMemo } from "react";
+import { parseOptions } from "../helpers";
 
 export const useEventsStore = () => {
 
@@ -98,13 +99,8 @@ export const useEventsStore = () => {
         try {
             const { status, data } = await api.get(`/events/${ id }`);
 
-            data.event.options = data.event.options.map( (option, index) => (
-                {
-                    ...option,
-                    id: index,
-                    selected: data.optionsVoted.some( optionVotedId => optionVotedId === index )
-                }
-            ))
+            data.event.options = parseOptions( data.event.options, data.optionsVoted );
+            data.event.createdDate = new Date( data.event.createdDate );
 
             if( status === 200 ){
                 dispatch(onSetCurrentEvent( data.event ));

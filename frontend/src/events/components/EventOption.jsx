@@ -31,7 +31,7 @@ export const EventOption = ({ option }) => {
         
     return (
         <div className="border rounded p-2 mb-2 w-100 d-flex justify-content-between align-items-center">
-            <div className="option-info">
+            <div className="option-info d-flex justify-content-between w-100">
                 <p style={{margin:0}}>
                     <span className="fw-semibold">Inicio: </span> { start.toLocaleString() }
                 </p>

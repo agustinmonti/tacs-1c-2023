@@ -22,8 +22,7 @@ export const Event = ({ event }) => {
                         <div className="event-header-info">
                             <h3>{ name }</h3>
                             <p className="m-0">
-                                Creado por: 
-                                { <Link to={`/user/${ owner.id }`}> { owner.email } </Link> }                       
+                                Creado por: { owner.email }                      
                             </p>
                             <p className="m-0">
                                 Fecha de creación: { createdDate?.toLocaleString() } 
