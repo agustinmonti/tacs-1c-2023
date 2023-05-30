@@ -65,7 +65,11 @@ export const CreateEventForm = () => {
     const handleAddOption = ( newOption ) => {
 
         setErrorMessage('');
-        if( options.some(op => op === newOption)){
+        if( 
+            options.some(op => {
+                return op.start.toString() === newOption.start.toString() && op.end.toString() === newOption.end.toString()
+            })
+        ){
             setErrorMessage('Esta opción ya está agregada');
             return;
         }

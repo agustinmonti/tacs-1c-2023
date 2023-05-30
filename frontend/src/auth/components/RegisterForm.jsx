@@ -61,6 +61,7 @@ export const RegisterForm = ({ setShowRegister }) => {
                             minLength={NAME_MIN_LENGTH}
                             value={name}
                             onChange={onInputChange}
+                            required
                         />
                     </div>
                     <div className="col-6">
@@ -72,6 +73,7 @@ export const RegisterForm = ({ setShowRegister }) => {
                             minLength={LASTNAME_MIN_LENGTH}
                             value={lastname}
                             onChange={onInputChange}
+                            required
                         />
                     </div>
                     <div className="col-12">
@@ -82,6 +84,7 @@ export const RegisterForm = ({ setShowRegister }) => {
                             name='email'
                             value={email}
                             onChange={onInputChange}
+                            required
                         />
                     </div>
                     <div className="col-12">
@@ -93,6 +96,7 @@ export const RegisterForm = ({ setShowRegister }) => {
                             minLength={PASSWORD_MIN_LENGTH}
                             value={password}
                             onChange={onInputChange}
+                            required
                         />
                     </div>
                     <div className="col-12">
@@ -106,6 +110,7 @@ export const RegisterForm = ({ setShowRegister }) => {
                                 minLength={PASSWORD_MIN_LENGTH}
                                 value={confirmPassword}
                                 onChange={onInputChange}
+                                required
                             />
                             <span className="input-group-text" style={{background: '#fff', border:'none'}}>
                                 {
