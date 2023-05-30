@@ -225,7 +225,7 @@ public class EventController {
         return "voto realizado o retirado";
     }
 
-    public static Object updateParticipant(Request request, Response response) {
+    /*public static Object updateParticipant(Request request, Response response) {
         try{
             User user = getVerifiedUserFromTokenInRequest(request); //JWT
             Event event = EventRepository.instance.findById(request.params(":id"));
@@ -247,6 +247,60 @@ public class EventController {
         } catch (Exception e) {
             response.status(500);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add/remove Participant",500));
+            System.out.println(e);
+            return "Error updating participant";
+        }
+    }*/
+
+    public static Object addParticipant(Request request, Response response) {
+        try{
+            User user = getVerifiedUserFromTokenInRequest(request); //JWT
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            if (event == null){
+                throw new EventDoesNotExistException();
+            }
+            EventRepository.instance.addParticipant(event,user);
+            response.status(201);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add Participant",201));
+            return "participación actualizada";
+        } catch(EventDoesNotExistException e){
+            response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add Participant",404));
+            return "Event does not exist";
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add Participant",401));
+            return "Unauthorized";
+        } catch (Exception e) {
+            response.status(500);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add Participant",500));
+            System.out.println(e);
+            return "Error updating participant";
+        }
+    }
+
+    public static Object deleteParticipant(Request request, Response response) {
+        try{
+            User user = getVerifiedUserFromTokenInRequest(request); //JWT
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            if (event == null){
+                throw new EventDoesNotExistException();
+            }
+            EventRepository.instance.deleteParticipant(event,user);
+            response.status(201);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",201));
+            return "participación actualizada";
+        } catch(EventDoesNotExistException e){
+            response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",404));
+            return "Event does not exist";
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",401));
+            return "Unauthorized";
+        } catch (Exception e) {
+            response.status(500);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",500));
             System.out.println(e);
             return "Error updating participant";
         }
