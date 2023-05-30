@@ -20,7 +20,7 @@ public class Event {
     @BsonProperty(value = "createdDate")
     LocalDateTime createdDate;
     @BsonProperty(value = "createdBy")
-    User createdBy;
+    ObjectId createdBy;
     @BsonProperty(value = "options")
     List<EventOption> options;
     @BsonProperty(value = "participants")
@@ -32,7 +32,7 @@ public class Event {
      * @param createdBy Es el usuario creador del evento.
 
      */
-    public Event(String name, String desc, List<EventOption> options, User createdBy, List<User> participants) {
+    public Event(String name, String desc, List<EventOption> options, ObjectId createdBy, List<User> participants) {
         this.name = name;
         this.desc = desc;
         this.isActive = true;
@@ -56,7 +56,7 @@ public class Event {
 
     public LocalDateTime getCreatedDate() {return createdDate;}
 
-    public User getCreatedBy() {return createdBy;}
+    public ObjectId getCreatedBy() {return createdBy;}
 
     public List<EventOption> getOptions() {return options;}
     public List<User> getParticipants() {return participants;}
@@ -74,7 +74,7 @@ public class Event {
 
     public void setCreatedDate(LocalDateTime createdDate) {this.createdDate = createdDate;}
 
-    public void setCreatedBy(User createdBy) {this.createdBy = createdBy;}
+    public void setCreatedBy(ObjectId createdBy) {this.createdBy = createdBy;}
 
     public void setOptions(List<EventOption> options) {this.options = options;}
 

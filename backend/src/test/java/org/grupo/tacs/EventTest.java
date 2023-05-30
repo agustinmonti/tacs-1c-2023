@@ -21,7 +21,7 @@ public class EventTest {
         this.user.setName("Bob");
         this.user.setPassword("Password123");
         this.user.setConfirmPassword("Password123");
-        this.eventOpen = new Event("OpenEvent", "An Open Event", new ArrayList<>(), this.user, new ArrayList<>());
+        this.eventOpen = new Event("OpenEvent", "An Open Event", new ArrayList<>(), this.user.getId(), new ArrayList<>());
         this.optionOne = new EventOption(LocalDateTime.now(), LocalDateTime.now().plusHours(2), new ArrayList<>());
         this.eventOpen.addOption(optionOne);
         this.optionTwo = new EventOption(LocalDateTime.now().plusDays(1), LocalDateTime.now().plusHours(2).plusDays(1), new ArrayList<>());
@@ -30,7 +30,7 @@ public class EventTest {
     @Test
     public void voteTestWithOpenEvent(){
         EventOption option = this.eventOpen.getOptionToVoteWithIndex(0);
-        option.addVote(new Vote(this.user));
+        option.addVote(new Vote(this.user.getId()));
         Assert.assertEquals(1,optionOne.getVotes().size());
         Assert.assertNotEquals(1,optionTwo.getVotes().size());
     }

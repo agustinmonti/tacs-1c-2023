@@ -5,6 +5,7 @@ import org.grupo.tacs.model.Event;
 import org.grupo.tacs.model.EventOption;
 import org.grupo.tacs.model.User;
 import org.grupo.tacs.model.Vote;
+import org.grupo.tacs.repos.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ class EventOptionData {
     }
 
     public boolean voted(User user) {
-        return this.votesCollection.stream().anyMatch(vote -> vote.getUser().getId().equals(user.getId()));
+        return this.votesCollection.stream().anyMatch(vote -> vote.getUserId().equals(user.getId()));
     }
 }
 public class EventData{
@@ -72,7 +73,8 @@ public class EventData{
         if(event.getIsActive())
             this.status = "Active";
         this.participants = transformParticipants(event.getParticipants());
-        this.owner = new UserData(event.getCreatedBy().getEmail(),event.getCreatedBy().getId().toHexString());
+        User owner = UserRepository.instance.findById(event.getCreatedBy().toHexString());
+        this.owner = new UserData(owner.getEmail(),owner.getId().toHexString());
         this.createdDate=event.getCreatedDate();
         this.options=transformEventOptions(event.getOptions());
     }
