@@ -271,7 +271,7 @@ public class EventController {
             response.status(404);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add Participant",404));
             return "Event does not exist";
-        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException | UserAlreadyParticipatingException e){
             response.status(401);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event add Participant",401));
             return "Unauthorized";
@@ -298,10 +298,10 @@ public class EventController {
             response.status(404);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",404));
             return "Event does not exist";
-        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException | NoSuchElementException e){
             response.status(401);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",401));
-            return "Unauthorized";
+            return "Unauthorized, "+e.getMessage();
         } catch (Exception e) {
             response.status(500);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",500));

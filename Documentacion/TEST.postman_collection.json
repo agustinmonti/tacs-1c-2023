@@ -6,200 +6,25 @@
 	},
 	"item": [
 		{
-			"name": "/events?userId=",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/v2/events?userId=645eb29e8fb2603857d8e021",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events"
-					],
-					"query": [
-						{
-							"key": "userId",
-							"value": "645eb29e8fb2603857d8e021"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/events/:id",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDcwYWU2NThlMmY4MjFkNTkzOWJiODQiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NzY5ODI5OH0.WUHyp1VfMDTkeUebGcDoigzE_MuPIvl9pN6QEGf8XgU",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/v2/events/6470ae9b8e2f821d5939bb88",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events",
-						"6470ae9b8e2f821d5939bb88"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/events/:id/vote",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"optionIndex\": \"1\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027/vote",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events",
-						"645eb3438fb2603857d8e027",
-						"vote"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/events/:id/vote",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
-						"type": "default"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"optionIndex\": \"1\"\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027/vote",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events",
-						"645eb3438fb2603857d8e027",
-						"vote"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/events/:id/participant",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027/participant",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events",
-						"645eb3438fb2603857d8e027",
-						"participant"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/events/:id",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events",
-						"645eb3438fb2603857d8e027"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/events/:id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"events",
-						"645eb3438fb2603857d8e027"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"user_email\", jsonData.token);\r",
+							"pm.globals.set(\"user_password\", jsonData.token);\r",
+							"var requestBody = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"pm.globals.set(\"user_email\", requestBody.email);\r",
+							"pm.globals.set(\"user_password\", requestBody.password);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -223,34 +48,46 @@
 			"response": []
 		},
 		{
-			"name": "/users/:id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/v2/users/645eb9528fb2603857d8e045",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"v2",
-						"users",
-						"645eb9528fb2603857d8e045"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "/auth/login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var requestBody = JSON.parse(pm.request.body.raw);\r",
+							"\r",
+							"requestBody.email = pm.globals.get(\"user_email\");\r",
+							"requestBody.password = pm.globals.get(\"user_password\");\r",
+							"\r",
+							"pm.request.body.raw = JSON.stringify(requestBody);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"jwt_token\", jsonData.token);\r",
+							"pm.globals.set(\"user_id\",jsonData.user._id)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"bobmarley@proton.me\",\r\n  \"password\": \"abcd1234\"\r\n}"
+					"raw": "{\r\n  \"email\": \"{{user_email}}\",\r\n  \"password\": \"{{user_password}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "http://localhost:8080/v2/auth/login",
@@ -275,7 +112,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjk1MjhmYjI2MDM4NTdkOGUwNDUiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUyMjI1M30.tf7SnFB5YRzF10g_KjdldsSikBwtWP8RVrsDvUzmRtY",
+						"value": "{{jwt_token}}",
 						"type": "default"
 					}
 				],
@@ -296,19 +133,58 @@
 			"response": []
 		},
 		{
+			"name": "/users/:id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/users/{{user_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/events",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.globals.set(\"event_id\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjk1MjhmYjI2MDM4NTdkOGUwNDUiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUyMjI1M30.tf7SnFB5YRzF10g_KjdldsSikBwtWP8RVrsDvUzmRtY",
+						"value": "{{jwt_token}}",
 						"type": "default"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Evento Aburrido\",\r\n  \"desc\": \"Un evento que no es divertido\",\r\n  \"participants\": [],\r\n  \"options\": [\r\n    {\r\n      \"start\": \"2022-01-01T12:00:00Z\",\r\n      \"end\": \"2022-01-01T14:00:00Z\",\r\n      \"votes\": []\r\n    },\r\n    {\r\n      \"start\": \"2022-01-01T15:00:00Z\",\r\n      \"end\": \"2022-01-01T17:00:00Z\",\r\n      \"votes\": []\r\n    }\r\n  ]\r\n}"
+					"raw": "{\r\n  \"name\": \"Evento  2\",\r\n  \"desc\": \"Un evento que no es divertido\",\r\n  \"participants\": [],\r\n  \"options\": [\r\n    {\r\n      \"start\": \"2022-01-01T12:00:00Z\",\r\n      \"end\": \"2022-01-01T14:00:00Z\",\r\n      \"votes\": []\r\n    },\r\n    {\r\n      \"start\": \"2022-01-01T15:00:00Z\",\r\n      \"end\": \"2022-01-01T17:00:00Z\",\r\n      \"votes\": []\r\n    }\r\n  ]\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/v2/events",
@@ -326,10 +202,216 @@
 			"response": []
 		},
 		{
-			"name": "/monitoring",
+			"name": "/events/:id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/{{event_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"{{event_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/{{event_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"{{event_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events?userId=",
 			"request": {
 				"method": "GET",
 				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v2/events?userId={{user_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id/vote",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"optionIndex\": \"0\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/events/{{event_id}}/vote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"{{event_id}}",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id/vote",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"optionIndex\": \"0\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/events/{{event_id}}/vote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"{{event_id}}",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id/participant",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/{{event_id}}/participant",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"{{event_id}}",
+						"participant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/events/:id/participant",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/v2/events/{{event_id}}/participant",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"{{event_id}}",
+						"participant"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/monitoring",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{jwt_token}}",
+						"type": "default"
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8080/v2/monitoring",
 					"protocol": "http",

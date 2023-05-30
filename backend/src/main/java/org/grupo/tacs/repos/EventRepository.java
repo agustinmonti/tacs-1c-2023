@@ -14,6 +14,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
 import org.grupo.tacs.excepciones.AlreadyVotedException;
+import org.grupo.tacs.excepciones.UserAlreadyParticipatingException;
 import org.grupo.tacs.model.*;
 
 import javax.print.Doc;
@@ -186,8 +187,6 @@ public class EventRepository implements Repository<Event>{
 
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException();
-        } catch (MongoException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally{
@@ -226,6 +225,8 @@ public class EventRepository implements Repository<Event>{
             Bson condition = Filters.eq("_id", event.getId());
             if(participants.isEmpty()){
                 collection.updateOne(condition,Updates.push("participants", user));
+            }else {
+                throw new UserAlreadyParticipatingException();
             }
         } catch (MongoException e) {
             e.printStackTrace();
@@ -243,6 +244,8 @@ public class EventRepository implements Repository<Event>{
             Bson condition = Filters.eq("_id", event.getId());
             if(!participants.isEmpty()){
                 collection.updateOne(condition,Updates.pull("participants", user));
+            }else{
+                throw new NoSuchElementException("User wasn't participating");
             }
         } catch (MongoException e) {
             e.printStackTrace();
