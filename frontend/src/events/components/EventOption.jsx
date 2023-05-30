@@ -7,11 +7,15 @@ export const EventOption = ({ option }) => {
 
     const [isLoading, setIsLoading] = useState(false)
 
-    const { isActive, startVoting } = useEventsStore();
+    const { isActive, startAddingVote, startRemovingVote } = useEventsStore();
     
     const handleVote = async() => {
         setIsLoading(true);
-        await startVoting(id);
+        if( !option.selected ){
+            await startAddingVote( id );
+        }else{
+            await startRemovingVote( id )
+        }
         setIsLoading(false);
     }
 

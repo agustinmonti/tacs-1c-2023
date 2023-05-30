@@ -13,10 +13,8 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoDB;
-import org.grupo.tacs.model.Event;
-import org.grupo.tacs.model.EventOption;
-import org.grupo.tacs.model.User;
-import org.grupo.tacs.model.Vote;
+import org.grupo.tacs.excepciones.AlreadyVotedException;
+import org.grupo.tacs.model.*;
 
 import javax.print.Doc;
 import java.time.LocalDateTime;
@@ -25,6 +23,9 @@ import java.util.stream.Collectors;
 
 
 public class EventRepository implements Repository<Event>{
+    public static final String EVENT_COLLECTION_NAME = "Events";
+    public static final String DB_NAME = "mydb";
+
     public static EventRepository instance = new EventRepository();
     MongoClient mongoClient;
     List<Event> events = new ArrayList<>();
@@ -33,8 +34,8 @@ public class EventRepository implements Repository<Event>{
 
         mongoClient = MongoDB.getMongoClient();
         try {
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             ObjectId objectId = new ObjectId(id);
             Bson condition = Filters.eq("_id", objectId);
             FindIterable<Event> events = collection.find(condition);
@@ -58,8 +59,8 @@ public class EventRepository implements Repository<Event>{
 
         mongoClient = MongoDB.getMongoClient();
         try {
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             event.setIsActive(true);
             event.setCreatedDate(LocalDateTime.now());
             collection.insertOne(event);
@@ -76,8 +77,8 @@ public class EventRepository implements Repository<Event>{
 
         mongoClient = MongoDB.getMongoClient();
         try {
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             Bson condition = Filters.eq("_id", event.getId());
             //collection.replaceOne(condition,event); //CON ESTO PODES MODIFICARLO COMPLETO
             UpdateResult result =collection.updateOne(condition,Updates.set("isActive",!event.getIsActive())); //CON ESTO UPDATEAS SOLO EL ESTADO
@@ -92,22 +93,22 @@ public class EventRepository implements Repository<Event>{
 
     }
 
-    public void updateVoteWithOutId(Event event, Integer OptionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
+    public void updateVoteWithOutId(Event event, Integer optionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
         mongoClient = MongoDB.getMongoClient();
         try {
 
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
 
-            EventOption option = event.getOptions().get(OptionIndex);
+            EventOption option = event.getOptionToVoteWithIndex(optionIndex);
 
             List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             if (votes.isEmpty()){
                 option.addVote(new Vote(user));
             } else{
-                option.rmvVote(votes.get(0));
+                throw new AlreadyVotedException();
             }
             collection.replaceOne(condition,event);
 
@@ -115,7 +116,32 @@ public class EventRepository implements Repository<Event>{
             throw new NoSuchElementException();
         } catch (MongoException e) {
             e.printStackTrace();
-        } catch (Exception e) {
+        } finally{
+            mongoClient.close(); //cerras el cliente
+        }
+    }
+    public void deleteVoteWithOutId(Event event, Integer optionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
+
+        mongoClient = MongoDB.getMongoClient();
+        try {
+
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
+
+            EventOption option = event.getOptionToVoteWithIndex(optionIndex);
+
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            if (!votes.isEmpty()){
+                option.rmvVote(votes.get(0));
+            } else {
+                throw new NoSuchElementException("Vote not found");
+            }
+            collection.replaceOne(condition,event);
+
+        } catch (IndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
+        } catch (MongoException e) {
             e.printStackTrace();
         } finally{
             mongoClient.close(); //cerras el cliente
@@ -127,8 +153,8 @@ public class EventRepository implements Repository<Event>{
         mongoClient = MongoDB.getMongoClient();
         try {
 
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
 
             EventOption option = event.getOption(eventOption);
 
@@ -173,8 +199,8 @@ public class EventRepository implements Repository<Event>{
 
         mongoClient = MongoDB.getMongoClient();
         try {
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             List<User> participants = event.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             if(participants.isEmpty()){
@@ -230,8 +256,8 @@ public class EventRepository implements Repository<Event>{
         mongoClient = MongoDB.getMongoClient();
 
         try {
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now().minusHours(2)),Filters.lt("createdDate", LocalDateTime.now()));
             List<Event> eventList = collection.find(condition).into(new ArrayList<>());
             List<Vote> voteList = new ArrayList<>();
@@ -278,8 +304,8 @@ public class EventRepository implements Repository<Event>{
 
         mongoClient = MongoDB.getMongoClient();
         try {
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             ObjectId objectId = new ObjectId(id);
             Bson condition = Filters.eq("_id", objectId);
             collection.deleteOne(condition);
@@ -306,8 +332,8 @@ public class EventRepository implements Repository<Event>{
         try {
             List<Document> myEvents = new ArrayList<>();
             List<Document> participantEvents = new ArrayList<>();
-            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
-            MongoCursor<Document> cursor = mongodb.getCollection("Events").find(
+            MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
+            MongoCursor<Document> cursor = mongodb.getCollection(EVENT_COLLECTION_NAME).find(
                     Filters.or(
                             Filters.eq("createdBy._id", userId),
                             Filters.elemMatch("participants", Filters.eq("_id", userId))

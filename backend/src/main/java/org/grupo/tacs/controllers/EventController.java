@@ -9,9 +9,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.grupo.tacs.excepciones.EventDoesNotExistException;
-import org.grupo.tacs.excepciones.UnauthorizedException;
-import org.grupo.tacs.excepciones.UserDoesNotExistException;
+import org.grupo.tacs.excepciones.*;
 import org.grupo.tacs.extras.EventData;
 import org.grupo.tacs.extras.LocalDateTimeDeserializer;
 import org.grupo.tacs.extras.LocalDateTimeSerializer;
@@ -162,38 +160,44 @@ public class EventController {
     }
 
     public static Object monitoring(Request request, Response response) {
-        List<Integer> result = EventRepository.instance.monitoring();
-        response.status(200);
-        Map<String, Object> data = new HashMap<>();
-        InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Monitoring",200));
+        //List<Integer> result = EventRepository.instance.monitoring();
+        try{
+            response.status(200);
+            //InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,request.url(),"Monitoring",200));
+        /*Map<String, Object> data = new HashMap<>();
         data.put("events",result.get(0));
-        data.put("votes",result.get(1));
-        Gson gson = new Gson();
-        return gson.toJson(data);
+        data.put("votes",result.get(1));*/
+            Map<String, Object> data = InteractionRepository.instance.monitoring();
+            Gson gson = new Gson();
+            return gson.toJson(data);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public static Object updateVoteWithOutId(Request request, Response response) {
         Map<Object, Object> myMap = new HashMap<Object, Object>();
         Gson gson = new Gson();
-        try{
+        try {
 
             //User user = getUserFromSession(request,response);
-            User user =  getVerifiedUserFromTokenInRequest(request); //JWT
+            User user = getVerifiedUserFromTokenInRequest(request); //JWT
             JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
             Integer optionIndex = jsonObject.get("optionIndex").getAsInt();
             Event event = EventRepository.instance.findById(request.params(":id"));
-            if (event == null){
+            if (event == null) {
                 throw new EventDoesNotExistException();
-            }else if (event.getIsActive()){
-                EventRepository.instance.updateVoteWithOutId(event,optionIndex,user);
-                response.status(201);
-                InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote",201));
-                myMap.put("msg","Votos registrados correctamente.");
-                return gson.toJson(myMap);
             }
+            EventRepository.instance.updateVoteWithOutId(event, optionIndex, user);
+            response.status(201);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.url(), "EventOption vote", 201));
+            myMap.put("msg", "Votos registrados correctamente.");
+            return gson.toJson(myMap);
+        } catch (EventClosedException | AlreadyVotedException e){
             response.status(401);
-            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, but Event was closed",401));
-            myMap.put("msg","Votacion Cerrada.");
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.url(), "EventOption vote, but Event was closed", 401));
+            myMap.put("msg", e.getMessage());
             return gson.toJson(myMap);
         } catch(EventDoesNotExistException | NoSuchElementException e){
             response.status(404);
@@ -387,8 +391,8 @@ public class EventController {
     }
 
 
-    public static Object soloPut(Request request, Response response) {
-        String allowedMethods = "PUT";
+    public static Object putAndDelete(Request request, Response response) {
+        String allowedMethods = "PUT,DELETE";
         return getResponse(response, allowedMethods);
     }
 
@@ -407,6 +411,54 @@ public class EventController {
             response.status(400); // Bad Request
             InteractionRepository.instance.save(new Interaction(InteractionMethod.GET,modifiedUrl,"Get User's events",400));
             myMap.put("msg","Usuario no encontrado");
+            return gson.toJson(myMap);
+        }
+    }
+
+    public static Object deleteVote(Request request, Response response) {
+        Map<Object, Object> myMap = new HashMap<Object, Object>();
+        Gson gson = new Gson();
+        try {
+
+            //User user = getUserFromSession(request,response);
+            User user = getVerifiedUserFromTokenInRequest(request); //JWT
+            JsonObject jsonObject = gson.fromJson(request.body(), JsonObject.class);
+            Integer optionIndex = jsonObject.get("optionIndex").getAsInt();
+            Event event = EventRepository.instance.findById(request.params(":id"));
+            if (event == null) {
+                throw new EventDoesNotExistException();
+            }
+            EventRepository.instance.deleteVoteWithOutId(event, optionIndex, user);
+            response.status(200);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.DELETE, request.url(), "EventOption delete vote", 201));
+            myMap.put("msg", "Voto eliminado.");
+            return gson.toJson(myMap);
+        } catch (EventClosedException e){
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.url(), "EventOption vote, but Event was closed", 401));
+            myMap.put("msg", "Votacion Cerrada.");
+            return gson.toJson(myMap);
+        } catch(AlreadyVotedException e) {
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.url(), "EventOption vote, but Event was closed", 401));
+            myMap.put("msg", e.getMessage());
+            return gson.toJson(myMap);
+        }catch (EventDoesNotExistException | NoSuchElementException e){
+            response.status(404);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, Event not found",404));
+            myMap.put("msg",e.getMessage());
+            return gson.toJson(myMap);
+        } catch(UserDoesNotExistException | UnauthorizedException | JWTVerificationException e){
+            e.printStackTrace();
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, bad Credentials",401));
+            myMap.put("msg","Errores de validación.");
+            return gson.toJson(myMap);
+        } catch (Exception e) {
+            response.status(500);
+            e.printStackTrace();
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"EventOption vote, server error",500));
+            myMap.put("msg","Error al eliminar el voto.");
             return gson.toJson(myMap);
         }
     }

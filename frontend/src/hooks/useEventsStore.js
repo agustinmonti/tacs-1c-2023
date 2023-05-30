@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 
 import Swal from 'sweetalert2'
 import { api } from "../api";
-import { onAddParticipant, onChangeCurrentEventStatus, onCloseCreateEventModal, onRemoveParticipant, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading, onToggleVote } from "../store";
+import { onAddParticipant, onAddVote, onChangeCurrentEventStatus, onCloseCreateEventModal, onRemoveParticipant, onRemoveVote, onSetCurrentEvent, onSetEvents, onStartLoading, onStopLoading } from "../store";
 import { useNavigate } from "react-router-dom";
 import { addHours, format } from "date-fns";
 import { useMemo } from "react";
@@ -56,14 +56,13 @@ export const useEventsStore = () => {
         }
     }
 
-    const startVoting = async( optionId ) => {
-
+    const startAddingVote = async( optionId ) => {
         try {
 
-            const { status, data } = await api.put(`/events/${currentEvent.id}/vote`, { optionIndex: optionId } );
+            const {status, data} = await api.put(`/events/${currentEvent.id}/vote`, { optionIndex: optionId } );
 
             if( status === 201 ){
-                dispatch(onToggleVote(optionId));
+                dispatch(onAddVote(optionId));
             }else{
                 console.error(data.msg);
             }
@@ -72,7 +71,23 @@ export const useEventsStore = () => {
             console.log(error);
             Swal.fire('Error al votar', 'El voto no se guardó correctamente', 'error');
         }
+    }
 
+    const startRemovingVote = async( optionId ) => {
+        try {
+
+            const {status, data} = await api.delete(`/events/${currentEvent.id}/vote`, {data : { optionIndex: optionId }} );
+
+            if( status === 200 ){
+                dispatch(onRemoveVote(optionId));
+            }else{
+                console.error(data.msg);
+            }
+            
+        } catch (error) {
+            console.log(error);
+            Swal.fire('Error al votar', 'El voto no se guardó correctamente', 'error');
+        }
     }
 
     const startGettingEvents = async () => {
@@ -185,7 +200,8 @@ export const useEventsStore = () => {
         isActive,
 
         startCreatingEvent,
-        startVoting,
+        startAddingVote,
+        startRemovingVote,
         startGettingEvents,
         startGettingEvent,
         startToggleSignUpForCurrentEvent,

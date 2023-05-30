@@ -91,6 +91,38 @@
 			"response": []
 		},
 		{
+			"name": "/events/:id/vote",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NDVlYjI5ZThmYjI2MDM4NTdkOGUwMjEiLCJpc3MiOiJUQUNTLTFDLTIwMjMtYmFja2VuZCIsImV4cCI6MTY4NjUxOTc1OX0.eNcfxGCxpaWQsnzGkt_TBaj7iEI3LX_V-Pe37G4P9-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"optionIndex\": \"1\"\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/v2/events/645eb3438fb2603857d8e027/vote",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v2",
+						"events",
+						"645eb3438fb2603857d8e027",
+						"vote"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/events/:id/participant",
 			"request": {
 				"method": "PUT",

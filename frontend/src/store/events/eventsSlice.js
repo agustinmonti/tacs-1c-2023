@@ -26,19 +26,25 @@ export const eventsSlice = createSlice({
             state.participantEvents = [];
             state.currentEvent = {};
         },
-        onToggleVote: (state, { payload }) => {
+        onAddVote: (state, { payload }) => {
             state.currentEvent.options = state.currentEvent.options.map( option => {
                 if( option.id === payload ){
-                    let votes = option.votes;
-                    if( option.selected ){
-                        votes--;
-                    }else{
-                        votes++;
-                    }
                     return {
                         ...option,
-                        votes:votes,
-                        selected: !option.selected
+                        votes: option.votes + 1,
+                        selected: true
+                    }
+                }
+                return option;
+            })
+        },
+        onRemoveVote: (state, { payload }) => {
+            state.currentEvent.options = state.currentEvent.options.map( option => {
+                if( option.id === payload ){
+                    return {
+                        ...option,
+                        votes: option.votes - 1,
+                        selected: false
                     }
                 }
                 return option;
@@ -67,7 +73,8 @@ export const {
     onSetEvents,
     onRemoveEvents,
     onLogoutEvents,
-    onToggleVote,
+    onAddVote,
+    onRemoveVote,
     onRemoveParticipant,
     onAddParticipant,
     onChangeCurrentEventStatus,
