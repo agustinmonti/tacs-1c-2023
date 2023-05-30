@@ -3,6 +3,7 @@ import { useEventsStore } from "../../hooks"
 import { useParams } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
 import { Event } from "../components/Event";
+import { Footer } from "../components/Footer";
 
 export const EventPage = () => {
 
@@ -19,10 +20,10 @@ export const EventPage = () => {
     return (
         <>
             <Navbar />
-            <div className="container" style={{marginTop:'70px'}}>
+            <div className="container" style={{paddingTop:'70px'}}>
                 <Event event={ currentEvent } />
             </div>
-            
+            <Footer />
         </>
     )
 }

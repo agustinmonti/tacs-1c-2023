@@ -77,7 +77,7 @@ export const MonitorPage = () => {
                     </div>
                 </div>
             </div>
-
+            <Footer />
         </>
     )
 }

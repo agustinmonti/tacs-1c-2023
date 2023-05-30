@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { CreateEventModal } from '../components/CreateEvent'
 import { useUiStore, useAuthStore, useEventsStore } from '../../hooks'
 import { EventsList } from '../components/EventsList'
+import { Footer } from '../components/Footer'
 
 export const EventsPage = () => {
 
@@ -19,7 +20,7 @@ export const EventsPage = () => {
         <>
             <Navbar />
 
-            <header style={{marginTop: '70px'}} className='container'>
+            <header style={{paddingTop: '70px'}} className='container'>
                 <div className="row">
                     <div className="col-12">
                         <div className="border rounded bg-white shadow-sm p-3 d-flex justify-content-between animate__animated animate__fadeIn">
@@ -55,6 +56,8 @@ export const EventsPage = () => {
                     </div>
                 </div>
             </main>
+
+            <Footer />
 
             <CreateEventModal />
         </>

@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { LoginPage, RegisterPage, UsersPage, UserPage, VotesPage, MarketingPage } from "../auth";
-import { EventsPage, EventOptionsPage } from "../events";
+import { LoginPage } from "../auth";
+import { EventsPage } from "../events";
 import { EventPage } from "../events/pages/EventPage";
 import { useAuthStore, useUiStore } from "../hooks";
 import { useEffect } from "react";
@@ -39,7 +39,6 @@ export const AppRouter = () => {
                 : (
                     <>
                         <Route path="/event/:id" element={ <EventPage /> } />
-                        <Route path="/user/:id" element={<UserPage />} />
                         <Route path="/" element={ <EventsPage /> } />
                         {
                             user.isAdmin &&

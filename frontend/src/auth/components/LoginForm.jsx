@@ -46,6 +46,7 @@ export const LoginForm = ({ setShowRegister }) => {
                             name='email'
                             value={email}
                             onChange={onInputChange}
+                            required
                         />
                     </div>
                     <div className="col-12">
@@ -56,6 +57,7 @@ export const LoginForm = ({ setShowRegister }) => {
                             name='password'
                             value={password}
                             onChange={onInputChange}
+                            required
                         />
                     </div>
                 </div>
