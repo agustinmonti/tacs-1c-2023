@@ -30,7 +30,6 @@ export const useEventsStore = () => {
 
     const startCreatingEvent = async( newEvent ) => {
 
-        
         newEvent.options = newEvent.options.map( option => {
             return {
                 ...option,
@@ -91,7 +90,6 @@ export const useEventsStore = () => {
     }
 
     const startGettingEvents = async () => {
-        
         try {
             const { status, data } = await api.get(`/events?userId=${ user._id }`);
 
@@ -110,7 +108,6 @@ export const useEventsStore = () => {
     }
 
     const startGettingEvent = async ( id ) => {
-        
         try {
             const { status, data } = await api.get(`/events/${ id }`);
 
@@ -128,7 +125,7 @@ export const useEventsStore = () => {
         }
     }
 
-    const startToggleSignUpForCurrentEvent = async () => {
+    const startSignUpForCurrentEvent = async () => {
         const newParticipant = {
             id: user._id,
             email: user.email
@@ -138,10 +135,22 @@ export const useEventsStore = () => {
 
             const { status, data } = await api.put(`/events/${ currentEvent.id }/participant`);
 
-            if( isParticipating ){
-                dispatch( onRemoveParticipant( user._id ));
-            }else{
+            if( status === 201 ){
                 dispatch( onAddParticipant( newParticipant ));
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const startRemoveSignUpForCurrentEvent = async () => {
+        try {
+
+            const { status, data } = await api.delete(`/events/${ currentEvent.id }/participant`);
+
+            if( status === 200 ){
+                dispatch( onRemoveParticipant( user._id ));
             }
 
         } catch (error) {
@@ -169,7 +178,6 @@ export const useEventsStore = () => {
     }
 
     const startDeletingEvent = async () => {
-
         if( !isOwner ) return;
 
         try {
@@ -204,7 +212,8 @@ export const useEventsStore = () => {
         startRemovingVote,
         startGettingEvents,
         startGettingEvent,
-        startToggleSignUpForCurrentEvent,
+        startSignUpForCurrentEvent,
+        startRemoveSignUpForCurrentEvent,
         startChangingEventStatus,
         startDeletingEvent
     }

@@ -291,7 +291,7 @@ public class EventController {
                 throw new EventDoesNotExistException();
             }
             EventRepository.instance.deleteParticipant(event,user);
-            response.status(201);
+            response.status(200);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Event remove Participant",201));
             return "participación actualizada";
         } catch(EventDoesNotExistException e){

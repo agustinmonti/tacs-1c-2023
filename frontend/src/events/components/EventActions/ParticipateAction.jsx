@@ -2,13 +2,17 @@ import { useMemo, useState } from 'react'
 import { useEventsStore } from '../../../hooks';
 
 export const ParticipateAction = () => {
-    const { isParticipating, startToggleSignUpForCurrentEvent } = useEventsStore();
+    const { isParticipating, startSignUpForCurrentEvent, startRemoveSignUpForCurrentEvent } = useEventsStore();
 
     const [isLoading, setIsLoading] = useState( false );
 
     const handleParticipate = async () => {
         setIsLoading( true );
-        await startToggleSignUpForCurrentEvent();
+        if( !isParticipating ){
+            await startSignUpForCurrentEvent();
+        }else{
+            await startRemoveSignUpForCurrentEvent();
+        }
         setIsLoading( false );
     }
 
