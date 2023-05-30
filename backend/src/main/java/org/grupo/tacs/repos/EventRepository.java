@@ -195,7 +195,7 @@ public class EventRepository implements Repository<Event>{
         }
     }
 
-    public void updateParticipant(Event event, User user) { //SE USA PARA AGREGAR O REMOVER UN PARTICIPANTE DEL EVENTO
+    /*public void updateParticipant(Event event, User user) { //SE USA PARA AGREGAR O REMOVER UN PARTICIPANTE DEL EVENTO
 
         mongoClient = MongoDB.getMongoClient();
         try {
@@ -206,6 +206,42 @@ public class EventRepository implements Repository<Event>{
             if(participants.isEmpty()){
                 collection.updateOne(condition,Updates.push("participants", user));
             } else{
+                collection.updateOne(condition,Updates.pull("participants", user));
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
+    }*/
+
+
+    public void addParticipant(Event event, User user) { //SE USA PARA AGREGAR UN PARTICIPANTE DEL EVENTO
+
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            List<User> participants = event.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            if(participants.isEmpty()){
+                collection.updateOne(condition,Updates.push("participants", user));
+            }
+        } catch (MongoException e) {
+            e.printStackTrace();
+        } finally {
+            mongoClient.close(); //cerras el cliente
+        }
+    }
+
+    public void deleteParticipant(Event event, User user) { //SE USA PARA REMOVER UN PARTICIPANTE DEL EVENTO
+        mongoClient = MongoDB.getMongoClient();
+        try {
+            MongoDatabase mongodb = mongoClient.getDatabase("mydb");
+            MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+            List<User> participants = event.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(), user.getId())).collect(Collectors.toList());
+            Bson condition = Filters.eq("_id", event.getId());
+            if(!participants.isEmpty()){
                 collection.updateOne(condition,Updates.pull("participants", user));
             }
         } catch (MongoException e) {

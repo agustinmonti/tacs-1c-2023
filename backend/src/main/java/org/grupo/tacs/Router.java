@@ -63,8 +63,10 @@ public class Router {
         delete("/v2/events/:id/vote",EventController::deleteVote);
         options("/v2/monitoring", EventController::getEventOptions);
         get("/v2/monitoring", EventController::monitoring); // monitoring ()
+
         options("/v2/events/:id/participant",EventController::putAndDelete);
-        put("/v2/events/:id/participant", EventController::updateParticipant);//anotarse y desanotarse
+        put("/v2/events/:id/participant", EventController::addParticipant);//anotarse
+        delete("/v2/events/:id/participant", EventController::deleteParticipant);//desanotarse
 
         get("/swagger.json", (request, response) -> {
             try {
