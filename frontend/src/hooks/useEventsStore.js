@@ -137,10 +137,13 @@ export const useEventsStore = () => {
 
             if( status === 201 ){
                 dispatch( onAddParticipant( newParticipant ));
+            }else{
+                console.error(error);
             }
 
         } catch (error) {
             console.error(error);
+            Swal.fire('Error al participar', 'La participación no se guardó correctamente', 'error');
         }
     }
 
@@ -151,10 +154,13 @@ export const useEventsStore = () => {
 
             if( status === 200 ){
                 dispatch( onRemoveParticipant( user._id ));
+            }else{
+                console.error(error);
             }
 
         } catch (error) {
             console.error(error);
+            Swal.fire('Error al participar', 'La participación no se guardó correctamente', 'error');
         }
     }
 
