@@ -2,6 +2,7 @@ package org.grupo.tacs.model;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
+import org.grupo.tacs.excepciones.EventClosedException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -91,7 +92,11 @@ public class Event {
         }
         return null;
     }
-
+    public EventOption getOptionToVoteWithIndex(Integer optionIndex){
+        if(!this.getIsActive())
+            throw new EventClosedException();
+        return this.options.get(optionIndex);
+    }
     public void setParticipants(List<User> participants) {this.participants = participants;}
 
 

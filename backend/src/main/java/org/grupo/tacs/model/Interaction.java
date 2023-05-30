@@ -1,5 +1,6 @@
 package org.grupo.tacs.model;
 
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +10,7 @@ public class Interaction {
     InteractionMethod method;
     String description;
 
+    LocalDateTime dateTime;
     int statusCode;
 
     public Interaction(InteractionMethod method, String url,String description, int code){
@@ -18,6 +20,7 @@ public class Interaction {
         this.description = description;
         this.statusCode = code;
     }
+    public Interaction(){}
 
     public String getUrlPattern(String url) {
         String pattern = "https?://[^/]+(/[^?#]+)(\\?[^#]+)?";
@@ -75,5 +78,17 @@ public class Interaction {
 
     public String getUrlPattern() {
         return urlPattern;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setUrlPattern(String urlPattern) {
+        this.urlPattern = urlPattern;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 }
