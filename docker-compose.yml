@@ -6,7 +6,7 @@ services:
     image: tptacs.azurecr.io/backend:${TAG:-entrega1}
     build: ./backend
     ports:
-      - "8081:8081"
+      - "8080:8080"
     links:
       - mongodb
     depends_on:
@@ -15,7 +15,7 @@ services:
     image: tptacs.azurecr.io/frontend:${TAG:-entrega1}
     build: ./frontend
     ports:
-      - "8080:8080"
+      - "5173:5173"
   mongodb:
     build: .
     image: tptacs.azurecr.io/mongo

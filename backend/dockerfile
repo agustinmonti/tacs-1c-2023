@@ -11,6 +11,6 @@ FROM openjdk:8-jre-slim
 WORKDIR /app
 COPY --from=build /app/target/tacs-1c-2023-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
-EXPOSE 8081
+EXPOSE 8080
 USER 1000
 CMD ["java", "-jar", "tacs-1c-2023-1.0-SNAPSHOT-jar-with-dependencies.jar"]
