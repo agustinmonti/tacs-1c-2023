@@ -19,10 +19,5 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
     - run: |
-        docker compose build . -t tptacs.azurecr.io/tptacs:${{ github.sha }}
-        docker compose push tptacs.azurecr.io/tptacs:${{ github.sha }}
-      
-    - uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'TpTacs'
-        images: 'tptacs.azurecr.io/tptacs:${{ github.sha }}'
+        docker compose build
+        docker compose push
