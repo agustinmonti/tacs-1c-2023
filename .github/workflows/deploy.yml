@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout GitHub Action' 
+      uses: actions/checkout@main
+    - uses: azure/docker-login@v1
+      with:
+        login-server: tptacs.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+        docker compose build . -t tptacs.azurecr.io/tptacs:${{ github.sha }}
+        docker compose push tptacs.azurecr.io/tptacs:${{ github.sha }}
+      
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'TpTacs'
+        images: 'tptacs.azurecr.io/tptacs:${{ github.sha }}'
