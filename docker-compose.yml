@@ -17,6 +17,8 @@ services:
     ports:
       - "5173:5173"
   mongodb:
-    image: mongo
+    build: .
+    image: tptacs.azurecr.io/mongo
+    container_name: mongo
     ports:
       - "27017:27017"
