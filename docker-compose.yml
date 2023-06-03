@@ -5,24 +5,20 @@ services:
   backend:
     image: tptacs.azurecr.io/backend
     build: ./backend
+    ports:
+      - "8080:8080"
     links:
       - mongodb
     depends_on:
       - mongodb
-    networks:
-      - fullnetwork
   frontend:
     image: tptacs.azurecr.io/frontend
     build: ./frontend
     ports:
-      - "8080:80"
-    networks:
-      - fullnetwork
+      - "5173:5173"
   mongodb:
     build: .
     image: tptacs.azurecr.io/mongo
-    networks:
-      - fullnetwork
-networks:
-  fullnetwork:
-    driver: bridge
+    container_name: mongo
+    ports:
+      - "27017:27017"
