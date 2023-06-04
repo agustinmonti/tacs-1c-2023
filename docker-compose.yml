@@ -3,7 +3,7 @@ version: "3"
 
 services:
   backend:
-    image: backend:${TAG:-entrega1}
+    image: tptacs.azurecr.io/backend
     build: ./backend
     ports:
       - "8080:8080"
@@ -12,11 +12,13 @@ services:
     depends_on:
       - mongodb
   frontend:
-    image: frontend:${TAG:-entrega1}
+    image: tptacs.azurecr.io/frontend
     build: ./frontend
     ports:
       - "5173:5173"
   mongodb:
-    image: mongo
+    build: .
+    image: tptacs.azurecr.io/mongo
+    container_name: mongo
     ports:
       - "27017:27017"

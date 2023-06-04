@@ -1,27 +1,27 @@
 package org.grupo.tacs.model;
 
+import org.bson.types.ObjectId;
+
 import java.time.LocalDateTime;
 
 public class Vote {
-    User user;
     LocalDateTime votingDate;
+    ObjectId userId;
     //String readAbleVotingDate;
     //Long optionParentID;
 
-    public Vote(/*Long idOpcion,*/ User votante){
-        this.user = votante;
+    public Vote(ObjectId userId){
+        this.userId = userId;
         //this.optionParentID = idOpcion;
         this.votingDate = LocalDateTime.now();
         //this.readAbleVotingDate= Helper.getReadableDate(this.votingDate);
     }
 
-    public Vote(){
+    public Vote(){ }
 
-    }
+    public ObjectId getUserId() {return userId;}
 
-    public User getUser() {return user;}
-
-    public void setUser(User user) {this.user = user;}
+    public void setUserId(ObjectId userId) {this.userId = userId;}
 
     public LocalDateTime getVotingDateDate() {return votingDate;}
 

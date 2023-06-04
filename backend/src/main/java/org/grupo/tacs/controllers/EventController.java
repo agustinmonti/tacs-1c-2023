@@ -99,7 +99,7 @@ public class EventController {
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                     .create();
             Event newEvent = gson.fromJson(request.body(),Event.class);
-            newEvent.setCreatedBy(getUserSession(request,response));
+            newEvent.setCreatedBy(getUserSession(request,response).getId());
             EventRepository.instance.save(newEvent);
             return gson.toJson(newEvent);
         }catch(Exception e){
@@ -120,7 +120,7 @@ public class EventController {
             response.status(201);
             Event event = EventRepository.instance.findById(request.params(":id"));
             User owner = getVerifiedUserFromTokenInRequest(request);
-            if(!owner.getId().equals(event.getCreatedBy().getId()))
+            if(!owner.getId().equals(event.getCreatedBy()))
                 throw new UnauthorizedException("No posee autorización para editar este evento");
             event.setId(new ObjectId(request.params(":id")));
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.url(),"Close Event",201));
@@ -370,7 +370,7 @@ public class EventController {
         try {
             User user =  getVerifiedUserFromTokenInRequest(request);
             Event newEvent = gson.fromJson(request.body(),Event.class);
-            newEvent.setCreatedBy(user);
+            newEvent.setCreatedBy(user.getId());
             EventRepository.instance.save(newEvent);
             response.status(201);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.POST,request.url(),"Create an Event",201));

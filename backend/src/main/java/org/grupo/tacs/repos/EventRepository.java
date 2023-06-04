@@ -104,10 +104,11 @@ public class EventRepository implements Repository<Event>{
 
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
 
-            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUserId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             if (votes.isEmpty()){
-                option.addVote(new Vote(user));
+                Vote vote = new Vote(user.getId());
+                option.addVote(vote);
             } else{
                 throw new AlreadyVotedException();
             }
@@ -131,7 +132,7 @@ public class EventRepository implements Repository<Event>{
 
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
 
-            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUserId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             if (!votes.isEmpty()){
                 option.rmvVote(votes.get(0));
@@ -159,11 +160,11 @@ public class EventRepository implements Repository<Event>{
 
             EventOption option = event.getOption(eventOption);
 
-            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUser().getId(), user.getId())).collect(Collectors.toList());
+            List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUserId(), user.getId())).collect(Collectors.toList());
             Bson condition = Filters.eq("_id", event.getId());
             UpdateOptions options = new UpdateOptions().arrayFilters(Arrays.asList(Filters.eq("filter._id", option.getId())));
             if (votes.isEmpty()){
-                collection.updateOne(condition,Updates.push("options.$[filter].votes", new Vote(user)),options);
+                collection.updateOne(condition,Updates.push("options.$[filter].votes", new Vote(user.getId())),options);
             } else{
                 collection.updateOne(condition,Updates.pull("options.$[filter].votes", votes.get(0)),options);
             }
