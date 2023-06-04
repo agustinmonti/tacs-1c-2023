@@ -3,7 +3,10 @@ package org.grupo.tacs.repos;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.grupo.tacs.MongoDB;
 import org.grupo.tacs.model.EventOption;
@@ -12,10 +15,7 @@ import org.grupo.tacs.model.InteractionMethod;
 import org.grupo.tacs.model.Vote;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class InteractionRepository implements Repository<Interaction>{
@@ -80,7 +80,16 @@ public class InteractionRepository implements Repository<Interaction>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Interaction> collection = mongodb.getCollection(INTERACTIONS_COLLECTION_NAME, Interaction.class);
-            Bson condition = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)),Filters.lt(fieldName, LocalDateTime.now()));
+
+            Bson conditionInteractionsEvents = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()), Filters.eq("urlPattern","/v2/events"), Filters.eq("method","POST"), Filters.eq("statusCode",201));
+            Bson conditionInteractionsVotes = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()), Filters.eq("urlPattern","/v2/events/:id/vote"), Filters.eq("method","PUT"), Filters.eq("statusCode",201));
+            Bson conditionInteractionsRemovedVotes = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()), Filters.eq("urlPattern","/v2/events/:id/vote"), Filters.eq("method","DELETE"), Filters.eq("statusCode",201));
+            List<Interaction> filteredInteractions = collection.find(conditionInteractionsEvents).into(new ArrayList<>());
+            List<Interaction> voteList = collection.find(conditionInteractionsVotes).into(new ArrayList<>());
+            List<Interaction> voteRemovedList = collection.find(conditionInteractionsRemovedVotes).into(new ArrayList<>());
+
+            /*
+            Bson condition = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()));
             List<Interaction> interactionList = collection.find(condition).into(new ArrayList<>());
             List<Interaction> filteredInteractions = interactionList.stream()
                     .filter(interaction -> interaction.getUrlPattern().equals("/v2/events") && interaction.getMethod() == InteractionMethod.POST && interaction.getStatusCode()==201)
@@ -93,6 +102,7 @@ public class InteractionRepository implements Repository<Interaction>{
             List<Interaction> voteRemovedList = interactionList.stream()
                     .filter(interaction -> interaction.getUrlPattern().equals("/v2/events/:id/vote") && interaction.getMethod() == InteractionMethod.DELETE && interaction.getStatusCode()==201)
                     .collect(Collectors.toList());
+            */
             Map<String, Object> data = new HashMap<>();
             data.put("events",filteredInteractions.size());
             data.put("votes",voteList.size()-voteRemovedList.size());
