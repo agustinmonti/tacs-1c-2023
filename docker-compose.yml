@@ -6,7 +6,7 @@ services:
     image: tptacs.azurecr.io/backend
     build: ./backend
     ports:
-      - "8081:80"
+      - "8081:8081"
     links:
       - mongodb
     depends_on:
@@ -21,4 +21,4 @@ services:
     image: tptacs.azurecr.io/mongo
     container_name: mongo
     ports:
-      - "27017:80"
+      - "27017:27017"
