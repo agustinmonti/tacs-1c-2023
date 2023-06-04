@@ -15,7 +15,7 @@ services:
     image: tptacs.azurecr.io/frontend
     build: ./frontend
     ports:
-      - "8080:80"
+      - "8080:8080"
   mongodb:
     build: .
     image: tptacs.azurecr.io/mongo
