@@ -1,4 +1,3 @@
 FROM mongo
 
-EXPOSE 80
 EXPOSE 27017
