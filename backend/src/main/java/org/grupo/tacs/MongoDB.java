@@ -19,7 +19,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDB {
-    static String CONNECTION_STRING = "mongodb://host.docker.internal:443";
+    static String CONNECTION_STRING = "mongodb://tptacsback.azurewebsites.net:443";
     //static String CONNECTION_STRING = "mongodb://localhost:27017";
     public static MongoClient getMongoClient(){
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
