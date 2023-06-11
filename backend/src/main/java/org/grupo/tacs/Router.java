@@ -14,7 +14,7 @@ public class Router {
     private static SwaggerConfig swaggerConfig;
     public static void main(String[] args){
         // HTTP port
-        port(5173);
+        port(8080);
         swaggerConfig = new SwaggerConfig();
         Router.config();
 
