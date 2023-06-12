@@ -1,23 +1,19 @@
 package org.grupo.tacs.repos;
 
-import com.google.gson.Gson;
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.grupo.tacs.MongoDB;
+import org.grupo.tacs.MongoClientSingleton;
 import org.grupo.tacs.excepciones.AlreadyVotedException;
 import org.grupo.tacs.excepciones.UserAlreadyParticipatingException;
 import org.grupo.tacs.model.*;
 
-import javax.print.Doc;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,7 +29,7 @@ public class EventRepository implements Repository<Event>{
     @Override
     public Event findById(String id) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
@@ -42,7 +38,7 @@ public class EventRepository implements Repository<Event>{
             FindIterable<Event> events = collection.find(condition);
             return events.first();
         }  finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
     }
@@ -58,7 +54,7 @@ public class EventRepository implements Repository<Event>{
     @Override
     public void save(Event event) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
@@ -68,7 +64,7 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
     }
@@ -76,7 +72,7 @@ public class EventRepository implements Repository<Event>{
     @Override //SOLO SE USA PARA EL ESTADO POR AHORA
     public void update(Event event) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
@@ -89,14 +85,14 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
     }
 
     public void updateVoteWithOutId(Event event, Integer optionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
 
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
@@ -119,12 +115,12 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally{
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
     public void deleteVoteWithOutId(Event event, Integer optionIndex, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
 
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
@@ -146,13 +142,13 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally{
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     public void updateVoteWithId(Event event, EventOption eventOption, User user) { //SE USA PARA AGREGAR O REMOVER UN VOTO DE UNA OPCION
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
 
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
@@ -191,13 +187,13 @@ public class EventRepository implements Repository<Event>{
         } catch (Exception e) {
             e.printStackTrace();
         } finally{
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     /*public void updateParticipant(Event event, User user) { //SE USA PARA AGREGAR O REMOVER UN PARTICIPANTE DEL EVENTO
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
@@ -211,14 +207,14 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }*/
 
 
     public void addParticipant(Event event, User user) { //SE USA PARA AGREGAR UN PARTICIPANTE DEL EVENTO
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
@@ -232,12 +228,12 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     public void deleteParticipant(Event event, User user) { //SE USA PARA REMOVER UN PARTICIPANTE DEL EVENTO
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
@@ -251,13 +247,13 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     public List<Integer> monitoring() { //FUNCION SOLO DE ADMINS
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
 
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
@@ -278,7 +274,7 @@ public class EventRepository implements Repository<Event>{
             totalEventsAndVotes.add(voteList.size());//agregations TODO
             return totalEventsAndVotes;
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
     }
@@ -306,7 +302,7 @@ public class EventRepository implements Repository<Event>{
     @Override
     public void deleteById(String id) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
@@ -316,7 +312,7 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
         /*
@@ -331,7 +327,7 @@ public class EventRepository implements Repository<Event>{
         */
     }
     public Document getEventsByUser(ObjectId userId) {
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         Document result = null;
         try {
             List<Document> myEvents = new ArrayList<>();
@@ -347,7 +343,9 @@ public class EventRepository implements Repository<Event>{
             try {
                 while (cursor.hasNext()) {
                     Document event = cursor.next();
-                    User createdByUser = new User((Document) event.get("createdBy"));
+                    ObjectId createdByUserId = (ObjectId) event.get("createdBy");
+                    User createdByUser = UserRepository.instance.findById(createdByUserId.toHexString());
+                    //User createdByUser = new User((Document) event.get("createdBy"));
                     List<User> participants = new ArrayList<>();
                     for (Document participantDoc : (List<Document>) event.get("participants")) {
                         participants.add(new User(participantDoc));
@@ -380,7 +378,7 @@ public class EventRepository implements Repository<Event>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close();
+            //mongoClient.close();
         }
         return result;
     }

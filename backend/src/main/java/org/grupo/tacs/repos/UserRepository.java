@@ -4,13 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.FindOneAndUpdateOptions;
-import com.mongodb.client.model.Updates;
-import org.bson.BsonDocument;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.grupo.tacs.MongoDB;
+import org.grupo.tacs.MongoClientSingleton;
 import org.grupo.tacs.excepciones.ThePasswordsDontMatchException;
 import org.grupo.tacs.excepciones.ThisEmailIsAlreadyInUseException;
 import org.grupo.tacs.extras.Helper;
@@ -20,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.eq;
-import static org.grupo.tacs.MongoDB.getMongoClient;
 
 public class UserRepository implements Repository<User>{
     public static UserRepository instance = new UserRepository();
@@ -31,7 +26,7 @@ public class UserRepository implements Repository<User>{
     @Override
     public User findById(String id) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
@@ -40,25 +35,25 @@ public class UserRepository implements Repository<User>{
             FindIterable<User> users = collection.find(condition);
             return users.first();
         }  finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     @Override
     public List<User> findAll() {
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
             return collection.find().into(new ArrayList<>());
         }  finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     @Override
     public void save(User user) {
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         System.out.println("tengo client");
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
@@ -76,21 +71,21 @@ public class UserRepository implements Repository<User>{
                 throw new ThePasswordsDontMatchException();
             }
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     @Override //NO SE USA
     public void update(User entidad) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
             Bson condition = Filters.eq("_id", entidad.getId());
             collection.findOneAndUpdate(condition, (Bson) entidad);
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
     }
@@ -98,7 +93,7 @@ public class UserRepository implements Repository<User>{
     @Override //NO SE USA
     public void delete(User entidad) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
@@ -107,7 +102,7 @@ public class UserRepository implements Repository<User>{
         } catch (MongoException e) {
             e.printStackTrace();
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
@@ -119,7 +114,7 @@ public class UserRepository implements Repository<User>{
     @Override //NO SE USA
     public void deleteById(String id) {
 
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<User> collection = mongodb.getCollection("Users", User.class);
@@ -127,7 +122,7 @@ public class UserRepository implements Repository<User>{
             Bson condition = Filters.eq("_id", objectId);
             collection.deleteOne(condition);
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
         /*

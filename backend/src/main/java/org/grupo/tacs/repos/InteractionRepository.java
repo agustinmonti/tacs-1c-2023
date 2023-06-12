@@ -3,20 +3,13 @@ package org.grupo.tacs.repos;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.grupo.tacs.MongoDB;
-import org.grupo.tacs.model.EventOption;
+import org.grupo.tacs.MongoClientSingleton;
 import org.grupo.tacs.model.Interaction;
-import org.grupo.tacs.model.InteractionMethod;
-import org.grupo.tacs.model.Vote;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InteractionRepository implements Repository<Interaction>{
     MongoClient mongoClient;
@@ -30,27 +23,27 @@ public class InteractionRepository implements Repository<Interaction>{
 
     @Override
     public List<Interaction> findAll() {
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Interaction> collection = mongodb.getCollection(INTERACTIONS_COLLECTION_NAME, Interaction.class);
             //filtrar por 2 horas o hacer un nuevo metodo para esos
             return collection.find().into(new ArrayList<>());
         }  finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
     @Override
     public void save(Interaction entidad) {
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Interaction> collection = mongodb.getCollection(INTERACTIONS_COLLECTION_NAME, Interaction.class);
             entidad.setDateTime(LocalDateTime.now());
             collection.insertOne(entidad);
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
     }
 
@@ -75,7 +68,7 @@ public class InteractionRepository implements Repository<Interaction>{
     }
     public Map<String, Object> monitoring() { //FUNCION SOLO DE ADMINS
         String fieldName = "dateTime";
-        mongoClient = MongoDB.getMongoClient();
+        mongoClient = MongoClientSingleton.getInstance();
 
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
@@ -108,7 +101,7 @@ public class InteractionRepository implements Repository<Interaction>{
             data.put("votes",voteList.size()-voteRemovedList.size());
             return data;
         } finally {
-            mongoClient.close(); //cerras el cliente
+            //mongoClient.close(); //cerras el cliente
         }
 
     }
