@@ -335,7 +335,7 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCursor<Document> cursor = mongodb.getCollection(EVENT_COLLECTION_NAME).find(
                     Filters.or(
-                            Filters.eq("createdBy._id", userId),
+                            Filters.eq("createdBy", userId),
                             Filters.elemMatch("participants", Filters.eq("_id", userId))
                     )
             ).iterator();
