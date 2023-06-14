@@ -12,7 +12,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoClientSingleton {
     private static MongoClient mongoClient;
-    private static String CONNECTION_STRING = "mongodb://host.docker.internal:27017";
+    private static String CONNECTION_STRING = "mongodb://mongodb:27017";
     private MongoClientSingleton() {
     }
 
