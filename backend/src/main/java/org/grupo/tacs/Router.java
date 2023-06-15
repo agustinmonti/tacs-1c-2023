@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.grupo.tacs.controllers.EventController;
 import org.grupo.tacs.controllers.LoginController;
 import org.grupo.tacs.controllers.UserController;
+import org.grupo.tacs.extras.CorsOptionsFilter;
+import org.grupo.tacs.extras.RateLimitFilter;
+import org.grupo.tacs.extras.RateLimiter;
 import org.grupo.tacs.extras.SwaggerConfig;
 
 import static spark.Spark.*;
@@ -14,6 +17,7 @@ public class Router {
     private static SwaggerConfig swaggerConfig;
     public static void main(String[] args){
         // HTTP port
+        System.out.println("Connection string: " + System.getenv("MONGODB_CONNECTION_STRING"));
         port(8080);
         swaggerConfig = new SwaggerConfig();
         Router.config();
@@ -24,6 +28,12 @@ public class Router {
      * El método {@code config} crea una instancia de cada Controller y define las rutas
      */
     public static void config(){
+        //RateLimiter basado en token bucket algorithm
+        RateLimiter rateLimiter = new RateLimiter(10, 10, 1000); // 10 req por segundo
+        before(new RateLimitFilter(rateLimiter));
+
+        before(new CorsOptionsFilter(3600)); //Cache CORS, dura una hora
+
         before((request, response) -> {
             response.status(200);
             response.header("Access-Control-Allow-Origin", "*");

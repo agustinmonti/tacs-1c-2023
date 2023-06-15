@@ -13,36 +13,14 @@ public class Interaction {
     LocalDateTime dateTime;
     int statusCode;
 
-    public Interaction(InteractionMethod method, String url,String description, int code){
-        this.urlPattern = getUrlPattern(url);
+    public Interaction(InteractionMethod method,String urlPattern, String url,String description, int code){
+        this.urlPattern = urlPattern;
         this.method = method;
         this.url = url;
         this.description = description;
         this.statusCode = code;
     }
     public Interaction(){}
-
-    public String getUrlPattern(String url) {
-        String pattern = "https?://[^/]+(/[^?#]+)(\\?[^#]+)?";
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(url);
-
-        if (matcher.find()) {
-            String path = matcher.group(1);
-            String query = matcher.group(2);
-
-            String replacedPath = path.replaceAll("/[0-9a-fA-F]+(?=/|$)", "/:id");
-
-            if (query != null) {
-                String replacedQuery = query.replaceAll("=[0-9a-fA-F]+", "=UserId");
-                return replacedPath + replacedQuery;
-            } else {
-                return replacedPath;
-            }
-        } else {
-            return null;
-        }
-    }
 
     public void setDescription(String description) {
         this.description = description;
