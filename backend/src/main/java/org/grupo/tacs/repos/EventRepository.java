@@ -2,15 +2,15 @@ package org.grupo.tacs.repos;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.UpdateResult;
+import io.swagger.models.auth.In;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoClientSingleton;
 import org.grupo.tacs.excepciones.AlreadyVotedException;
+import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserAlreadyParticipatingException;
 import org.grupo.tacs.model.*;
 
@@ -98,6 +98,20 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
 
+            Bson filterMyEvents = new Document("$match", Filters.eq("createdBy", event.getCreatedBy()));
+            Bson projection = new Document("$size", "$options");
+            Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
+            Integer totalOptions = (Integer)collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>()).get(0).values().toArray()[1];
+            if(optionIndex >= totalOptions){
+                throw new UnauthorizedException("optionIndex doesn't exist");
+            }
+
+            Bson condition = Filters.and(Filters.not(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId()))),Filters.eq("_id", event.getId()));
+            UpdateResult result = collection.updateOne(condition,Updates.push("options." + optionIndex + ".votes", new Vote(user.getId())));
+            if(result.getMatchedCount() == 0){
+                throw new AlreadyVotedException();
+            }
+            /*
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
 
             List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUserId(), user.getId())).collect(Collectors.toList());
@@ -109,6 +123,7 @@ public class EventRepository implements Repository<Event>{
                 throw new AlreadyVotedException();
             }
             collection.replaceOne(condition,event);
+            */
 
         } catch (IndexOutOfBoundsException e) {
             throw new NoSuchElementException();
@@ -126,6 +141,18 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
 
+            Bson filterMyEvents = new Document("$match", Filters.eq("createdBy", event.getCreatedBy()));
+            Bson projection = new Document("$size", "$options");
+            Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
+            Integer totalOptions = (Integer)collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>()).get(0).values().toArray()[1];
+            if(optionIndex >= totalOptions){
+                throw new UnauthorizedException("optionIndex doesn't exist");
+            }
+
+            Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())),Filters.eq("_id", event.getId()));
+            collection.updateOne(condition,Updates.pull("options." + optionIndex + ".votes", event.getOptionToVoteWithIndex(optionIndex).getVoteByUserId(user.getId())));
+
+            /*
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
 
             List<Vote> votes = option.getVotes().stream().filter(vote -> Objects.equals(vote.getUserId(), user.getId())).collect(Collectors.toList());
@@ -136,9 +163,10 @@ public class EventRepository implements Repository<Event>{
                 throw new NoSuchElementException("Vote not found");
             }
             collection.replaceOne(condition,event);
+            */
 
         } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Vote not found");
         } catch (MongoException e) {
             e.printStackTrace();
         } finally{
