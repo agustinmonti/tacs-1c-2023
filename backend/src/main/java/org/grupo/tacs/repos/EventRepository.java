@@ -218,11 +218,9 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
-            List<User> participants = event.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(), user.getId())).collect(Collectors.toList());
-            Bson condition = Filters.eq("_id", event.getId());
-            if(participants.isEmpty()){
-                collection.updateOne(condition,Updates.push("participants", user));
-            }else {
+            Bson condition = Filters.and(Filters.not(Filters.elemMatch("participants", Filters.eq("_id", user.getId()))),Filters.eq("_id", event.getId()));
+            UpdateResult result = collection.updateOne(condition,Updates.push("participants", user));
+            if(result.getMatchedCount() == 0){
                 throw new UserAlreadyParticipatingException();
             }
         } catch (MongoException e) {
@@ -237,11 +235,9 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
-            List<User> participants = event.getParticipants().stream().filter(participant -> Objects.equals(participant.getId(), user.getId())).collect(Collectors.toList());
-            Bson condition = Filters.eq("_id", event.getId());
-            if(!participants.isEmpty()){
-                collection.updateOne(condition,Updates.pull("participants", user));
-            }else{
+            Bson condition = Filters.and(Filters.elemMatch("participants", Filters.eq("_id", user.getId())),Filters.eq("_id", event.getId()));
+            UpdateResult result = collection.updateOne(condition,Updates.pull("participants", user));
+            if(result.getMatchedCount() == 0){
                 throw new NoSuchElementException("User wasn't participating");
             }
         } catch (MongoException e) {
