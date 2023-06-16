@@ -98,7 +98,7 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
 
-            Bson filterMyEvents = new Document("$match", Filters.eq("createdBy", event.getCreatedBy()));
+            Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
             Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
             Integer totalOptions = (Integer)collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>()).get(0).values().toArray()[1];
@@ -141,7 +141,7 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
 
-            Bson filterMyEvents = new Document("$match", Filters.eq("createdBy", event.getCreatedBy()));
+            Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
             Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
             Integer totalOptions = (Integer)collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>()).get(0).values().toArray()[1];
