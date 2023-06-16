@@ -17,6 +17,9 @@ public class Vote {
         //this.readAbleVotingDate= Helper.getReadableDate(this.votingDate);
     }
 
+    public Vote(User user){
+        this.userId = user.getId();
+    }
     public Vote(){ }
 
     public ObjectId getUserId() {return userId;}

@@ -155,7 +155,10 @@ public class EventRepository implements Repository<Event>{
             }
 
             Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())),Filters.eq("_id", event.getId()));
-            collection.updateOne(condition,Updates.pull("options." + optionIndex + ".votes", event.getOptionToVoteWithIndex(optionIndex).getVoteByUserId(user.getId())));
+            UpdateResult result = collection.updateOne(condition,Updates.pull("options." + optionIndex + ".votes", new Vote(user)));
+            if(result.getMatchedCount() == 0){
+                throw new NoSuchElementException("Vote not found");
+            }
 
             /*
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
@@ -171,7 +174,7 @@ public class EventRepository implements Repository<Event>{
             */
 
         } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException("Vote not found");
+            throw new NoSuchElementException();
         } catch (MongoException e) {
             e.printStackTrace();
         } finally{

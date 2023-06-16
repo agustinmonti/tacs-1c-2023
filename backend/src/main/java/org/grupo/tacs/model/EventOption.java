@@ -69,10 +69,6 @@ public class EventOption {
 
     public List<Vote> getVotes() {return votes;}
 
-    public Vote getVoteByUserId(ObjectId userId) {
-        return votes.stream().filter(vote -> Objects.equals(vote.getUserId(),userId)).collect(Collectors.toList()).get(0);
-    }
-
     public void addVote(Vote vote) {
         this.votes.add(vote);
     }
