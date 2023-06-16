@@ -10,6 +10,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.grupo.tacs.MongoClientSingleton;
 import org.grupo.tacs.excepciones.AlreadyVotedException;
+import org.grupo.tacs.excepciones.EventClosedException;
 import org.grupo.tacs.excepciones.UnauthorizedException;
 import org.grupo.tacs.excepciones.UserAlreadyParticipatingException;
 import org.grupo.tacs.model.*;
@@ -100,10 +101,12 @@ public class EventRepository implements Repository<Event>{
 
             Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
-            Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
-            Integer totalOptions = (Integer)collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>()).get(0).get("totalOptions");
-            if(optionIndex >= totalOptions){
+            Bson project = Aggregates.project(Projections.fields(Projections.include("isActive"),Projections.computed("totalOptions", projection)));
+            List<Document> filteredDoc = collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>());
+            if(optionIndex >= (Integer)filteredDoc.get(0).get("totalOptions")){
                 throw new UnauthorizedException("optionIndex doesn't exist");
+            }else if(!(Boolean)filteredDoc.get(0).get("isActive")){
+                throw new EventClosedException();
             }
 
             Bson condition = Filters.and(Filters.not(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId()))),Filters.eq("_id", event.getId()));
@@ -143,10 +146,12 @@ public class EventRepository implements Repository<Event>{
 
             Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
-            Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
-            Integer totalOptions = (Integer)collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>()).get(0).get("totalOptions");
-            if(optionIndex >= totalOptions){
+            Bson project = Aggregates.project(Projections.fields(Projections.include("isActive"),Projections.computed("totalOptions", projection)));
+            List<Document> filteredDoc = collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>());
+            if(optionIndex >= (Integer)filteredDoc.get(0).get("totalOptions")){
                 throw new UnauthorizedException("optionIndex doesn't exist");
+            }else if(!(Boolean)filteredDoc.get(0).get("isActive")){
+                throw new EventClosedException();
             }
 
             Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())),Filters.eq("_id", event.getId()));
