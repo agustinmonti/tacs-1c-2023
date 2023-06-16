@@ -77,9 +77,9 @@ public class InteractionRepository implements Repository<Interaction>{
             Bson conditionInteractionsEvents = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()), Filters.eq("urlPattern","/v2/events"), Filters.eq("method","POST"), Filters.eq("statusCode",201));
             Bson conditionInteractionsVotes = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()), Filters.eq("urlPattern","/v2/events/:id/vote"), Filters.eq("method","PUT"), Filters.eq("statusCode",201));
             Bson conditionInteractionsRemovedVotes = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()), Filters.eq("urlPattern","/v2/events/:id/vote"), Filters.eq("method","DELETE"), Filters.eq("statusCode",201));
-            List<Interaction> filteredInteractions = collection.find(conditionInteractionsEvents).into(new ArrayList<>());
-            List<Interaction> voteList = collection.find(conditionInteractionsVotes).into(new ArrayList<>());
-            List<Interaction> voteRemovedList = collection.find(conditionInteractionsRemovedVotes).into(new ArrayList<>());
+            Long filteredInteractions = collection.countDocuments(conditionInteractionsEvents);
+            Long voteList = collection.countDocuments(conditionInteractionsVotes);
+            Long voteRemovedList = collection.countDocuments(conditionInteractionsRemovedVotes);
 
             /*
             Bson condition = Filters.and(Filters.gte(fieldName, LocalDateTime.now().minusHours(2)), Filters.lt(fieldName, LocalDateTime.now()));
@@ -97,8 +97,8 @@ public class InteractionRepository implements Repository<Interaction>{
                     .collect(Collectors.toList());
             */
             Map<String, Object> data = new HashMap<>();
-            data.put("events",filteredInteractions.size());
-            data.put("votes",voteList.size()-voteRemovedList.size());
+            data.put("events",filteredInteractions);
+            data.put("votes",voteList-voteRemovedList);
             return data;
         } finally {
             //mongoClient.close(); //cerras el cliente
