@@ -6,7 +6,7 @@ services:
     image: backend:${TAG:-entrega1}
     build: ./backend
     ports:
-      - "8080:8080"
+      - "443:443"
     depends_on:
       - mongodb
     environment:
@@ -15,7 +15,7 @@ services:
     image: frontend:${TAG:-entrega1}
     build: ./frontend
     ports:
-      - "5173:5173"
+      - "80:80"
   mongodb:
     image: mongo
     ports:
