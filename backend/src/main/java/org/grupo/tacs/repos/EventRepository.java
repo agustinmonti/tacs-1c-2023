@@ -61,6 +61,11 @@ public class EventRepository implements Repository<Event>{
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             event.setIsActive(true);
             event.setCreatedDate(LocalDateTime.now());
+            for(EventOption option : event.getOptions()){
+                if(option.getStart().isBefore(LocalDateTime.now()) || option.getEnd().isBefore(LocalDateTime.now()) || option.getStart().isEqual(option.getEnd()) || option.getEnd().isBefore(option.getStart())){
+                    throw new UnauthorizedException("Invalid Dates");
+                }
+            }
             collection.insertOne(event);
         } catch (MongoException e) {
             e.printStackTrace();
@@ -101,18 +106,16 @@ public class EventRepository implements Repository<Event>{
 
             Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
-            Bson project = Aggregates.project(Projections.fields(Projections.include("isActive"),Projections.computed("totalOptions", projection)));
+            Bson project = Aggregates.project(Projections.computed("totalOptions", projection));
             List<Document> filteredDoc = collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>());
             if(optionIndex >= (Integer)filteredDoc.get(0).get("totalOptions")){
                 throw new UnauthorizedException("optionIndex doesn't exist");
-            }else if(!(Boolean)filteredDoc.get(0).get("isActive")){
-                throw new EventClosedException();
             }
 
-            Bson condition = Filters.and(Filters.not(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId()))),Filters.eq("_id", event.getId()));
+            Bson condition = Filters.and(Filters.not(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId()))), Filters.elemMatch("participants", Filters.eq("_id", user.getId())), Filters.eq("_id", event.getId()));
             UpdateResult result = collection.updateOne(condition,Updates.push("options." + optionIndex + ".votes", new Vote(user.getId())));
             if(result.getMatchedCount() == 0){
-                throw new AlreadyVotedException();
+                throw new UnauthorizedException("");
             }
             /*
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
@@ -146,18 +149,16 @@ public class EventRepository implements Repository<Event>{
 
             Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
-            Bson project = Aggregates.project(Projections.fields(Projections.include("isActive"),Projections.computed("totalOptions", projection)));
+            Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
             List<Document> filteredDoc = collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>());
             if(optionIndex >= (Integer)filteredDoc.get(0).get("totalOptions")){
                 throw new UnauthorizedException("optionIndex doesn't exist");
-            }else if(!(Boolean)filteredDoc.get(0).get("isActive")){
-                throw new EventClosedException();
             }
 
-            Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())),Filters.eq("_id", event.getId()));
+            Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())), Filters.elemMatch("participants", Filters.eq("_id", user.getId())), Filters.eq("_id", event.getId()));
             UpdateResult result = collection.updateOne(condition,Updates.pull("options." + optionIndex + ".votes", new Vote(user)));
             if(result.getMatchedCount() == 0){
-                throw new NoSuchElementException("Vote not found");
+                throw new UnauthorizedException("");
             }
 
             /*
@@ -271,6 +272,7 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+
             Bson condition = Filters.and(Filters.elemMatch("participants", Filters.eq("_id", user.getId())),Filters.eq("_id", event.getId()));
             UpdateResult result = collection.updateOne(condition,Updates.pull("participants", user));
             if(result.getMatchedCount() == 0){
