@@ -51,7 +51,7 @@ export const EventOption = ({ option }) => {
                 <button className={ buttonInfo.className }
                     style={{width: '40px'}}
                     onClick={ handleVote }
-                    disabled={ isLoading || !isActive }
+                    disabled={ isLoading || !isActive || !isParticipating }
                 >
                     {
                         isLoading

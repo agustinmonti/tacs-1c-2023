@@ -38,7 +38,7 @@ export const ParticipateAction = () => {
             style={{width:'140px'}}
             className={ className }
             onClick={ handleParticipate }
-            disabled= { isLoading }
+            disabled= { isLoading || !isActive }
         >
             {
                 !isLoading
