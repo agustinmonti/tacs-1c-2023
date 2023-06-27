@@ -62,7 +62,7 @@ public class EventRepository implements Repository<Event>{
             event.setIsActive(true);
             event.setCreatedDate(LocalDateTime.now());
             for(EventOption option : event.getOptions()){
-                if(option.getStart().isBefore(LocalDateTime.now()) || option.getEnd().isBefore(LocalDateTime.now()) || option.getStart().isEqual(option.getEnd()) || option.getEnd().isBefore(option.getStart())){
+                if(option.getStart().isBefore(LocalDateTime.now()) || option.getEnd().isBefore(LocalDateTime.now()) || option.getEnd().isBefore(option.getStart())){
                     throw new UnauthorizedException("Invalid Dates");
                 }
             }
