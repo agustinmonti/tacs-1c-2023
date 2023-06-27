@@ -30,7 +30,9 @@ export const useEventsStore = () => {
 
     const startCreatingEvent = async( newEvent ) => {
 
-        newEvent.options = newEvent.options.map( option => {
+        const eventToCreate = { ...newEvent };
+
+        eventToCreate.options = newEvent.options.map( option => {
             return {
                 ...option,
                 start: format(option.start,"yyyy-MM-dd'T'HH:mm:ss'Z'"),
@@ -40,7 +42,7 @@ export const useEventsStore = () => {
 
         try {
 
-            const { status, data } = await api.post('/events', newEvent); 
+            const { status, data } = await api.post('/events', eventToCreate); 
 
             if( status === 201 ){
                 dispatch(onCloseCreateEventModal());
