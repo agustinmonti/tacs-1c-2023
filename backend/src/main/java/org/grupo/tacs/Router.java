@@ -18,7 +18,7 @@ public class Router {
     public static void main(String[] args){
         // HTTP port
         System.out.println("Connection string: " + System.getenv("MONGODB_CONNECTION_STRING"));
-        port(8080);
+        port(443);
         swaggerConfig = new SwaggerConfig();
         Router.config();
 

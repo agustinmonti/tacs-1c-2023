@@ -42,4 +42,3 @@ public class RateLimiterTest {
         assertFalse(rateLimiter.allowRequest());
     }
 }
-
