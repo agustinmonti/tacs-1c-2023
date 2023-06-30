@@ -17,7 +17,7 @@ public class RateLimitFilter implements Filter {
         if (!rateLimiter.allowRequest()) {
             response.status(429); // HTTP 429 Too Many Requests
             response.body("Rate limit exceeded");
-            halt();
+            halt(429);
         }
     }
 }
