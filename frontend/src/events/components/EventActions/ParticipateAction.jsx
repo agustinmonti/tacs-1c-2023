@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useEventsStore } from '../../../hooks';
 
 export const ParticipateAction = () => {
-    const { isParticipating, startSignUpForCurrentEvent, startRemoveSignUpForCurrentEvent } = useEventsStore();
+    const { isActive, isParticipating, startSignUpForCurrentEvent, startRemoveSignUpForCurrentEvent } = useEventsStore();
 
     const [isLoading, setIsLoading] = useState( false );
 

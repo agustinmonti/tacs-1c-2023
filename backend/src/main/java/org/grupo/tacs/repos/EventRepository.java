@@ -16,6 +16,7 @@ import org.grupo.tacs.excepciones.UserAlreadyParticipatingException;
 import org.grupo.tacs.model.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 public class EventRepository implements Repository<Event>{
     public static final String EVENT_COLLECTION_NAME = "Events";
     public static final String DB_NAME = "mydb";
+
+    public static final ZoneId zoneBuenosAires = ZoneId.of("America/Buenos_Aires");
 
     public static EventRepository instance = new EventRepository();
     MongoClient mongoClient;
@@ -60,9 +63,9 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             event.setIsActive(true);
-            event.setCreatedDate(LocalDateTime.now());
+            event.setCreatedDate(LocalDateTime.now(zoneBuenosAires));
             for(EventOption option : event.getOptions()){
-                if(option.getStart().isBefore(LocalDateTime.now()) || option.getEnd().isBefore(LocalDateTime.now()) || option.getStart().isEqual(option.getEnd()) || option.getEnd().isBefore(option.getStart())){
+                if(option.getStart().isBefore(LocalDateTime.now(zoneBuenosAires)) || option.getEnd().isBefore(LocalDateTime.now(zoneBuenosAires)) || option.getEnd().isBefore(option.getStart())){
                     throw new UnauthorizedException("Invalid Dates");
                 }
             }
@@ -292,14 +295,14 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
-            Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now().minusHours(2)),Filters.lt("createdDate", LocalDateTime.now()));
+            Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now(zoneBuenosAires).minusHours(2)),Filters.lt("createdDate", LocalDateTime.now(zoneBuenosAires)));
             List<Event> eventList = collection.find(condition).into(new ArrayList<>());
             List<Vote> voteList = new ArrayList<>();
             //SI ALMACENAMOS VOTES NO TENDRIAMOS QUE USAR ESTOS FOR Y EL CONDITION SE PUEDE REUTILIZAR QUEDARIA ESTO MISMO EN 2 LINEAS
             for (Event event : collection.find()) {
                 for (EventOption eventOption : event.getOptions()) {
-                    LocalDateTime startDate = LocalDateTime.now().minusHours(2);
-                    LocalDateTime endDate = LocalDateTime.now();
+                    LocalDateTime startDate = LocalDateTime.now(zoneBuenosAires).minusHours(2);
+                    LocalDateTime endDate = LocalDateTime.now(zoneBuenosAires);
                     voteList.addAll(eventOption.getVotes().stream().filter(vote -> vote.getVotingDateDate().isAfter(startDate) &&  vote.getVotingDateDate().isBefore(endDate)).collect(Collectors.toList()));
                 }
             }
@@ -394,7 +397,7 @@ public class EventRepository implements Repository<Event>{
 
 
                     }
-                    if (participants.stream().anyMatch(user -> user.getId().equals(userId))) {
+                    if (participants.stream().anyMatch(user -> user.getId().equals(userId)) && !(createdByUser.getId().equals(userId))) {
                         participantEvents.add(new Document()
                                 .append("id", event.getObjectId("_id").toString())
                                 .append("name", event.getString("name"))
