@@ -7,7 +7,7 @@ export const EventOption = ({ option }) => {
 
     const [isLoading, setIsLoading] = useState(false)
 
-    const { isActive, startAddingVote, startRemovingVote } = useEventsStore();
+    const { isParticipating, isActive, startAddingVote, startRemovingVote } = useEventsStore();
     
     const handleVote = async() => {
         setIsLoading(true);
@@ -51,7 +51,7 @@ export const EventOption = ({ option }) => {
                 <button className={ buttonInfo.className }
                     style={{width: '40px'}}
                     onClick={ handleVote }
-                    disabled={ isLoading || !isActive }
+                    disabled={ isLoading || !isActive || !isParticipating }
                 >
                     {
                         isLoading

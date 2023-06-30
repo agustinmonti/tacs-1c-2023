@@ -188,13 +188,20 @@ public class EventController {
             Event event = EventRepository.instance.findById(request.params(":id"));
             if (event == null) {
                 throw new EventDoesNotExistException();
+            }else if(!event.getIsActive()){
+                throw new EventClosedException();
             }
             EventRepository.instance.updateVoteWithOutId(event, optionIndex, user);
             response.status(201);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.matchedPath(),request.url(), "EventOption vote", 201));
             myMap.put("msg", "Votos registrados correctamente.");
             return gson.toJson(myMap);
-        } catch (EventClosedException | AlreadyVotedException e){
+        } catch (EventClosedException e) {
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.matchedPath(), request.url(), "EventOption vote, but Event was closed", 401));
+            myMap.put("msg", "Votacion Cerrada.");
+            return gson.toJson(myMap);
+        } catch (AlreadyVotedException e){
             response.status(401);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.matchedPath(),request.url(), "EventOption vote, but Event was closed", 401));
             myMap.put("msg", e.getMessage());
@@ -262,11 +269,17 @@ public class EventController {
             Event event = EventRepository.instance.findById(request.params(":id"));
             if (event == null){
                 throw new EventDoesNotExistException();
+            }else if(!event.getIsActive()){
+                throw new EventClosedException();
             }
             EventRepository.instance.addParticipant(event,user);
             response.status(201);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.matchedPath(),request.url(),"Event add Participant",201));
             return "participación actualizada";
+        } catch (EventClosedException e) {
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.matchedPath(), request.url(), "EventOption vote, but Event was closed", 401));
+            return "Votacion Cerrada";
         } catch(EventDoesNotExistException e){
             response.status(404);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.matchedPath(),request.url(),"Event add Participant",404));
@@ -289,11 +302,17 @@ public class EventController {
             Event event = EventRepository.instance.findById(request.params(":id"));
             if (event == null){
                 throw new EventDoesNotExistException();
+            }else if(!event.getIsActive()){
+                throw new EventClosedException();
             }
             EventRepository.instance.deleteParticipant(event,user);
             response.status(200);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.matchedPath(),request.url(),"Event remove Participant",201));
             return "participación actualizada";
+        } catch (EventClosedException e) {
+            response.status(401);
+            InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT, request.matchedPath(), request.url(), "EventOption vote, but Event was closed", 401));
+            return "Votacion Cerrada";
         } catch(EventDoesNotExistException e){
             response.status(404);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.PUT,request.matchedPath(),request.url(),"Event remove Participant",404));
@@ -372,6 +391,7 @@ public class EventController {
             Event newEvent = gson.fromJson(request.body(),Event.class);
             newEvent.setCreatedBy(user.getId());
             EventRepository.instance.save(newEvent);
+            EventRepository.instance.addParticipant(newEvent,user);
             response.status(201);
             InteractionRepository.instance.save(new Interaction(InteractionMethod.POST,request.matchedPath(),request.url(),"Create an Event",201));
             myMap.put("msg","Evento creado.");
@@ -427,6 +447,8 @@ public class EventController {
             Event event = EventRepository.instance.findById(request.params(":id"));
             if (event == null) {
                 throw new EventDoesNotExistException();
+            }else if(!event.getIsActive()){
+                throw new EventClosedException();
             }
             EventRepository.instance.deleteVoteWithOutId(event, optionIndex, user);
             response.status(200);

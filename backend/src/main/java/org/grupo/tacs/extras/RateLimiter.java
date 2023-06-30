@@ -15,7 +15,7 @@ public class RateLimiter {
 
     public synchronized boolean allowRequest() {
         refillTokens();
-        if (tokens > 0) {
+        if (tokens >= 1) {
             tokens--;
             return true;
         }
@@ -26,9 +26,7 @@ public class RateLimiter {
         long currentTime = System.currentTimeMillis();
         long elapsedTime = currentTime - lastRefillTime;
         int newTokens = (int) (elapsedTime / refillInterval);
-        if (newTokens > 0) {
-            tokens = Math.min(capacity, tokens + newTokens);
-            lastRefillTime = currentTime;
-        }
+        tokens = Math.min(capacity, tokens + newTokens);
+        lastRefillTime = currentTime;
     }
 }

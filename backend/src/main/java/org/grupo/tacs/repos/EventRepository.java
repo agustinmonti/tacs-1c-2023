@@ -16,6 +16,7 @@ import org.grupo.tacs.excepciones.UserAlreadyParticipatingException;
 import org.grupo.tacs.model.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 public class EventRepository implements Repository<Event>{
     public static final String EVENT_COLLECTION_NAME = "Events";
     public static final String DB_NAME = "mydb";
+
+    public static final ZoneId zoneBuenosAires = ZoneId.of("America/Buenos_Aires");
 
     public static EventRepository instance = new EventRepository();
     MongoClient mongoClient;
@@ -60,7 +63,12 @@ public class EventRepository implements Repository<Event>{
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
             event.setIsActive(true);
-            event.setCreatedDate(LocalDateTime.now());
+            event.setCreatedDate(LocalDateTime.now(zoneBuenosAires));
+            for(EventOption option : event.getOptions()){
+                if(option.getStart().isBefore(LocalDateTime.now(zoneBuenosAires)) || option.getEnd().isBefore(LocalDateTime.now(zoneBuenosAires)) || option.getEnd().isBefore(option.getStart())){
+                    throw new UnauthorizedException("Invalid Dates");
+                }
+            }
             collection.insertOne(event);
         } catch (MongoException e) {
             e.printStackTrace();
@@ -101,18 +109,16 @@ public class EventRepository implements Repository<Event>{
 
             Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
-            Bson project = Aggregates.project(Projections.fields(Projections.include("isActive"),Projections.computed("totalOptions", projection)));
+            Bson project = Aggregates.project(Projections.computed("totalOptions", projection));
             List<Document> filteredDoc = collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>());
             if(optionIndex >= (Integer)filteredDoc.get(0).get("totalOptions")){
                 throw new UnauthorizedException("optionIndex doesn't exist");
-            }else if(!(Boolean)filteredDoc.get(0).get("isActive")){
-                throw new EventClosedException();
             }
 
-            Bson condition = Filters.and(Filters.not(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId()))),Filters.eq("_id", event.getId()));
+            Bson condition = Filters.and(Filters.not(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId()))), Filters.elemMatch("participants", Filters.eq("_id", user.getId())), Filters.eq("_id", event.getId()));
             UpdateResult result = collection.updateOne(condition,Updates.push("options." + optionIndex + ".votes", new Vote(user.getId())));
             if(result.getMatchedCount() == 0){
-                throw new AlreadyVotedException();
+                throw new UnauthorizedException("");
             }
             /*
             EventOption option = event.getOptionToVoteWithIndex(optionIndex);
@@ -146,18 +152,16 @@ public class EventRepository implements Repository<Event>{
 
             Bson filterMyEvents = new Document("$match", Filters.eq("_id", event.getId()));
             Bson projection = new Document("$size", "$options");
-            Bson project = Aggregates.project(Projections.fields(Projections.include("isActive"),Projections.computed("totalOptions", projection)));
+            Bson project = Aggregates.project(Projections.fields(Projections.computed("totalOptions", projection)));
             List<Document> filteredDoc = collection.aggregate(Arrays.asList(filterMyEvents,project), Document.class).into(new ArrayList<>());
             if(optionIndex >= (Integer)filteredDoc.get(0).get("totalOptions")){
                 throw new UnauthorizedException("optionIndex doesn't exist");
-            }else if(!(Boolean)filteredDoc.get(0).get("isActive")){
-                throw new EventClosedException();
             }
 
-            Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())),Filters.eq("_id", event.getId()));
+            Bson condition = Filters.and(Filters.elemMatch("options." + optionIndex + ".votes", Filters.eq("userId", user.getId())), Filters.elemMatch("participants", Filters.eq("_id", user.getId())), Filters.eq("_id", event.getId()));
             UpdateResult result = collection.updateOne(condition,Updates.pull("options." + optionIndex + ".votes", new Vote(user)));
             if(result.getMatchedCount() == 0){
-                throw new NoSuchElementException("Vote not found");
+                throw new UnauthorizedException("");
             }
 
             /*
@@ -271,6 +275,7 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase("mydb");
             MongoCollection<Event> collection = mongodb.getCollection("Events", Event.class);
+
             Bson condition = Filters.and(Filters.elemMatch("participants", Filters.eq("_id", user.getId())),Filters.eq("_id", event.getId()));
             UpdateResult result = collection.updateOne(condition,Updates.pull("participants", user));
             if(result.getMatchedCount() == 0){
@@ -290,14 +295,14 @@ public class EventRepository implements Repository<Event>{
         try {
             MongoDatabase mongodb = mongoClient.getDatabase(DB_NAME);
             MongoCollection<Event> collection = mongodb.getCollection(EVENT_COLLECTION_NAME, Event.class);
-            Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now().minusHours(2)),Filters.lt("createdDate", LocalDateTime.now()));
+            Bson condition = Filters.and(Filters.gte("createdDate", LocalDateTime.now(zoneBuenosAires).minusHours(2)),Filters.lt("createdDate", LocalDateTime.now(zoneBuenosAires)));
             List<Event> eventList = collection.find(condition).into(new ArrayList<>());
             List<Vote> voteList = new ArrayList<>();
             //SI ALMACENAMOS VOTES NO TENDRIAMOS QUE USAR ESTOS FOR Y EL CONDITION SE PUEDE REUTILIZAR QUEDARIA ESTO MISMO EN 2 LINEAS
             for (Event event : collection.find()) {
                 for (EventOption eventOption : event.getOptions()) {
-                    LocalDateTime startDate = LocalDateTime.now().minusHours(2);
-                    LocalDateTime endDate = LocalDateTime.now();
+                    LocalDateTime startDate = LocalDateTime.now(zoneBuenosAires).minusHours(2);
+                    LocalDateTime endDate = LocalDateTime.now(zoneBuenosAires);
                     voteList.addAll(eventOption.getVotes().stream().filter(vote -> vote.getVotingDateDate().isAfter(startDate) &&  vote.getVotingDateDate().isBefore(endDate)).collect(Collectors.toList()));
                 }
             }
@@ -392,7 +397,7 @@ public class EventRepository implements Repository<Event>{
 
 
                     }
-                    if (participants.stream().anyMatch(user -> user.getId().equals(userId))) {
+                    if (participants.stream().anyMatch(user -> user.getId().equals(userId)) && !(createdByUser.getId().equals(userId))) {
                         participantEvents.add(new Document()
                                 .append("id", event.getObjectId("_id").toString())
                                 .append("name", event.getString("name"))

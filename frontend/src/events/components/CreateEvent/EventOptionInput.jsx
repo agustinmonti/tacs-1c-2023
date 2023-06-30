@@ -39,6 +39,7 @@ export const EventOptionInput = ({ handleAddOption }) => {
                                 <div className="col-6">
                                     <label className="form-label mb-0">Inicio:</label>
                                     <DatePicker 
+                                        minDate={ defaultDates.start }
                                         selected={ start }
                                         onChange={ (event) => onDateChange( event, 'start') }
                                         className="form-control form-control-sm"
