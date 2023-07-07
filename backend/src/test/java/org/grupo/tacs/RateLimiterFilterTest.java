@@ -1,15 +1,12 @@
 package org.grupo.tacs;
 
-import org.grupo.tacs.excepciones.EventClosedException;
 import org.grupo.tacs.extras.RateLimitFilter;
 import org.grupo.tacs.extras.RateLimiter;
 import org.junit.Test;
 import spark.HaltException;
 import spark.Request;
 import spark.Response;
-import spark.Route;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class RateLimiterFilterTest {

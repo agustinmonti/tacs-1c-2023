@@ -6,18 +6,15 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.grupo.tacs.controllers.EventController;
 import org.grupo.tacs.controllers.LoginController;
 import org.grupo.tacs.controllers.UserController;
-import org.grupo.tacs.extras.CorsOptionsFilter;
-import org.grupo.tacs.extras.RateLimitFilter;
-import org.grupo.tacs.extras.RateLimiter;
-import org.grupo.tacs.extras.SwaggerConfig;
+import org.grupo.tacs.extras.*;
 
 import static spark.Spark.*;
 
 public class Router {
     private static SwaggerConfig swaggerConfig;
     public static void main(String[] args){
-        // HTTP port
-        System.out.println("Connection string: " + System.getenv("MONGODB_CONNECTION_STRING"));
+        System.out.println("Mongo Connection string: " + System.getenv("MONGODB_CONNECTION_STRING"));
+        System.out.println("Redis Connection string: " + System.getenv("REDIS_CONNECTION_STRING"));
         port(8080);
         swaggerConfig = new SwaggerConfig();
         Router.config();
@@ -29,8 +26,17 @@ public class Router {
      */
     public static void config(){
         //RateLimiter basado en token bucket algorithm
-        RateLimiter rateLimiter = new RateLimiter(10, 10, 1000); // 10 req por segundo
-        before(new RateLimitFilter(rateLimiter));
+        //RateLimiter rateLimiter = new RateLimiter(10, 10, 1000); // 10 req por segundo
+        //before(new RateLimitFilter(rateLimiter));
+        RedisRateLimiter rateLimiter = new RedisRateLimiter(System.getenv("REDIS_CONNECTION_STRING"),10, 10, 1000); // 10 req per second
+        before((request, response) -> {
+            String ipAddress = request.ip();
+            boolean isAllowed = rateLimiter.isAllowed(ipAddress);
+
+            if (!isAllowed) {
+                halt(429, "Too Many Requests");
+            }
+        });
 
         before(new CorsOptionsFilter(3600)); //Cache CORS, dura una hora
 
@@ -42,10 +48,6 @@ public class Router {
             response.type("application/json");
         });
 
-
-        //options("/auth/login",LoginController::getOptions);
-        //post("/auth/login",LoginController::login);
-
         options("/v2/auth/login",LoginController::getOptions);
         post("/v2/auth/login",LoginController::loginJWT);
         options("/v2/auth/renew",LoginController::getOptions);
@@ -54,12 +56,10 @@ public class Router {
         options("/v2/users",UserController::getUsersOptions);
         post("/v2/users",UserController::newUser);
         get("/v2/users", UserController::getUsers);
-        //Defino Rutas
+
         options("/v2/users/:id",UserController::getUsersOptions);//CORS Error
         get("/v2/users/:id", UserController::getUser);//traer user y eventos(nombre, desc y id) en los que participa (solo si es el user logueado), eventos(nombre, desc, status, totalParticipants y id) en los que participa (solo si es el user logueado)
 
-        //options("/events",EventController::getEventsOptions);
-        //post("/events",EventController::newEvent); // crea un evento
         options("/v2/events",EventController::getEventsOptions);
         post("/v2/events",EventController::createEventJWT);
         get("/v2/events",EventController::getEventsByUser); // get /v2/events?userId=
@@ -106,95 +106,6 @@ public class Router {
                 return "Error generating Swagger JSON";
             }
         });
-
-        //Este tira duplicated mapping key
-        /*get("/swagger.json", (request, response) -> {
-            try {
-                response.status(200);
-                response.type("application/json");
-                ObjectMapper mapper = new ObjectMapper();
-                SimpleModule module = new SimpleModule();
-                SerializerProvider provider = new DefaultSerializerProvider.Impl();
-                provider.setNullKeySerializer(new MyNullKeySerializer());
-                module.addKeySerializer(Object.class, new MyNullKeySerializer());
-                mapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-                mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-                mapper.getSerializerProvider().setNullKeySerializer(new MyNullKeySerializer());
-                mapper.registerModule(module);
-                String json = mapper.writeValueAsString(swaggerConfig.getSwagger());
-                return json;
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.status(500);
-                return "Error generating Swagger JSON";
-            }
-        });*/
-
-        //TODO ver que onda con las cosas que no reconoce de Swagger
-        /*get("/swagger.yaml", (request, response) -> {
-            try {
-                response.status(200);
-                response.type("application/yaml");
-
-                //Elimino Nulls
-                Representer representer = new Representer();
-                representer.setPropertyUtils(new PropertyUtils() {
-                    @Override
-                    public Property getProperty(Class<?> type, String name) {
-                        Property property = super.getProperty(type, name);
-                        if (property == null || property.get(type) == null) {
-                            return null;
-                        }
-                        return property;
-                    }
-                });
-
-                Yaml yaml = new Yaml(representer);
-                yaml.setBeanAccess(BeanAccess.FIELD);
-
-                String yamlString = yaml.dump(swaggerConfig.getSwagger());
-                return yamlString;
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.status(500);
-                return "Error generating Swagger YAML";
-            }
-        });*/
-
-        //Los que se van:
-
-        /* options("/users",UserController::getUsersOptions);
-        get("/users", UserController::getUsers);
-
-        delete("/users",UserController::deleteAll);
-
-        options("/users/:id",UserController::getUserOptions);
-        put("/users/:id",UserController::updateUser);
-        delete("/users/:id",UserController::delete);
-
-        get("/events?user=:uid", EventController::getEvents);
-        options("/events",EventController::getEventsOptions);
-        get("/events", EventController::getEvents);
-        options("/events/:id",EventController::getEventOptions);
-        options("/events/:idEvent/options", EventOptionController::getOptionsMethodOptions);
-        get("/events/:idEvent/options", EventOptionController::getOptions);
-        post("/events/:idEvent/options", EventOptionController::newOption);
-        delete("/events/:idEvent/options", EventOptionController::deleteAllOptions);
-
-        options("/events/:idEvent/options/:id", EventOptionController::getOptionMethodOptions);
-        get("/events/:idEvent/options/:id", EventOptionController::getOption);
-        put("/events/:idEvent/options/:id", EventOptionController::updateOption);
-        delete("/events/:idEvent/options/:id", EventOptionController::deleteOption);
-
-        options("/events/:idEvent/options/:idOption/votes",VoteController::getVotesOptions);
-        get("/events/:idEvent/options/:idOption/votes",VoteController::getVotes);
-        post("/events/:idEvent/options/:idOption/votes",VoteController::createVote);
-        delete("/events/:idEvent/options/:idOption/votes",VoteController::deleteAllVotes);
-
-        options("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVoteOptions);
-        get("/events/:idEvent/options/:idOption/votes/:id",VoteController::getVote);
-        delete("/events/:idEvent/options/:idOption/votes/:id",VoteController::deleteVote);*/
-
     }
 }
 
