@@ -22,6 +22,7 @@ public class RedisRateLimiter {
 
         long requestCount = jedis.incr(clientKey);
         if (requestCount == 1) {
+            // Al parecer en Jedis si queres hacer que expire en segundos tenes que usar int en vez de long? //TODO verificar esto, si casteo a long el test falla
             jedis.expire(clientKey, TIME_WINDOW_SECONDS);
         } else if (requestCount > MAX_REQUESTS) {
             return false;
@@ -30,7 +31,7 @@ public class RedisRateLimiter {
         // Calculate the expiration time based on the rate limit window in milliseconds
         long expirationTime = RATE_LIMIT_WINDOW_MS / 1000;
         if (requestCount == MAX_REQUESTS && jedis.ttl(clientKey) == -1) {
-            jedis.expire(clientKey, (int) expirationTime);
+            jedis.expire(clientKey, expirationTime);
         }
 
         return true;

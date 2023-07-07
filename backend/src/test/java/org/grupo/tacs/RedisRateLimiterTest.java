@@ -7,11 +7,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import redis.clients.jedis.Jedis;
 
-import java.io.IOException;
-
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 public class RedisRateLimiterTest {
     private RedisRateLimiter rateLimiter;
     @Mock
