@@ -9,8 +9,10 @@ services:
       - "443:443"
     depends_on:
       - mongodb
+      - redis
     environment:
       - MONGODB_CONNECTION_STRING=mongodb://admin:password@mongodb:27017
+      - REDIS_CONNECTION_STRING=redis://redis:6379
   frontend:
     image: frontend:${TAG:-entrega1}
     build: ./frontend
@@ -23,3 +25,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
