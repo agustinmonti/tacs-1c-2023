@@ -13,9 +13,10 @@ import static spark.Spark.*;
 public class Router {
     private static SwaggerConfig swaggerConfig;
     public static void main(String[] args){
-        System.out.println("Mongo Connection string: " + System.getenv("MONGODB_CONNECTION_STRING"));
+        // HTTP port
+        System.out.println("Connection string: " + System.getenv("MONGODB_CONNECTION_STRING"));
         System.out.println("Redis Connection string: " + System.getenv("REDIS_CONNECTION_STRING"));
-        port(8080);
+        port(443);
         swaggerConfig = new SwaggerConfig();
         Router.config();
 
