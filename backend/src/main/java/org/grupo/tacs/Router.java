@@ -28,15 +28,8 @@ public class Router {
         //RateLimiter basado en token bucket algorithm
         //RateLimiter rateLimiter = new RateLimiter(10, 10, 1000); // 10 req por segundo
         //before(new RateLimitFilter(rateLimiter));
-        RedisRateLimiter rateLimiter = new RedisRateLimiter(System.getenv("REDIS_CONNECTION_STRING"),10, 10, 1000); // 10 req per second
-        before((request, response) -> {
-            String ipAddress = request.ip();
-            boolean isAllowed = rateLimiter.isAllowed(ipAddress);
 
-            if (!isAllowed) {
-                halt(429, "Too Many Requests");
-            }
-        });
+        before(new DistributedRateLimiterFilter(System.getenv("REDIS_CONNECTION_STRING")));
 
         before(new CorsOptionsFilter(3600)); //Cache CORS, dura una hora
 
